@@ -13,7 +13,7 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class RemotePlayer extends Player implements Runnable {
+public class RemotePlayer extends TicTacToePlayer implements Runnable {
 	int port = 2000;
 	String ip_address;
 	Socket s;
@@ -21,7 +21,7 @@ public class RemotePlayer extends Player implements Runnable {
 	ObjectOutputStream oos;
 	public TicTacToe tic;
 	
-	public RemotePlayer(String ipAddress, TicTacToe tic, Player op) {
+	public RemotePlayer(String ipAddress, TicTacToe tic, TicTacToePlayer op) {
 		this.tic = tic;
 		
 		ip_address = ipAddress;

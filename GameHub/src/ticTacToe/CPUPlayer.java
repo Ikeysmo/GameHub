@@ -1,10 +1,9 @@
 package ticTacToe;
-
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
 
-public class CPUPlayer extends Player {
+public class CPUPlayer extends TicTacToePlayer {
 	public static final int EASY = 0;
 	public static final int HARD = 1;
 	private TicTacToe tic;

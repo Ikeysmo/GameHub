@@ -35,7 +35,7 @@ public class TicTacToe implements ActionListener, Runnable{
 	JFrame mudda;
 	BoardPanel foo;
 	public int turn = 0;
-	private Player[] players = new Player[2];
+	private TicTacToePlayer[] players = new TicTacToePlayer[2];
 	private char[][] board = new char[3][3];
 
 	public TicTacToe() {
@@ -133,8 +133,8 @@ public class TicTacToe implements ActionListener, Runnable{
 				mudda = new JFrame("Player v Player (Local)");
 				mudda.setSize(500, 500);
 				mudda.setVisible(true);
-				players[0] = new Player(player1name.getText());
-				players[1] = new Player(player2name.getText());
+				players[0] = new TicTacToePlayer(player1name.getText());
+				players[1] = new TicTacToePlayer(player2name.getText());
 				players[0].getTic(this);
 				players[1].getTic(this);
 				foo = new BoardPanel(players[0], players[1] , mudda);
@@ -153,7 +153,7 @@ public class TicTacToe implements ActionListener, Runnable{
 				mudda = new JFrame("Player Online");
 				mudda.setSize(500, 500);
 				mudda.setVisible(true);
-				players[0] = new Player(player1name.getText());
+				players[0] = new TicTacToePlayer(player1name.getText());
 				players[1] = new RemotePlayer(ip_field.getText(), this, players[0]);
 				players[0].getTic(this);
 				foo = new BoardPanel(players[0], players[1] , mudda);
@@ -171,7 +171,7 @@ public class TicTacToe implements ActionListener, Runnable{
 				mudda = new JFrame("Player vs AI");
 				mudda.setSize(500, 500);
 				mudda.setVisible(true);
-				players[0] = new Player(player1name.getText());
+				players[0] = new TicTacToePlayer(player1name.getText());
 				players[1] = new CPUPlayer(CPUPlayer.EASY, this);
 				players[0].getTic(this);
 				foo = new BoardPanel(players[0], players[1] , mudda);
@@ -189,7 +189,7 @@ public class TicTacToe implements ActionListener, Runnable{
 				mudda = new JFrame("Player vs AI");
 				mudda.setSize(500, 500);
 				mudda.setVisible(true);
-				players[0] = new Player(player1name.getText());
+				players[0] = new TicTacToePlayer(player1name.getText());
 				players[1] = new CPUPlayer(CPUPlayer.HARD,this);
 				players[0].getTic(this);
 				foo = new BoardPanel(players[0], players[1] , mudda);
@@ -340,7 +340,7 @@ private void findWinner() {
 		}
 		return true;
 	}
-	public boolean updateMove(int numx, int numy, Player p1){
+	public boolean updateMove(int numx, int numy, TicTacToePlayer p1){
 		
 		if(detectGame())//false
 			return false;

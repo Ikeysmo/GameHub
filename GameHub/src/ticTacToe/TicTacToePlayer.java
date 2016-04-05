@@ -5,7 +5,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
-public class Player implements MouseListener{
+import ticTacToe.BoardPanel;
+import ticTacToe.TicTacToe;
+import GameHub.Player;
+
+public class TicTacToePlayer extends Player implements MouseListener{
 	public boolean mouseNotClicked = false;
 	public boolean ready = false;
 	private BoardPanel panel = null;
@@ -13,9 +17,9 @@ public class Player implements MouseListener{
 	protected int numx = -1;
 	protected int numy = -1;
 	protected char piece;
-	protected String name;
 	
-	public Player() {
+	
+	public TicTacToePlayer() {
 		// TODO Auto-generated constructor stub
 	}
 	//somehow get move?
@@ -69,7 +73,7 @@ public class Player implements MouseListener{
 	public char getPiece(){
 		return this.piece;
 	}
-	public Player(String name){
+	public TicTacToePlayer(String name){
 		this.name = name;
 	}
 	public void getPanel(BoardPanel panel){

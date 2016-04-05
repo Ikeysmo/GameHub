@@ -18,7 +18,7 @@ public class BoardPanel extends JPanel {
 	private char[][] board = new char[3][3]; 
 	private int turn = 0; //alternate between 0 and 1
 	
-	public BoardPanel(Player p1, Player p2, JFrame currWindow) {
+	public BoardPanel(TicTacToePlayer p1, TicTacToePlayer p2, JFrame currWindow) {
 		// TODO Auto-generated constructor stub
 		p1.getPanel(this);
 		p2.getPanel(this);
