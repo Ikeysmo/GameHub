@@ -1,7 +1,7 @@
 package GameHub;
 
 public class Player {
-	protected String name;
+	public String name;
 	
 	public Player() {
 		// TODO Auto-generated constructor stub
