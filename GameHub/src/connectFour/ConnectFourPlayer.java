@@ -24,7 +24,7 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 		
 		while(true) {
 			try {
-				//panel.addMouseListener(this);
+				panel.addMouseListener(this);
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -73,7 +73,7 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	}
 	
 	public void getPanel(BoardPanel panel) {
-		
+		this.panel = panel;
 	}
 	
 	public void getConnectFour(ConnectFour connectFour) {

@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import ticTacToe.RemotePlayer;
+import ticTacToe.TicTacToePlayer;
 
 public class ConnectFour implements ActionListener, Runnable {
 	JFrame gameMenu = null;
@@ -86,8 +86,6 @@ public class ConnectFour implements ActionListener, Runnable {
 		
 		gameMenu.setVisible(true);
 	}
-		
-	}
 	
 	public static void main(String[] args) {
 		new ConnectFour();
@@ -148,7 +146,7 @@ public class ConnectFour implements ActionListener, Runnable {
 		} else if (pvpOnline.isSelected()) {
 			errorMsg.setText("");
 			if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")) {
-				errorMsg.getText("Error: Must enter a name for player 1 and player 2!");
+				errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
 				return;
 			}
 			if(mudda != null)
@@ -162,19 +160,46 @@ public class ConnectFour implements ActionListener, Runnable {
 			foo = new BoardPanel(players[0], players[1], mudda);
 			mudda.add(foo);
 			//show one field
-		} else if(playerCPUE.isSelected()) {
-			errorMsg.setText("");
-			if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
-				errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
-				return;
-			}
-			if(mudda != null)
-				mudda.dispose();
-			mudda = new JFrame("Player vs AI");
-			mudda.setSize(500, 500);
-			mudda.setVisible(true);
-			players[0] = new ConnectFourPlayer(player1name.getText());
-			players
+		}
+		//} else if(playerCPUE.isSelected()) {
+		//	errorMsg.setText("");
+		//	if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
+		//		errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
+		//		return;
+		//	}
+		//	if(mudda != null)
+		//		mudda.dispose();
+		//	mudda = new JFrame("Player vs AI");
+		//	mudda.setSize(500, 500);
+		//	mudda.setVisible(true);
+		//	players[0] = new ConnectFourPlayer(player1name.getText());
+		//	players[1] = new CPUPlayer(CPUPlayer.EASY, this);
+		//	players[0].getConnectFour(this);
+		//	foo = new BoardPanel(players[0], players[1], mudda);
+		//	mudda.add(foo);
+		//	//get field
+		//}
+		//else if(playerCPUH.isSelected()) {
+		///	errorMsg.setText("");
+		//	if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
+		//		errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
+		//		return;
+		//	}
+		//	if(mudda != null)
+		//		mudda.dispose();
+		//	mudda = new JFrame("Player vs AI");
+		//	mudda.setSize(500, 500);
+		//	mudda.setVisible(true);
+		//	players[0] = new ConnectFourPlayer(player1name.getText());
+		//	players[1] = new CPUPlayer(CPUPlayer.HARD,this);
+		//	players[0].getConnectFour(this);
+		//	foo = new BoardPanel(players[0], players[1] , mudda);
+		//	mudda.add(foo);
+		//	//get field
+		//}
+			
+		new Thread(this).start();
+		//handle the business
 		}
 	}
 	
@@ -205,7 +230,10 @@ public class ConnectFour implements ActionListener, Runnable {
 			} //I want this to happen, and then wait until this is done
 			
 			
-			gameOver = detectGame(); //let know if game is over
+			//gameOver = detectGame(); //let know if game is over
+			//The game is never over
+			if(findWinner() != 0)
+				gameOver = true;
 			
 			if(turn == 1)
 				turn = 0;
@@ -213,17 +241,46 @@ public class ConnectFour implements ActionListener, Runnable {
 			System.out.println("turn is now: " + turn);
 		}
 		//now find out winner
-		findWinner();
+		winningScreen(findWinner());
 		
 	}
 	
-	private void findWinner() {
-		horizontalWinner();
-		verticalWinner();
-		diagonalWinner();
+	private void winningScreen(int winnerNum) {
+		JFrame finished = new JFrame("Game!");
+		finished.setSize(350, 100);
+		JLabel label = new JLabel();
+		label.setFont(new Font("Default", Font.BOLD, 20));
+		label.setForeground(Color.red);
+		if(winnerNum == 0)
+			label.setText("It is a draw!");
+		else
+			label.setText(" And winner is " + players[winnerNum - 1].getName() + "!");
+		finished.add(label, "Center");
+		finished.setVisible(true);
 	}
 	
-	private void horizontalWinner() {
+	/**
+	 * The rules here are not
+	 * 0 = no has one yet
+	 * 1 = player 1 wins
+	 * 2 = player 2 wins
+	 */
+	private int findWinner() {
+		int winnerNum = 0;
+		if (horizontalWinner() != 0) {
+			winnerNum = horizontalWinner();
+		}
+		if (verticalWinner() != 0) {
+			winnerNum = verticalWinner();
+		}
+		if (diagonalWinner() != 0) {
+			winnerNum = diagonalWinner();
+		}
+		
+		return winnerNum;
+	}
+	
+	private int horizontalWinner() {
 		//i is rows
 		//j is columns
 		//Check all of the columns
@@ -251,20 +308,22 @@ public class ConnectFour implements ActionListener, Runnable {
 								//yes
 								//you win
 								if(tempChar == players[1].getPiece()) {
-									//let player know who won
+									return 2; //Player 2 winner
 								} else {
-									//other player won... 
+									return 1; //Player 1 winner
 								}
 							}
+						}
 				} catch(ArrayIndexOutOfBoundsException e) {
 					//Nothing should happen
 				}
 				}
 			}
 		}
+		return 0; //No Winner
 	}
 	
-	private void verticalWinner() {
+	private int verticalWinner() {
 		//i is rows
 		//j is columns
 		//Check all of the columns
@@ -290,25 +349,32 @@ public class ConnectFour implements ActionListener, Runnable {
 								//yes
 								//you win
 								if(tempChar == players[1].getPiece()) {
-									//let player know who won
+									return 2; //Player 2 winner
 								} else {
-									//other player won... 
+									return 1; //Player 1 winner
 								}
 							}
+						}
 					} catch(ArrayIndexOutOfBoundsException e) {
 						//Nothing should happen
 					}
 				}
 			}
 		}
+		return 0; //No Winner
 	}
 	
-	private void diagonalWinner() {
-		checkForwardDiagonal();
-		checkBackwardDiagonal();
+	private int diagonalWinner() {
+		if (checkForwardDiagonal() != 0) {
+			return checkForwardDiagonal();
+		}
+		if (checkBackwardDiagonal() != 0) {
+			return checkBackwardDiagonal();
+		}
+		return 0; //No Winner
 	}
 	
-	private void checkForwardDiagonal() {
+	private int checkForwardDiagonal() {
 		
 		//i is rows
 		//j is columns
@@ -336,9 +402,9 @@ public class ConnectFour implements ActionListener, Runnable {
 							//yes
 							//you win
 							if(tempChar == players[1].getPiece()) {
-								//let player know who won
+								return 2; //Player 2 winner
 							} else {
-								//other player won... 
+								return 1; //Player 1 winner
 							}
 						}
 					}
@@ -348,9 +414,10 @@ public class ConnectFour implements ActionListener, Runnable {
 				}
 			}
 		}
+		return 0; //No Winner
 	}
 	
-	private void checkBackwardDiagonal() {
+	private int checkBackwardDiagonal() {
 		//i is rows
 		//j is columns
 		//Check all of the columns
@@ -377,9 +444,9 @@ public class ConnectFour implements ActionListener, Runnable {
 							//yes
 							//you win
 							if(tempChar == players[1].getPiece()) {
-								//let player know who won
+								return 2; //Player 2 winner
 							} else {
-								//other player won... 
+								return 1; //Player 1 winner
 							}
 						}
 					}
@@ -389,6 +456,46 @@ public class ConnectFour implements ActionListener, Runnable {
 				}
 			}
 		}
+		return 0; //No Winner
+	}
+	
+	//=====================================================================
+	
+	public boolean updateMove(int numx, int numy, ConnectFourPlayer p1){
+		
+		//if(detectGame())//false
+		//	return false;
+		
+			//check to see if works?
+		if(board[numx][numy] == 'X' || board[numx][numy] == 'O'){
+				return false;
+			}
+		else{
+			//Need to put the piece at the bottom of the column
+			int tempy = 9;
+			while(board[numx][tempy] == 'X' || board[numx][tempy] == 'O') {
+				tempy--;
+			}
+			board[numx][tempy] = p1.getPiece();
+			foo.updateBoard(board);
+			foo.repaint();
+			//printBoard();
+			return true;
+		}
+			
+		
+	}
+	
+	private void printBoard() {
+		// TODO Auto-generated method stub
+		for(int i = 0; i < 10; i++)
+			System.out.print(String.valueOf(board[i][0]));
+		System.out.println("");
+		for(int i = 0; i < 10; i++)
+			System.out.print(String.valueOf(board[i][1]));
+		System.out.println("");
+		for(int i = 0; i < 10; i++)
+			System.out.print(String.valueOf(board[i][2]));
 	}
 
 }

@@ -46,13 +46,18 @@ public class BoardPanel extends JPanel {
 		for(int i = 0; i < 10; i++){
 			for(int j = 0; j < 10; j++){
 				if(board[i][j] == 'X' || board[i][j] == 'O')
-					g.setColor(Color.blue);
-					int fontsize = height/10;
-					g.setFont(new Font("Default", Font.BOLD, fontsize));
-					int locationx = (width/20)*(2*i) + fontsize/10;
-					int locationy = (height/20)*(2*j)+(int)(0.90*fontsize);
+					if (board[i][j] == 'X')
+						g.setColor(Color.blue);
+				
+					if (board[i][j] == 'O')
+						g.setColor(Color.red);
 					
-					g.drawString(String.valueOf(board[i][j]), locationx, locationy); 
+					int locationx = (width/20)*(2*i);
+					int locationy = (height/20)*(2*j);
+					
+					//g.drawString(String.valueOf(board[i][j]), locationx, locationy);
+					if( board[i][j] == 'X' || board[i][j] == 'O')
+						g.fillOval(locationx + 10, locationy + 10, 30, 30); 
 					
 			}
 		}

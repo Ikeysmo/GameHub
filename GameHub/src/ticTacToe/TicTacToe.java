@@ -289,17 +289,20 @@ private void findWinner() {
 		//first see if it's full
 		if(detectFull())
 			return true;
+		
 		//vertical
 		char piece = 'X';
 		for(int i = 0; i < 3; i++){
 			if(board[i][0] == piece &&board[i][1] == piece && board[i][2] == piece)
 				return true;
 		}
+		
 		//horizontal
 		for(int i = 0; i < 3; i++){
 			if(board[0][i] == piece &&board[1][i] == piece && board[2][i] == piece)
 				return true;
 		}
+		
 		//diagonals
 		if(board[0][0] == piece && board[1][1] == piece && board[2][2] == piece)
 			return true;
@@ -341,14 +344,13 @@ private void findWinner() {
 	}
 	public boolean updateMove(int numx, int numy, TicTacToePlayer p1){
 		
-		if(detectGame())//false
-			return false;
+		//if(detectGame())//false
+		//	return false;
 		
-			//check to see if works?
-		else if(board[numx][numy] == 'X' || board[numx][numy] == 'O'){
+			//Is the place already taken?
+		if(board[numx][numy] == 'X' || board[numx][numy] == 'O'){
 				return false;
-			}
-		else{
+		} else{ //Then do the move
 			board[numx][numy] = p1.getPiece();
 			foo.updateBoard(board);
 			foo.repaint();
