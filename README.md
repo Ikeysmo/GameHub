@@ -20,3 +20,20 @@ Goal:
 - chat (history?)
 - 
 
+
+OTHER PROJECT IDEAS
+1) Full fledged RPS Game
+2) Google chat sort of
+3) Python communciation with Apps (Updaters)
+4) GPS communication (App/Server/Website)
+5) Game Programming
+6) Android Applications
+7) Android ("Suite Inventory")
+8) Monopoly
+9) Multigame App w/ multiplayer Server
+ 9a) Make minigames over a long time
+10) proximity App (close to somebody else)
+11) Discuession webpage/app for our group
+12)Private chat for us
+13) Website/App to keep track of our ideas
+
