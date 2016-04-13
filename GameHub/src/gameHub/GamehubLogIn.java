@@ -4,19 +4,28 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -28,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -37,7 +47,7 @@ import ticTacToe.TicTacToe;
 //just here to configure github!
 public class GamehubLogIn implements FocusListener, ActionListener, Runnable, ListSelectionListener {
 	private JFrame mainmode = new JFrame("Welcome to GameHub!");
-	private JFrame onlineWindow;
+	private JFrame onlineWindow = new JFrame("Online List");
 	private JList gamesList = new JList();
 	private JList onlineList = new JList();
 	private JLabel welcome = new JLabel("Welcome to GameHub. Please sign in now!");
@@ -46,8 +56,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 	private JPanel mainPanel = new JPanel();
 	private JButton loginButton = new JButton("Log In!");
 	private JButton registerButton = new JButton("Register!");
-	private JButton ticButton = new JButton("TicTacToe!");
-	private JButton connButton = new JButton("Connect4!");
+	private JButton ticButton; //Init Below in constructor
+	private JButton connButton; //Init Below in constructor
+	//private JButton ticButton = new JButton("TicTacToe!");
+	//private JButton connButton = new JButton("Connect4!");
 	private JLabel errormsg = new JLabel();
 	private JPopupMenu shot = new JPopupMenu();
 	private String ip_Address = "127.0.0.1";
@@ -61,7 +73,32 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 	private JPanel gamePanel = new JPanel();
 	private JButton chatSubmitButton = new JButton("Submit");
 	
+	JPanel OnlinePanel = new JPanel();
+	JScrollPane chatHistory = new JScrollPane(chatIn);
+	JScrollPane chatOutbox = new JScrollPane(chatOut);
+	
+	JPanel OnlineBottomPanel = new JPanel();
+	
+	
 	public GamehubLogIn() {
+		
+		//Try to make the images
+		try {
+			BufferedImage ticTacToeIcon = ImageIO.read(new File("tic_tac_toe.png"));
+			ticTacToeIcon = resize(ticTacToeIcon, 100, 100);
+			ticButton = new JButton(new ImageIcon(ticTacToeIcon));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			BufferedImage connect4Icon = ImageIO.read(new File("connect4.png"));
+			connect4Icon = resize(connect4Icon, 100, 100);
+			connButton = new JButton(new ImageIcon(connect4Icon));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		// TODO Auto-generated constructor stub
 		//games.setListData(listData);
 		//may need something to put list of games in JList??
@@ -72,13 +109,15 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		loginBox.addFocusListener(this);
 		loginBox.setPreferredSize(new Dimension(170,30));
 		loginBox.setMinimumSize(new Dimension(170,30));
+		
+		
 		passBox.setFont(new Font("Default", Font.BOLD, 20));
 		passBox.setPreferredSize(new Dimension(170, 30));
 		passBox.setMinimumSize(new Dimension(170, 30));
 		passBox.addFocusListener(this);
 		mainPanel.setBackground(Color.orange);
-		connButton.setEnabled(false);
-		ticButton.setEnabled(false);
+		connButton.setEnabled(true);
+		ticButton.setEnabled(true);
 		mainPanel.add(welcome);
 		mainPanel.add(loginBox);
 		mainPanel.add(passBox);
@@ -97,6 +136,15 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		loginBox.setText("Enter Username   ");
 		shot.add(new JMenuItem("Connect 4"));
 		onlineList.addListSelectionListener(this);
+		
+		mainmode.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"clickButton");
+		mainmode.getRootPane().getActionMap().put("clickButton", new AbstractAction(){
+			public void actionPerformed(ActionEvent ae) 
+			{
+				loginButton.doClick();
+			}
+		});
+		
 	}
 
 	public static void main(String[] args) {
@@ -159,16 +207,13 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				gamePanel.add(ticButton);
 				gamePanel.add(connButton);
 				mainmode.add(gamePanel);
-				onlineWindow = new JFrame("Online List");
 				onlineWindow.setMinimumSize(new Dimension(650, 600));
 				onlineList.setFont(new Font("Default", Font.BOLD, 30));
 				onlineList.setPreferredSize(new Dimension(150,470));
-				JPanel OnlinePanel = new JPanel();
+				
 				chatIn.setText("Incoming!" + System.lineSeparator());
 				chatIn.setFont(new Font("Default", Font.BOLD, 20));
 				chatIn.setSize(300, 470);
-				JScrollPane chatHistory = new JScrollPane(chatIn);
-				JScrollPane chatOutbox = new JScrollPane(chatOut);
 				chatHistory.setPreferredSize(new Dimension(450, 470));
 				chatOutbox.setPreferredSize(new Dimension(500,60));
 				chatOut.setText("Outcoming");
@@ -179,18 +224,30 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				OnlinePanel.add(chatHistory);
 				OnlinePanel.add(splitter);
 				OnlinePanel.add(onlineList);
-				JPanel OnlineBottomPanel = new JPanel();
 				OnlineBottomPanel.add(chatOutbox);
 				OnlineBottomPanel.add(chatSubmitButton);
 				//onlineWindow.add(onlineList);
 				//OnlinePanel.add(shot);
 				onlineWindow.add(OnlinePanel);
 				onlineWindow.add(OnlineBottomPanel, "South");
+				
+				//For using the enter key in order to submit a chat
+				
 				onlineWindow.setVisible(true);
 				Point loc = mainmode.getLocation();
 				onlineWindow.setLocation(loc.x+500, loc.y);
+				
+				onlineWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_0,0),"clickButton");
+				onlineWindow.getRootPane().getActionMap().put("clickButton", new AbstractAction(){
+					public void actionPerformed(ActionEvent ae)
+					{
+						chatSubmitButton.doClick();
+					}
+				});
+				
 				new Thread(this).start();
 			}
+			
 			catch(IOException | ClassNotFoundException e){
 				errormsg.setText(e.getMessage());
 			}
@@ -222,6 +279,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 			
 			try {
 				oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone"));
+				chatOut.setText(""); //Clear out the box
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -264,5 +322,27 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		ticButton.setEnabled(true);
 		connButton.setEnabled(true);
 	}
+	
+	/**
+	 * This is a method that I found in order to figure out how to resize
+	 * the icons for the games.
+	 * 
+	 * Source: http://stackoverflow.com/questions/9417356/bufferedimage-resize
+	 * 
+	 * @param img
+	 * @param newW
+	 * @param newH
+	 * @return
+	 */
+	private static BufferedImage resize(BufferedImage img, int newW, int newH) { 
+	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = dimg.createGraphics();
+	    g2d.drawImage(tmp, 0, 0, null);
+	    g2d.dispose();
+
+	    return dimg;
+	}  
 
 }

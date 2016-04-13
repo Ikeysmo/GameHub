@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 public class Snake implements ActionListener, Runnable {
 	JFrame gameMenu = null;
@@ -81,6 +82,9 @@ public class Snake implements ActionListener, Runnable {
 		gameMenu.getContentPane().add(secondPanel, "Center");
 		gameMenu.getContentPane().add(errorMsg, "South");
 		//add this to something else //gameWindow.getContentPane().add(new BoardPanel(),"Center");
+		
+		//Keeps the whole GUI from shutting down
+		gameMenu.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		
 		gameMenu.setVisible(true);
 	}
