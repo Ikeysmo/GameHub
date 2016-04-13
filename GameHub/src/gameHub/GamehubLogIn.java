@@ -20,15 +20,19 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import connectFour.ConnectFour;
 import ticTacToe.TicTacToe;
 
 //just here to configure github!
-public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
+public class GamehubLogIn implements FocusListener, ActionListener, Runnable, ListSelectionListener {
 	private JFrame mainmode = new JFrame("Welcome to GameHub!");
 	private JFrame onlineWindow;
 	private JList gamesList = new JList();
@@ -42,8 +46,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 	private JButton ticButton = new JButton("TicTacToe!");
 	private JButton connButton = new JButton("Connect4!");
 	private JLabel errormsg = new JLabel();
+	private JPopupMenu shot = new JPopupMenu();
 	private String ip_Address = "127.0.0.1";
 	private Socket s;
+	private PlayerAccount p1;
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 	private JPanel gamePanel = new JPanel();
@@ -63,7 +69,8 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 		passBox.setMinimumSize(new Dimension(170, 30));
 		passBox.addFocusListener(this);
 		mainPanel.setBackground(Color.orange);
-		
+		connButton.setEnabled(false);
+		ticButton.setEnabled(false);
 		mainPanel.add(welcome);
 		mainPanel.add(loginBox);
 		mainPanel.add(passBox);
@@ -79,6 +86,8 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 		loginButton.addActionListener(this);
 		registerButton.addActionListener(this);
 		loginBox.setText("Enter Username   ");
+		shot.add(new JMenuItem("Connect 4"));
+		onlineList.addListSelectionListener(this);
 	}
 
 	public static void main(String[] args) {
@@ -127,6 +136,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 					errormsg.setText("Error: Incorrect Username or Password");
 					return;
 				}
+				p1 = new PlayerAccount(loginBox.getText(), String.valueOf(passBox.getPassword()));
 				mainmode.dispose();
 				mainmode = null;
 				mainmode = new JFrame("Welcome to GameHub!");
@@ -143,8 +153,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 				onlineWindow = new JFrame("Online List");
 				onlineWindow.setSize(400, 600);
 				onlineList.setFont(new Font("Default", Font.BOLD, 30));
-				
+				JPanel OnlinePanel = new JPanel();
 				onlineWindow.add(onlineList);
+				//OnlinePanel.add(shot);
+				//onlineWindow.add(OnlinePanel);
 				onlineWindow.setVisible(true);
 				Point loc = mainmode.getLocation();
 				onlineWindow.setLocation(loc.x+500, loc.y);
@@ -159,10 +171,23 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 			//put code here
 		}
 		else if(arg0.getSource() == ticButton){
-			new TicTacToe();
+			try {
+				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), "TicTacToe"));
+				new TicTacToe();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		else if(arg0.getSource() == connButton){
-			new ConnectFour();
+			try {//send a game invite!
+				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), "Connect4"));
+				new ConnectFour();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -178,11 +203,22 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 				if(message instanceof String[]){
 					onlineList.setListData((String[]) message);
 				}
+				else if(message instanceof GameInvite){
+					System.out.println("I got the game invite!");
+				}
+				
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent arg0) {
+		// TODO Auto-generated method stub
+		ticButton.setEnabled(true);
+		connButton.setEnabled(true);
 	}
 
 }

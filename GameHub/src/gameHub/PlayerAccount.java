@@ -6,8 +6,10 @@ public class PlayerAccount {
 	String password;
 	Player temp; //hold reference to all the different type of players for instance games.
 	
-	public PlayerAccount() {
+	public PlayerAccount(String username, String password) {
 		// TODO Auto-generated constructor stub
+		this.username = username;
+		this.password = password;
 	}
 
 	public void getOnline() throws ConnectException{

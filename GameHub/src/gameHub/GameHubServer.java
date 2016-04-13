@@ -16,7 +16,7 @@ public class GameHubServer implements Runnable{
 	ConcurrentHashMap<String, String> passwords = new ConcurrentHashMap<String, String>();
 	private int portNumber = 2020; //wala
 	private ServerSocket ss;
-	
+
 	public GameHubServer() throws IOException {
 		// TODO Auto-generated constructor stub
 		ss = new ServerSocket(2020);
@@ -32,11 +32,11 @@ public class GameHubServer implements Runnable{
 			FileOutputStream fos = new FileOutputStream("Accounts.data");
 			fos.close();
 		}
-		
-		
-		
+
+
+
 		new Thread(this).start();
-		
+
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -54,25 +54,25 @@ public class GameHubServer implements Runnable{
 		String firstMessage = null;
 		String password = null;
 		boolean nextClientThreadStarted = false;
-		
+
 		try {
 			s = ss.accept();
 			new Thread(this).start(); //make thread
 			nextClientThreadStarted = true;
 			System.out.println("Connection from " + s.getInetAddress());
-			
+
 			ois = new ObjectInputStream (s.getInputStream());  // prepare to receive
 			firstMessage = (String) ois.readObject(); // 1st msg from client must be String
 			System.out.println("Received 1st message: " + firstMessage);
 			oos = new ObjectOutputStream(s.getOutputStream()); // prepare to send
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("Initial connect failure: " + e);
-			 try {s.close();}           // try to hang up
-		        catch(Exception ioe){}     // s already terminated!
-		     if (!nextClientThreadStarted) // make thread for next client if accept() failed
-		         new Thread(this).start(); // but not if a later operation failed.
+			try {s.close();}           // try to hang up
+			catch(Exception ioe){}     // s already terminated!
+			if (!nextClientThreadStarted) // make thread for next client if accept() failed
+				new Thread(this).start(); // but not if a later operation failed.
 			return;
 		} //waiting for client to call
 		System.out.println(firstMessage);
@@ -112,7 +112,7 @@ public class GameHubServer implements Runnable{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				//break;
 			}
 			//join client! which is part 3!
@@ -136,7 +136,7 @@ public class GameHubServer implements Runnable{
 					//else... rejoining???
 				}
 			}
-			 //finishes part 11??
+			//finishes part 11??
 			//part 13
 			System.out.println(userName + " is joining");
 			try{
@@ -153,22 +153,29 @@ public class GameHubServer implements Runnable{
 				//do nothing!
 			}
 			try{
-			while(true){
-				Object messageFromClient = ois.readObject();//wait for MY client to say something
-				System.out.println("Received '" + messageFromClient + "' from " + userName); // (debug trace)
-				if (messageFromClient instanceof ChatMessage)
-				    sendToAll(userName + " says: " + (ChatMessage) messageFromClient);
-				else if(messageFromClient instanceof GameInvite)
-				    sendToAll(messageFromClient); // send some not-a-text-message object to all clients!
+				while(true){
+					Object messageFromClient = ois.readObject();//wait for MY client to say something
+					System.out.println("Received '" + messageFromClient + "' from " + userName); // (debug trace)
+					if (messageFromClient instanceof ChatMessage)
+						sendToAll(userName + " says: " + (ChatMessage) messageFromClient);
+					else if(messageFromClient instanceof GameInvite){
+						GameInvite invite = (GameInvite) messageFromClient;
+						if(invite.isAccepted() && invite.isChecked()){
+							//create a new match!
+						}
+						else if(!invite.isChecked() || !invite.isAccepted()){ //send it to the person if denied or not checked!
+							sendToAll(messageFromClient); // send some not-a-text-message object to all clients! It generally won't be sent to all
+						}
+					}
+				}
 			}
-			}
-		    catch(Exception e){
-		    	//oos.writeObject(chatName + " is leaving the chat room");
+			catch(Exception e){
+				//oos.writeObject(chatName + " is leaving the chat room");
 				//sendToAll(message);
 				onlineList.remove(userName);
 				sendToAll("Goodbye to " + userName + " who has just left the chat room.");
-		    	
-		    }
+
+			}
 		}//now go to part 3?
 
 	}
@@ -181,7 +188,7 @@ public class GameHubServer implements Runnable{
 		else
 			return true;
 	}
-	
+
 	private synchronized void sendToAll(Object message){
 		//
 		ObjectOutputStream[] oosArray = onlineList.values().toArray(new ObjectOutputStream[0]);
