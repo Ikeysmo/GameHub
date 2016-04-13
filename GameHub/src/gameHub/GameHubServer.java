@@ -158,7 +158,8 @@ public class GameHubServer implements Runnable{
 					System.out.println("Received '" + messageFromClient + "' from " + userName); // (debug trace)
 					if (messageFromClient instanceof ChatMessage){
 						ChatMessage chat = (ChatMessage) messageFromClient;
-						sendToAll(chat.from + " says: " + chat.message);	
+						System.out.println("Hey you've got mail!");
+						sendToAll(chat);	
 					}
 					else if(messageFromClient instanceof GameInvite){
 						GameInvite invite = (GameInvite) messageFromClient;

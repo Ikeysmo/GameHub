@@ -10,7 +10,7 @@ public class ChatMessage implements Serializable{
 	String to;
 	public ChatMessage(String message, String from, String to) {
 		// TODO Auto-generated constructor stub
-		this.message = message;
+		this.message = message + System.lineSeparator();
 		this.from = from;
 		this.to= to;
 		this.date = new Date();

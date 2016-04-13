@@ -24,6 +24,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -49,10 +52,15 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 	private JPopupMenu shot = new JPopupMenu();
 	private String ip_Address = "127.0.0.1";
 	private Socket s;
+	private JTextArea chatOut = new JTextArea();
+	private JTextArea chatIn = new JTextArea();
+	private JSplitPane splitter = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 	private PlayerAccount p1;
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 	private JPanel gamePanel = new JPanel();
+	private JButton chatSubmitButton = new JButton("Submit");
+	
 	public GamehubLogIn() {
 		// TODO Auto-generated constructor stub
 		//games.setListData(listData);
@@ -85,6 +93,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		mainmode.requestFocus();
 		loginButton.addActionListener(this);
 		registerButton.addActionListener(this);
+		chatSubmitButton.addActionListener(this);
 		loginBox.setText("Enter Username   ");
 		shot.add(new JMenuItem("Connect 4"));
 		onlineList.addListSelectionListener(this);
@@ -151,12 +160,32 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				gamePanel.add(connButton);
 				mainmode.add(gamePanel);
 				onlineWindow = new JFrame("Online List");
-				onlineWindow.setSize(400, 600);
+				onlineWindow.setMinimumSize(new Dimension(650, 600));
 				onlineList.setFont(new Font("Default", Font.BOLD, 30));
+				onlineList.setPreferredSize(new Dimension(150,470));
 				JPanel OnlinePanel = new JPanel();
-				onlineWindow.add(onlineList);
+				chatIn.setText("Incoming!" + System.lineSeparator());
+				chatIn.setFont(new Font("Default", Font.BOLD, 20));
+				chatIn.setSize(300, 470);
+				JScrollPane chatHistory = new JScrollPane(chatIn);
+				JScrollPane chatOutbox = new JScrollPane(chatOut);
+				chatHistory.setPreferredSize(new Dimension(450, 470));
+				chatOutbox.setPreferredSize(new Dimension(500,60));
+				chatOut.setText("Outcoming");
+				chatOut.setLineWrap(true);
+				//chatOut.setPreferredSize(new Dimension(500, 100));
+				//chatOut.set
+				chatOut.setFont(new Font("Default", Font.BOLD, 20));
+				OnlinePanel.add(chatHistory);
+				OnlinePanel.add(splitter);
+				OnlinePanel.add(onlineList);
+				JPanel OnlineBottomPanel = new JPanel();
+				OnlineBottomPanel.add(chatOutbox);
+				OnlineBottomPanel.add(chatSubmitButton);
+				//onlineWindow.add(onlineList);
 				//OnlinePanel.add(shot);
-				//onlineWindow.add(OnlinePanel);
+				onlineWindow.add(OnlinePanel);
+				onlineWindow.add(OnlineBottomPanel, "South");
 				onlineWindow.setVisible(true);
 				Point loc = mainmode.getLocation();
 				onlineWindow.setLocation(loc.x+500, loc.y);
@@ -189,6 +218,15 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				e.printStackTrace();
 			}
 		}
+		else if(arg0.getSource() == chatSubmitButton){
+			
+			try {
+				oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -200,6 +238,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		while(true){
 			try {
 				Object message = ois.readObject();
+				System.out.println("Got something!");
 				if(message instanceof String[]){
 					onlineList.setListData((String[]) message);
 				}
@@ -207,8 +246,9 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 					System.out.println("I got the game invite!");
 				}
 				else if(message instanceof ChatMessage){
+					System.out.println("Abe Lincoln");
 					ChatMessage chat = (ChatMessage) message;
-					System.out.println(chat.from + " says " + chat.message);
+					chatIn.append(chat.from + ": " + chat.message);
 				}
 				
 			} catch (ClassNotFoundException | IOException e) {
