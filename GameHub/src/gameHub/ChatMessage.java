@@ -15,5 +15,10 @@ public class ChatMessage implements Serializable{
 		this.to= to;
 		this.date = new Date();
 	}
+	
+	public String toString(){
+		return message;
+		
+	}
 
 }

@@ -1,9 +1,11 @@
 package gameHub;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +24,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import connectFour.ConnectFour;
+import ticTacToe.TicTacToe;
+
 //just here to configure github!
 public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 	private JFrame mainmode = new JFrame("Welcome to GameHub!");
@@ -34,11 +39,14 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 	private JPanel mainPanel = new JPanel();
 	private JButton loginButton = new JButton("Log In!");
 	private JButton registerButton = new JButton("Register!");
+	private JButton ticButton = new JButton("TicTacToe!");
+	private JButton connButton = new JButton("Connect4!");
 	private JLabel errormsg = new JLabel();
 	private String ip_Address = "127.0.0.1";
 	private Socket s;
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
+	private JPanel gamePanel = new JPanel();
 	public GamehubLogIn() {
 		// TODO Auto-generated constructor stub
 		//games.setListData(listData);
@@ -126,6 +134,12 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 				mainmode.setSize(500, 500);
 				mainmode.setLocation(400, 200);
 				mainmode.setVisible(true);
+				ticButton.addActionListener(this);
+				connButton.addActionListener(this);
+				gamePanel.setLayout(new GridLayout());
+				gamePanel.add(ticButton);
+				gamePanel.add(connButton);
+				mainmode.add(gamePanel);
 				onlineWindow = new JFrame("Online List");
 				onlineWindow.setSize(400, 600);
 				onlineList.setFont(new Font("Default", Font.BOLD, 30));
@@ -143,6 +157,12 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable {
 		}
 		else if (arg0.getSource() == registerButton){
 			//put code here
+		}
+		else if(arg0.getSource() == ticButton){
+			new TicTacToe();
+		}
+		else if(arg0.getSource() == connButton){
+			new ConnectFour();
 		}
 	}
 

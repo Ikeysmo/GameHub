@@ -157,7 +157,7 @@ public class GameHubServer implements Runnable{
 				Object messageFromClient = ois.readObject();//wait for MY client to say something
 				System.out.println("Received '" + messageFromClient + "' from " + userName); // (debug trace)
 				if (messageFromClient instanceof ChatMessage)
-				    sendToAll(userName + " says: " + messageFromClient);
+				    sendToAll(userName + " says: " + (ChatMessage) messageFromClient);
 				else if(messageFromClient instanceof GameInvite)
 				    sendToAll(messageFromClient); // send some not-a-text-message object to all clients!
 			}
