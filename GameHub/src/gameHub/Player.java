@@ -1,4 +1,4 @@
-package GameHub;
+package gameHub;
 
 import java.awt.Point;
 import java.io.IOException;

@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
-import GameHub.Player;
+import gameHub.Player;
 
 public class ConnectFourPlayer extends Player implements MouseListener {
 	public boolean mouseNotClicked = false;

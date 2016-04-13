@@ -5,9 +5,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
+import gameHub.Player;
 import ticTacToe.BoardPanel;
 import ticTacToe.TicTacToe;
-import GameHub.Player;
 
 public class TicTacToePlayer extends Player implements MouseListener{
 	public boolean mouseNotClicked = false;

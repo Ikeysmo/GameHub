@@ -1,4 +1,4 @@
-package GameHub;
+package gameHub;
 import java.net.ConnectException;
 
 public class PlayerAccount {

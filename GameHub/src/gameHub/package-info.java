@@ -5,4 +5,4 @@
  * @author Isaiah
  *
  */
-package GameHub;
+package gameHub;

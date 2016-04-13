@@ -1,4 +1,4 @@
-package GameHub;
+package gameHub;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -156,9 +156,9 @@ public class GameHubServer implements Runnable{
 			while(true){
 				Object messageFromClient = ois.readObject();//wait for MY client to say something
 				System.out.println("Received '" + messageFromClient + "' from " + userName); // (debug trace)
-				if (messageFromClient instanceof String)
+				if (messageFromClient instanceof ChatMessage)
 				    sendToAll(userName + " says: " + messageFromClient);
-				else
+				else if(messageFromClient instanceof GameInvite)
 				    sendToAll(messageFromClient); // send some not-a-text-message object to all clients!
 			}
 			}
