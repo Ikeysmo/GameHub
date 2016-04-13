@@ -206,6 +206,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				else if(message instanceof GameInvite){
 					System.out.println("I got the game invite!");
 				}
+				else if(message instanceof ChatMessage){
+					ChatMessage chat = (ChatMessage) message;
+					System.out.println(chat.from + " says " + chat.message);
+				}
 				
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block

@@ -156,8 +156,10 @@ public class GameHubServer implements Runnable{
 				while(true){
 					Object messageFromClient = ois.readObject();//wait for MY client to say something
 					System.out.println("Received '" + messageFromClient + "' from " + userName); // (debug trace)
-					if (messageFromClient instanceof ChatMessage)
-						sendToAll(userName + " says: " + (ChatMessage) messageFromClient);
+					if (messageFromClient instanceof ChatMessage){
+						ChatMessage chat = (ChatMessage) messageFromClient;
+						sendToAll(chat.from + " says: " + chat.message);	
+					}
 					else if(messageFromClient instanceof GameInvite){
 						GameInvite invite = (GameInvite) messageFromClient;
 						if(invite.isAccepted() && invite.isChecked()){
