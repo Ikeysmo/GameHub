@@ -93,11 +93,6 @@ public class TicTacToe implements ActionListener, Runnable{
 
 	public TicTacToe(ObjectOutputStream oos, ObjectInputStream ois) {
 		// TODO Auto-generated constructor stub
-		errorMsg.setText("");
-		if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
-			errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
-			return;
-		}
 		if(mudda != null)
 			mudda.dispose();
 		mudda = new JFrame("Player Online");

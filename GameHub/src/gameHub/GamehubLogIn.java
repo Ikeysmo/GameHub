@@ -185,6 +185,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				}
 					
 				else if(loginBox.getText().equals(""));
+				
 				s = new Socket(ip_Address, 2020); //assuming port 4444 for lab 4
 				oos = new ObjectOutputStream(s.getOutputStream());
 				oos.writeObject(loginBox.getText() + "/" + String.valueOf(passBox.getPassword()));
@@ -260,8 +261,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		}
 		else if(arg0.getSource() == ticButton){
 			try {
-				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), "TicTacToe"));
+				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.tictactoe));
+				System.out.println("Pledge of allegiance");
 				new TicTacToe(oos, ois);
+				System.out.println("Opening tictactoe");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -270,7 +273,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		}
 		else if(arg0.getSource() == connButton){
 			try {//send a game invite!
-				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), "Connect4"));
+				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.connect4));
 				new ConnectFour(oos, ois);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -325,6 +328,11 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 									e1.printStackTrace();
 								}
 								System.out.println("Accepted invite!");
+								if(invite.game.contains(GameInvite.tictactoe)){
+									System.out.println("what");
+									new TicTacToe(oos, ois);
+								}
+								inviteWindow.dispose();
 							}
 						}); //make local function
 						middlePanel.add(acceptButton);
@@ -342,6 +350,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 									e1.printStackTrace();
 								}
 								System.out.println("Denied invitation!");
+								inviteWindow.dispose();
 							}
 						});
 						middlePanel.add(denyButton);

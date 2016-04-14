@@ -3,6 +3,8 @@ package gameHub;
 import java.io.Serializable;
 
 public class GameInvite implements Serializable{
+	public static final String tictactoe = "tictactoe";
+	public static final String connect4 = "connect4";
 	String from;
 	String to;
 	String game;
