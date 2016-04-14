@@ -138,6 +138,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		shot.add(new JMenuItem("Connect 4"));
 		onlineList.addListSelectionListener(this);
 		
+		
 		mainmode.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"clickButton");
 		mainmode.getRootPane().getActionMap().put("clickButton", new AbstractAction(){
 			public void actionPerformed(ActionEvent ae) 
@@ -184,7 +185,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				}
 					
 				else if(loginBox.getText().equals(""));
-				s = new Socket("127.0.0.1", 2020); //assuming port 4444 for lab 4
+				s = new Socket(ip_Address, 2020); //assuming port 4444 for lab 4
 				oos = new ObjectOutputStream(s.getOutputStream());
 				oos.writeObject(loginBox.getText() + "/" + String.valueOf(passBox.getPassword()));
 				ois = new ObjectInputStream(s.getInputStream());
