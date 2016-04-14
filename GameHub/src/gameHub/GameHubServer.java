@@ -167,12 +167,25 @@ public class GameHubServer implements Runnable{
 						if(invite.isAccepted() && invite.isChecked()){
 							//create a new match!
 							System.out.println("Creating match!");
-							matches.put(invite.from, invite.to);
-							matches.put(invite.to, invite.from);
+							matches.put(invite.from.toUpperCase(), invite.to.toUpperCase());
+							matches.put(invite.to.toUpperCase(), invite.from.toUpperCase());
 						}
 						else if(!invite.isChecked() || !invite.isAccepted()){ //send it to the person if denied or not checked!
 							sendToAll(messageFromClient); // send some not-a-text-message object to all clients! It generally won't be sent to all
 						}
+					}
+					else if(messageFromClient instanceof String){
+						String tempMessage = (String) messageFromClient;
+						//User1ExitUser2
+						if(tempMessage.contains("Exit"));
+						tempMessage.replace("Exit", " ");
+						tempMessage = tempMessage.trim();
+						String user1 = tempMessage.substring(tempMessage.indexOf(" "));
+						String user2 = tempMessage.substring(0, tempMessage.indexOf(' '));
+						user1 = user1.trim().toUpperCase();
+						user2 = user2.trim().toUpperCase();
+						matches.remove(user1);
+						matches.remove(user2);
 					}
 					else{
 						//if I can find my own name in match, send it to the guy i'm linked to
