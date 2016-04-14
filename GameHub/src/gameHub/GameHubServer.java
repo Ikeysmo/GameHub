@@ -16,7 +16,7 @@ public class GameHubServer implements Runnable{
 	ConcurrentHashMap<String, String> passwords = new ConcurrentHashMap<String, String>();
 	private int portNumber = 2020; //wala
 	private ServerSocket ss;
-
+	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String, String>();
 	public GameHubServer() throws IOException {
 		// TODO Auto-generated constructor stub
 		ss = new ServerSocket(2020);
@@ -165,9 +165,18 @@ public class GameHubServer implements Runnable{
 						GameInvite invite = (GameInvite) messageFromClient;
 						if(invite.isAccepted() && invite.isChecked()){
 							//create a new match!
+							matches.put(invite.from, invite.to);
+							matches.put(invite.to, invite.from);
 						}
 						else if(!invite.isChecked() || !invite.isAccepted()){ //send it to the person if denied or not checked!
 							sendToAll(messageFromClient); // send some not-a-text-message object to all clients! It generally won't be sent to all
+						}
+					}
+					else{
+						//if I can find my own name in match, send it to the guy i'm linked to
+						if(matches.containsKey(userName)){
+							//I'm in a match
+							send(messageFromClient, matches.get(userName)); //send to one guy
 						}
 					}
 				}
@@ -202,6 +211,15 @@ public class GameHubServer implements Runnable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	private synchronized void send(Object message, String username){
+		ObjectOutputStream temp = onlineList.get(username);
+		try {
+			temp.writeObject(message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

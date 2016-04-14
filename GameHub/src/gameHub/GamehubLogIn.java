@@ -62,7 +62,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 	//private JButton connButton = new JButton("Connect4!");
 	private JLabel errormsg = new JLabel();
 	private JPopupMenu shot = new JPopupMenu();
-	private String ip_Address = "127.0.0.1";
+	private String ip_Address = "localhost";
 	private Socket s;
 	private JTextArea chatOut = new JTextArea();
 	private JTextArea chatIn = new JTextArea();
@@ -307,7 +307,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 					System.out.println("Abe Lincoln");
 					ChatMessage chat = (ChatMessage) message;
 					chatIn.append(chat.from + ": " + chat.message);
-				}
+				} //this does not CATCH anything that isn't one of these! The games catches the rest!
 				
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
