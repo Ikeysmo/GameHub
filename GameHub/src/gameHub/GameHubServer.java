@@ -162,9 +162,11 @@ public class GameHubServer implements Runnable{
 						sendToAll(chat);	
 					}
 					else if(messageFromClient instanceof GameInvite){
+						System.out.println("Forwarding invite");
 						GameInvite invite = (GameInvite) messageFromClient;
 						if(invite.isAccepted() && invite.isChecked()){
 							//create a new match!
+							System.out.println("Creating match!");
 							matches.put(invite.from, invite.to);
 							matches.put(invite.to, invite.from);
 						}

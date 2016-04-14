@@ -7,6 +7,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -91,6 +93,10 @@ public class ConnectFour implements ActionListener, Runnable {
 		gameMenu.setVisible(true);
 	}
 	
+	public ConnectFour(ObjectOutputStream oos, ObjectInputStream ois) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public static void main(String[] args) {
 		new ConnectFour();
 	}

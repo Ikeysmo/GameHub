@@ -7,6 +7,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -87,6 +89,26 @@ public class TicTacToe implements ActionListener, Runnable{
 
 
 		gameMenu.setVisible(true);
+	}
+
+	public TicTacToe(ObjectOutputStream oos, ObjectInputStream ois) {
+		// TODO Auto-generated constructor stub
+		errorMsg.setText("");
+		if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
+			errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
+			return;
+		}
+		if(mudda != null)
+			mudda.dispose();
+		mudda = new JFrame("Player Online");
+		mudda.setSize(500, 500);
+		mudda.setVisible(true);
+		players[0] = new TicTacToePlayer(player1name.getText());
+		players[1] = new RemotePlayer(oos, ois, this, players[0]);
+		players[0].getTic(this);
+		foo = new BoardPanel(players[0], players[1] , mudda);
+		mudda.add(foo);
+		new Thread(this).start();
 	}
 
 	public static void main(String[] args) {

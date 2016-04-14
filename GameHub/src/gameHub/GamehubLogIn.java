@@ -1,6 +1,7 @@
 package gameHub;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -259,7 +260,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		else if(arg0.getSource() == ticButton){
 			try {
 				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), "TicTacToe"));
-				new TicTacToe();
+				new TicTacToe(oos, ois);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -269,7 +270,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		else if(arg0.getSource() == connButton){
 			try {//send a game invite!
 				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), "Connect4"));
-				new ConnectFour();
+				new ConnectFour(oos, ois);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -301,7 +302,53 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 					onlineList.setListData((String[]) message);
 				}
 				else if(message instanceof GameInvite){
-					System.out.println("I got the game invite!");
+					
+					GameInvite invite = (GameInvite) message;
+					System.out.println("Got invite from " +invite.from + " to " +invite.to+ "!");
+					if(invite.to.equalsIgnoreCase(p1.username)){
+						JFrame inviteWindow = new JFrame("Invite");
+						inviteWindow.setSize(300, 300);
+						inviteWindow.add(new JLabel("You got an invite!"));
+						JPanel middlePanel = new JPanel();
+						JButton acceptButton = new JButton("Accept");
+						acceptButton.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent arg0) {
+								// TODO Auto-generated method stub
+								invite.Accept();
+								try {
+									oos.writeObject(invite);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								System.out.println("Accepted invite!");
+							}
+						}); //make local function
+						middlePanel.add(acceptButton);
+						JButton denyButton = new JButton("Deny");
+						denyButton.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								// TODO Auto-generated method stub
+								invite.Deny();
+								try {
+									oos.writeObject(invite);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								System.out.println("Denied invitation!");
+							}
+						});
+						middlePanel.add(denyButton);
+						inviteWindow.add(middlePanel);
+						inviteWindow.setTitle("Invite from " +invite.from + "!");
+						inviteWindow.setVisible(true);
+						
+					}
 				}
 				else if(message instanceof ChatMessage){
 					System.out.println("Abe Lincoln");

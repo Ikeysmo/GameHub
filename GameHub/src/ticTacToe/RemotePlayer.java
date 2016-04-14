@@ -71,6 +71,31 @@ public class RemotePlayer extends TicTacToePlayer implements Runnable {
 		
 	}
 
+	public RemotePlayer(ObjectOutputStream oos2, ObjectInputStream ois2, TicTacToe tic, TicTacToePlayer op) {
+		// TODO Auto-generated constructor stub
+		ois = ois2;
+		oos = oos2;
+		this.tic = tic;
+		tic.turn = 1;
+		piece = 'O';
+		try {
+			name = (String) ois.readObject();
+		} catch (ClassNotFoundException | IOException eR) {
+			// TODO Auto-generated catch block
+			eR.printStackTrace();
+		}
+		try {
+			oos.writeObject(op.name);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
+
+	}
+
 	@Override
 	public Point makeMove() throws IOException {
 		// TODO Auto-generated method stub
@@ -101,11 +126,12 @@ public class RemotePlayer extends TicTacToePlayer implements Runnable {
 	}
 
 	
-	public void run(){
+	public void run(){ //not using this.. why???
 		//recieving...
 		Point answer;
 		while(true){
 			try {
+				
 				answer = (Point) ois.readObject();
 				System.out.println(answer);
 			} catch (ClassNotFoundException | IOException e) {
