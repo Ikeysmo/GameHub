@@ -12,16 +12,17 @@ import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameHubServer implements Runnable{
-	ConcurrentHashMap<String, ObjectOutputStream> onlineList = new ConcurrentHashMap<String, ObjectOutputStream>();
-	ConcurrentHashMap<String, String> passwords = new ConcurrentHashMap<String, String>();
-	private int portNumber = 2020; //wala
+	ConcurrentHashMap<String, ObjectOutputStream> onlineList = new ConcurrentHashMap<String, ObjectOutputStream>(); //Collection of who's currently logged in/Online
+	ConcurrentHashMap<String, String> passwords = new ConcurrentHashMap<String, String>(); //Collection of passwords
+	private int portNumber = 2020; //port number
 	private ServerSocket ss;
-	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String, String>();
+	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String, String>(); //Collection of who's in matches with who
 	public GameHubServer() throws IOException {
-		// TODO Auto-generated constructor stub
+	
 		ss = new ServerSocket(2020);
 		System.out.println(ss.getInetAddress());
-		try{
+		//try to retrieve a saved list of everyone who's ever registered
+		try{ 
 			FileInputStream fis = new FileInputStream("Accounts.data");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			passwords = (ConcurrentHashMap<String,String>) ois.readObject();
@@ -29,13 +30,13 @@ public class GameHubServer implements Runnable{
 			fis.close();
 		}
 		catch(FileNotFoundException | ClassNotFoundException e){
-			FileOutputStream fos = new FileOutputStream("Accounts.data");
+			FileOutputStream fos = new FileOutputStream("Accounts.data"); //File not found, created one
 			fos.close();
 		}
 
 
 
-		new Thread(this).start();
+		new Thread(this).start(); //start thread(s) for listening
 
 	}
 
@@ -46,23 +47,22 @@ public class GameHubServer implements Runnable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		//Each client thread we make enters here!
+		//Each client listener thread we make enters here!
 		Socket s = null; //initialize local pointers
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
 		String firstMessage = null;
 		String password = null;
-		boolean nextClientThreadStarted = false;
+		boolean nextClientThreadStarted = false; //this is incase a thread fails before creating a new thread to listen
 
 		try {
-			s = ss.accept();
-			new Thread(this).start(); //make thread
-			nextClientThreadStarted = true;
+			s = ss.accept(); //accept new connection
+			new Thread(this).start(); //make another thread
+			nextClientThreadStarted = true; //let know that a thread has been created
 			System.out.println("Connection from " + s.getInetAddress());
 
 			ois = new ObjectInputStream (s.getInputStream());  // prepare to receive
-			firstMessage = (String) ois.readObject(); // 1st msg from client must be String
+			firstMessage = (String) ois.readObject(); // 1st msg from client must be String username/password
 			System.out.println("Received 1st message: " + firstMessage);
 			oos = new ObjectOutputStream(s.getOutputStream()); // prepare to send
 
@@ -76,11 +76,13 @@ public class GameHubServer implements Runnable{
 			return;
 		} //waiting for client to call
 		System.out.println(firstMessage);
-		//part 10 is below
+		//Parse through firstMessage recieved to see if it matches username/password
 		if(firstMessage.indexOf("/")>0){ //makes sure it has '/'
 			String userName = firstMessage.substring(0, firstMessage.indexOf("/"));
 			password = firstMessage.substring(firstMessage.indexOf("/") + 1);//done with this part
 			userName = userName.toUpperCase();
+			
+			//now see if username/password is legal and matches 
 			if(!(isLegal(userName) && isLegal(password))){ //handles spaces,slashes and length
 				//something isn't legal! swear words are SKIPPED!!!
 				try {
@@ -96,10 +98,10 @@ public class GameHubServer implements Runnable{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return; //10.3 end this thread!
+				return; //
 			}
-			//part 12!
-			if(!passwords.containsKey(userName)){
+			
+			if(!passwords.containsKey(userName)){ //if doesn't have username, it is a new account, add it to the lists, and also save new entry
 				passwords.put(userName, password);
 				onlineList.put(userName, oos);
 				FileOutputStream fos;
@@ -115,8 +117,8 @@ public class GameHubServer implements Runnable{
 
 				//break;
 			}
-			//join client! which is part 3!
-			//else of sorts
+			//join client! 
+			//else... now we see if username and password entered matches password for username
 			else{
 				String storedPassword = passwords.get(userName);
 				if(!password.equals(storedPassword)){
@@ -167,8 +169,9 @@ public class GameHubServer implements Runnable{
 						if(invite.isAccepted() && invite.isChecked()){
 							//create a new match!
 							System.out.println("Creating match!");
-							matches.put(invite.from.toUpperCase(), invite.to.toUpperCase());
-							matches.put(invite.to.toUpperCase(), invite.from.toUpperCase());
+							//matches is added twice because of how concurrentHashMaps work. Needs to be substituted for likely multidimensional vector
+							matches.put(invite.from.toUpperCase(), invite.to.toUpperCase()); //add Client 1 to matches, that points to Client 2
+							matches.put(invite.to.toUpperCase(), invite.from.toUpperCase()); //add Client 2 to matches, that points to Client 1
 						}
 						else if(!invite.isChecked() || !invite.isAccepted()){ //send it to the person if denied or not checked!
 							sendToAll(messageFromClient); // send some not-a-text-message object to all clients! It generally won't be sent to all
@@ -177,7 +180,7 @@ public class GameHubServer implements Runnable{
 					else if(messageFromClient instanceof String){
 						String tempMessage = (String) messageFromClient;
 						//User1ExitUser2
-						if(tempMessage.contains("Exit"));
+						if(tempMessage.contains("Exit")); //if one of the people in the match sends Exit, then trying to leave match. Handle accordingly
 						tempMessage.replace("Exit", " ");
 						tempMessage = tempMessage.trim();
 						String user1 = tempMessage.substring(tempMessage.indexOf(" "));
@@ -217,7 +220,7 @@ public class GameHubServer implements Runnable{
 	}
 
 	private synchronized void sendToAll(Object message){
-		//
+		//sends message to everybody
 		ObjectOutputStream[] oosArray = onlineList.values().toArray(new ObjectOutputStream[0]);
 		for(ObjectOutputStream clientOOS : oosArray){
 			try {
@@ -228,7 +231,7 @@ public class GameHubServer implements Runnable{
 			}
 		}
 	}
-	private synchronized void send(Object message, String username){
+	private synchronized void send(Object message, String username){ //this sends message to one person 
 		ObjectOutputStream temp = onlineList.get(username);
 		try {
 			temp.writeObject(message);

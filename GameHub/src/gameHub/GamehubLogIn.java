@@ -85,7 +85,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		
 		//Try to make the images
 		try {
-			BufferedImage ticTacToeIcon = ImageIO.read(new File("tic_tac_toe.png"));
+			BufferedImage ticTacToeIcon = ImageIO.read(new File("tic_tac_toe.png")); //gets the image for TicTacToe
 			ticTacToeIcon = resize(ticTacToeIcon, 100, 100);
 			ticButton = new JButton(new ImageIcon(ticTacToeIcon));
 		}catch(IOException e) {
@@ -93,19 +93,19 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		}
 		
 		try {
-			BufferedImage connect4Icon = ImageIO.read(new File("connect4.png"));
+			BufferedImage connect4Icon = ImageIO.read(new File("connect4.png")); //gets the image for ConnectFour
 			connect4Icon = resize(connect4Icon, 100, 100);
 			connButton = new JButton(new ImageIcon(connect4Icon));
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
 		
-		// TODO Auto-generated constructor stub
+	
 		//games.setListData(listData);
-		//may need something to put list of games in JList??
+		/*Create window/GUI interface */
 		welcome.setFont(new Font("Default", Font.BOLD, 20));
 		welcome.setForeground(Color.DARK_GRAY);
-		mainmode.requestFocus();
+		mainmode.requestFocus(); //gets focus of window so loginBox isn't empty
 		loginBox.setFont(new Font("Default", Font.BOLD, 20));
 		loginBox.addFocusListener(this);
 		loginBox.setPreferredSize(new Dimension(170,30));
@@ -139,7 +139,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		onlineList.addListSelectionListener(this);
 		
 		
-		mainmode.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"clickButton");
+		mainmode.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"clickButton"); //Zach's Current way of chat, enter key working
 		mainmode.getRootPane().getActionMap().put("clickButton", new AbstractAction(){
 			public void actionPerformed(ActionEvent ae) 
 			{
@@ -151,13 +151,13 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new GamehubLogIn();
+		new GamehubLogIn(); //load GameHub dynamically instead of static, so we can pass it actionListeners
 	}
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-		errormsg.setText("");
+		//If logIn box gets clicked on, clear the error messages as well as the login/password fields
+		errormsg.setText(""); 
 		if(arg0.getSource() == loginBox)
 			loginBox.setText("");
 		else if(arg0.getSource() == passBox)
@@ -166,7 +166,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		// TODO Auto-generated method stub
+		//If focus is lost from loginBox, restore instructions to enter username
 		if(arg0.getSource() == loginBox && loginBox.getText().isEmpty())
 			loginBox.setText("Enter Username");
 		//else if(arg0.getSource() == passBox && passBox.getPassword().length == 0)
@@ -175,29 +175,28 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		errormsg.setText("");
-		if(arg0.getSource() == loginButton){
+		errormsg.setText(""); //always clear at any time something happens
+		if(arg0.getSource() == loginButton){ //if login button, begin process of getting online
 			try {
-				if(loginBox.getText().equals("Enter Username")){
+				if(loginBox.getText().equals("Enter Username")){ //user hasn't typed anything
 					errormsg.setText("Error: Must enter a valid Username!");
 					return;
 				}
 					
-				else if(loginBox.getText().equals(""));
-				
-				s = new Socket(ip_Address, 2020); //assuming port 4444 for lab 4
+				else if(loginBox.getText().equals("")) //if blank, ignore
+					return;
+				s = new Socket(ip_Address, 2020); //create connection to server
 				oos = new ObjectOutputStream(s.getOutputStream());
-				oos.writeObject(loginBox.getText() + "/" + String.valueOf(passBox.getPassword()));
-				ois = new ObjectInputStream(s.getInputStream());
+				oos.writeObject(loginBox.getText() + "/" + String.valueOf(passBox.getPassword())); //initial "hello" to server, sends username and password
+				ois = new ObjectInputStream(s.getInputStream()); 
 				String serverReply = (String) ois.readObject();
-				System.out.println("Server Reply:" + serverReply);
-				if(!serverReply.contains("Welcome")){
+				System.out.println("Server Reply:" + serverReply); 
+				if(!serverReply.contains("Welcome")){ //server sends back welcome... if not, then error --> incorrect username/password!
 					errormsg.setText("Error: Incorrect Username or Password");
 					return;
 				}
-				p1 = new PlayerAccount(loginBox.getText(), String.valueOf(passBox.getPassword()));
-				mainmode.dispose();
+				p1 = new PlayerAccount(loginBox.getText(), String.valueOf(passBox.getPassword())); //create a new player account with typed in username/password now that we've signed in
+				mainmode.dispose(); //destroy the window, load up new ones for a signed in account
 				mainmode = null;
 				mainmode = new JFrame("Welcome to GameHub!");
 				mainmode.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -248,7 +247,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 					}
 				});
 				
-				new Thread(this).start();
+				new Thread(this).start(); //begin separate thread for listening on the created socket
 			}
 			
 			catch(IOException | ClassNotFoundException e){
@@ -260,10 +259,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 			//put code here
 		}
 		else if(arg0.getSource() == ticButton){
-			try {
-				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.tictactoe));
-				System.out.println("Pledge of allegiance");
-				new TicTacToe(oos, ois);
+			try { //send invite if pressed
+				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.tictactoe)); //send new GameInvite to server to be forwarded to other client
+				System.out.println("Pledge of allegiance"); //just there for debugging
+				new TicTacToe(oos, ois); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
 				System.out.println("Opening tictactoe");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -272,7 +271,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 			
 		}
 		else if(arg0.getSource() == connButton){
-			try {//send a game invite!
+			try {//send a game invite! Same idea as ticButton
 				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.connect4));
 				new ConnectFour(oos, ois);
 			} catch (IOException e) {
@@ -283,7 +282,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		else if(arg0.getSource() == chatSubmitButton){
 			
 			try {
-				oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone"));
+				oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone")); //Sends the chatMessage to everyone
 				chatOut.setText(""); //Clear out the box
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -294,20 +293,22 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		//this is where I begin to run the code after login
 	
-		
+		/*
+		 * This loop listens for input and demultiplexes it to handle it depending on what type of object it is
+		 * E.g if it is chatmessage, echo it to everyone. If it is a gameInvite, selectively forward it, etc..
+		 */
 		while(true){
 			try {
 				Object message = ois.readObject();
 				System.out.println("Got something!");
-				if(message instanceof String[]){
+				if(message instanceof String[]){ //if it is a string array, it is list of those who are online
 					onlineList.setListData((String[]) message);
 				}
-				else if(message instanceof GameInvite){
+				else if(message instanceof GameInvite){ //It recieved a gameInvite, proceed to create a notification window
 					
-					GameInvite invite = (GameInvite) message;
+					GameInvite invite = (GameInvite) message; 
 					System.out.println("Got invite from " +invite.from + " to " +invite.to+ "!");
 					if(invite.to.equalsIgnoreCase(p1.username)){
 						JFrame inviteWindow = new JFrame("Invite");
@@ -316,23 +317,22 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 						JPanel middlePanel = new JPanel();
 						JButton acceptButton = new JButton("Accept");
 						acceptButton.addActionListener(new ActionListener() {
-							
+							//finished creating notification window, add temporary actionlisteners
 							@Override
 							public void actionPerformed(ActionEvent arg0) {
-								// TODO Auto-generated method stub
-								invite.Accept();
+								invite.Accept(); //if acceptbutton is pressed, invite is accepted
 								try {
-									oos.writeObject(invite);
+									oos.writeObject(invite); //accepted invite is sent back to server who notifies sender client that it's invite was accepted
 								} catch (IOException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 								System.out.println("Accepted invite!");
-								if(invite.game.contains(GameInvite.tictactoe)){
+								if(invite.game.contains(GameInvite.tictactoe)){ //now that you created invite, load up tic tac toe.. haven't added one for connect4
 									System.out.println("what");
 									new TicTacToe(oos, ois);
 								}
-								inviteWindow.dispose();
+								inviteWindow.dispose(); //destroy invite/notificaiton window as no longer needed
 							}
 						}); //make local function
 						middlePanel.add(acceptButton);
@@ -341,7 +341,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 							
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								// TODO Auto-generated method stub
+								// Opposite of accepted... it is denied
 								invite.Deny();
 								try {
 									oos.writeObject(invite);
@@ -363,8 +363,12 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				else if(message instanceof ChatMessage){
 					System.out.println("Abe Lincoln");
 					ChatMessage chat = (ChatMessage) message;
-					chatIn.append(chat.from + ": " + chat.message);
-				} //this does not CATCH anything that isn't one of these! The games catches the rest!
+					chatIn.append(chat.from + ": " + chat.message); //reveal chat message to GUI window
+				} 
+				//this does not CATCH anything that isn't one of these! The games should catch the rest!
+				else{
+					//this is where I look at my matches list and handle it correspondingly(forward it to whoever is also in match)
+				}
 				
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
