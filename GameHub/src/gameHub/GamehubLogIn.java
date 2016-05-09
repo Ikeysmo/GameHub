@@ -266,6 +266,86 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		}
 		else if (arg0.getSource() == registerButton){
 			//put code here
+			try {
+				if(loginBox.getText().equals("Enter Username")){ //user hasn't typed anything
+					errormsg.setText("Error: Must enter a valid Username!");
+					return;
+				}
+
+				else if(loginBox.getText().equals("") || loginBox.getText().contains("*")) //if blank, ignore
+					return;
+				s = new Socket(ip_Address, 2020); //create connection to server
+				oos = new ObjectOutputStream(s.getOutputStream());
+				oos.writeObject("*"+loginBox.getText() + "/" + String.valueOf(passBox.getPassword())); //initial "hello" to server, sends username and password
+				ois = new ObjectInputStream(s.getInputStream()); 
+				String serverReply = (String) ois.readObject();
+				System.out.println("Server Reply:" + serverReply); 
+				if(!serverReply.contains("Welcome")){ //server sends back welcome... if not, then error --> incorrect username/password!
+					errormsg.setText("Error: Incorrect Username or Password");
+					return;
+				}
+				p1 = new PlayerAccount(loginBox.getText().toUpperCase(), String.valueOf(passBox.getPassword())); //create a new player account with typed in username/password now that we've signed in
+				mainmode.dispose(); //destroy the window, load up new ones for a signed in account
+				mainmode = null;
+				mainmode = new JFrame("Welcome to GameHub " +p1.getUsername() +"!");
+				mainmode.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				mainmode.setSize(500, 500);
+				mainmode.setLocation(400, 200);
+				mainmode.setVisible(true);
+				ticButton.addActionListener(this);
+				connButton.addActionListener(this);
+				gamePanel.setLayout(new GridLayout());
+				gamePanel.add(ticButton);
+				gamePanel.add(connButton);
+				mainmode.add(gamePanel);
+				onlineWindow.setMinimumSize(new Dimension(650, 600));
+				onlineList.setFont(new Font("Default", Font.BOLD, 30));
+				onlineList.setPreferredSize(new Dimension(150,470));
+
+				chatIn.setText("Incoming!" + System.lineSeparator());
+				chatIn.setFont(new Font("Default", Font.BOLD, 20));
+				chatIn.setSize(300, 470);
+				chatIn.setEditable(false);
+				chatHistory.setPreferredSize(new Dimension(450, 470));
+				chatOutbox.setPreferredSize(new Dimension(500,60));
+				chatOut.setText("Outgoing");
+				chatOut.setLineWrap(true);
+				chatOut.addFocusListener(this);
+				//chatOut.setPreferredSize(new Dimension(500, 100));
+				//chatOut.set
+				chatOut.setFont(new Font("Default", Font.BOLD, 20));
+				chatOut.addKeyListener(this);
+				OnlinePanel.add(chatHistory);
+				OnlinePanel.add(splitter);
+				OnlinePanel.add(onlineList);
+				OnlineBottomPanel.add(chatOutbox);
+				OnlineBottomPanel.add(chatSubmitButton);
+				//onlineWindow.add(onlineList);
+				//OnlinePanel.add(shot);
+				onlineWindow.add(OnlinePanel);
+				onlineWindow.add(OnlineBottomPanel, "South");
+
+				//For using the enter key in order to submit a chat
+
+				onlineWindow.setVisible(true);
+				Point loc = mainmode.getLocation();
+				onlineWindow.setLocation(loc.x+500, loc.y);
+
+				onlineWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_0,0),"clickButton");
+				onlineWindow.getRootPane().getActionMap().put("clickButton", new AbstractAction(){
+					public void actionPerformed(ActionEvent ae)
+					{
+						chatSubmitButton.doClick();
+					}
+				});
+
+				new Thread(this).start(); //begin separate thread for listening on the created socket
+			}
+
+			catch(IOException | ClassNotFoundException e){
+				errormsg.setText(e.getMessage());
+			}
+
 		}
 		else if(arg0.getSource() == ticButton){
 			try { //send invite if pressed

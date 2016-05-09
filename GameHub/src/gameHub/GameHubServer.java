@@ -19,7 +19,7 @@ public class GameHubServer implements Runnable{
 	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String, String>(); //Collection of who's in matches with who
 	private GameHubGameServer gameServer;
 	public GameHubServer() throws IOException {
-	
+
 		ss = new ServerSocket(portNumber);
 		gameServer = new GameHubGameServer(this);
 		System.out.println(ss.getInetAddress());
@@ -44,7 +44,7 @@ public class GameHubServer implements Runnable{
 
 	public ConcurrentHashMap<String, ObjectOutputStream> getOnlineList(){
 		return onlineList;
-		}
+	}
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		new GameHubServer();
@@ -59,7 +59,7 @@ public class GameHubServer implements Runnable{
 		String firstMessage = null;
 		String password = null;
 		boolean nextClientThreadStarted = false; //this is incase a thread fails before creating a new thread to listen
-
+		boolean newAccount = false;
 		try {
 			s = ss.accept(); //accept new connection
 			new Thread(this).start(); //make another thread
@@ -85,8 +85,12 @@ public class GameHubServer implements Runnable{
 		if(firstMessage.indexOf("/")>0){ //makes sure it has '/'
 			String userName = firstMessage.substring(0, firstMessage.indexOf("/"));
 			password = firstMessage.substring(firstMessage.indexOf("/") + 1);//done with this part
+			if(userName.contains("*")){
+				newAccount = true;
+				userName = userName.replace("*", "");
+			}
 			userName = userName.toUpperCase();
-			
+
 			//now see if username/password is legal and matches 
 			if(!(isLegal(userName) && isLegal(password))){ //handles spaces,slashes and length
 				//something isn't legal! swear words are SKIPPED!!!
@@ -105,21 +109,35 @@ public class GameHubServer implements Runnable{
 				}
 				return; //
 			}
-			
-			if(!passwords.containsKey(userName)){ //if doesn't have username, it is a new account, add it to the lists, and also save new entry
-				passwords.put(userName, password);
-				onlineList.put(userName, oos);
-				FileOutputStream fos;
-				try {
-					fos = new FileOutputStream("Accounts.data");
-					ObjectOutputStream oss = new ObjectOutputStream(fos);
-					oss.writeObject(passwords);
-					fos.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
+			if(!passwords.containsKey(userName)){ //if doesn't have username, it is a new account, add it to the lists, and also save new entry
+				if(newAccount){
+					passwords.put(userName, password);
+					onlineList.put(userName, oos);
+					FileOutputStream fos;
+					try {
+						fos = new FileOutputStream("Accounts.data");
+						ObjectOutputStream oss = new ObjectOutputStream(fos);
+						oss.writeObject(passwords);
+						fos.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else{//not a new account, can't do this!
+					try {
+						oos.writeObject("Error! The password: "+ password+ " is incorrect!"); //generic message sent
+						System.out.println("Failed to Join! Username doesn't exist");
+						s.close();
+					}
+					catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return; //
+
+				}
 				//break;
 			}
 			//join client! 
