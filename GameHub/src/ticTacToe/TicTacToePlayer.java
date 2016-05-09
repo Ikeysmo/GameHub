@@ -17,11 +17,13 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	protected int numx = -1;
 	protected int numy = -1;
 	protected char piece;
+	protected String name;
 	
-	
-	public TicTacToePlayer() {
-		// TODO Auto-generated constructor stub
+	public TicTacToePlayer(){}
+	public TicTacToePlayer(String name){
+		this.name = name;
 	}
+	
 	//somehow get move?
 	public synchronized Point makeMove() throws IOException {
 		// TODO Auto-generated method stub
@@ -66,16 +68,14 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	}
 	public void assignPiece(char x){
 		if(x == 'X' || x == 'O')
-			this.piece = x;
+			this.piece = x; //assign piece if this piece is legal!
 		else
 			throw new IllegalArgumentException();
 	}
 	public char getPiece(){
 		return this.piece;
 	}
-	public TicTacToePlayer(String name){
-		this.name = name;
-	}
+	
 	public void getPanel(BoardPanel panel){
 		this.panel = panel;
 	}

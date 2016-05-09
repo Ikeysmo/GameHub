@@ -14,113 +14,48 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class RemotePlayer extends TicTacToePlayer implements Runnable {
-	int port = 2000;
-	String ip_address;
-	Socket s;
 	ObjectInputStream ois;
 	ObjectOutputStream oos;
-	public TicTacToe tic;
 	
-	public RemotePlayer(String ipAddress, TicTacToe tic, TicTacToePlayer op) {
-		this.tic = tic;
-		
-		ip_address = ipAddress;
-		try {
-			s = new Socket();
-			s.connect(new InetSocketAddress(ip_address, port), 500);
-			oos = new ObjectOutputStream(s.getOutputStream());
-			ois = new ObjectInputStream(s.getInputStream());
-			oos.writeObject(op.name);
-			name = (String) ois.readObject();
-			tic.turn = 1;
-			piece = 'O';
-			//player 2	
-		}
-		catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Couldn't connect.. beginning server side!");
-			try {//if failed, try hosting! and become player 1
-				tic.turn = 0;
-				piece = 'X';
-				ServerSocket ss = new ServerSocket(port);
-				s = ss.accept();
-				oos = new ObjectOutputStream(s.getOutputStream());
-				ois = new ObjectInputStream(s.getInputStream());
-				try {
-					name = (String) ois.readObject();
-				} catch (ClassNotFoundException eR) {
-					// TODO Auto-generated catch block
-					eR.printStackTrace();
-				}
-				oos.writeObject(op.name);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-
-		}
-		//new Thread(this).start(); //I actually want it to wait!
-		catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	
+	
+	public RemotePlayer(ObjectOutputStream oos2, ObjectInputStream ois2, TicTacToe tic, String playername, char piece) {
+		// Player name represents the opposing online player's account. Gamehub Login should have this!
+		ois = ois2; //input stream
+		oos = oos2; //output stream to server
+		this.tic = tic; //this is reference to tic tac toe to call things, set turn
+		this.name = playername; 
+		this.piece = piece;
 	}
-
-	public RemotePlayer(ObjectOutputStream oos2, ObjectInputStream ois2, TicTacToe tic, TicTacToePlayer op) {
-		// TODO Auto-generated constructor stub
-		ois = ois2;
-		oos = oos2;
-		this.tic = tic;
-		tic.turn = 1;
-		piece = 'O';
-		try {
-			name = (String) ois.readObject();
-		} catch (ClassNotFoundException | IOException eR) {
-			// TODO Auto-generated catch block
-			eR.printStackTrace();
-		}
-		try {
-			oos.writeObject(op.name);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-
-
+	public String getName(){
+		return name;
 	}
-
 	@Override
 	public Point makeMove() throws IOException {
 		// TODO Auto-generated method stub
 		try {
 			Point answer;
 			while(true){
+				 System.out.println("Waitingo on move from remote!");
 				 answer = (Point)ois.readObject();
-				 if(tic == null)
-					 System.out.println("why");
-				 else if(answer == null){
-					 System.out.println("bugg");
+				 System.out.println("Got the move!");
+				 if(answer == null){
+					 System.out.println("shouldn't receive null!");
 				 }
-				 if(tic.updateMove(answer.x, answer.y, this)) //if this is true, valid move!
+				 if(tic.updateMove(answer.x, answer.y, this)) //if this is true, valid move! Return
 					break;
 			}
 			return answer;
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			// Could not find class
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
 	public void updateAll(Point p) throws IOException{
-		//update everything
+		//update everything.. which is sending data to server
+		System.out.println("Sending move to server now!");
 		oos.writeObject(p);
 		
 	}
@@ -131,15 +66,12 @@ public class RemotePlayer extends TicTacToePlayer implements Runnable {
 		Point answer;
 		while(true){
 			try {
-				
 				answer = (Point) ois.readObject();
 				System.out.println(answer);
-			} catch (ClassNotFoundException | IOException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			}
+			} 
+			catch (ClassNotFoundException | IOException e) {}
 		}
 	}
 	
-
+//end of class
 }

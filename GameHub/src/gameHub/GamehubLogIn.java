@@ -15,12 +15,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -46,7 +48,7 @@ import connectFour.ConnectFour;
 import ticTacToe.TicTacToe;
 
 //just here to configure github!
-public class GamehubLogIn implements FocusListener, ActionListener, Runnable, ListSelectionListener {
+public class GamehubLogIn implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
 	private JFrame mainmode = new JFrame("Welcome to GameHub!");
 	private JFrame onlineWindow = new JFrame("Online List");
 	private JList gamesList = new JList();
@@ -73,16 +75,16 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 	ObjectInputStream ois;
 	private JPanel gamePanel = new JPanel();
 	private JButton chatSubmitButton = new JButton("Submit");
-	
+
 	JPanel OnlinePanel = new JPanel();
 	JScrollPane chatHistory = new JScrollPane(chatIn);
 	JScrollPane chatOutbox = new JScrollPane(chatOut);
-	
+
 	JPanel OnlineBottomPanel = new JPanel();
-	
-	
+
+
 	public GamehubLogIn() {
-		
+
 		//Try to make the images
 		try {
 			BufferedImage ticTacToeIcon = ImageIO.read(new File("tic_tac_toe.png")); //gets the image for TicTacToe
@@ -91,7 +93,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			BufferedImage connect4Icon = ImageIO.read(new File("connect4.png")); //gets the image for ConnectFour
 			connect4Icon = resize(connect4Icon, 100, 100);
@@ -99,8 +101,8 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
-	
+
+
 		//games.setListData(listData);
 		/*Create window/GUI interface */
 		welcome.setFont(new Font("Default", Font.BOLD, 20));
@@ -110,8 +112,8 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		loginBox.addFocusListener(this);
 		loginBox.setPreferredSize(new Dimension(170,30));
 		loginBox.setMinimumSize(new Dimension(170,30));
-		
-		
+
+
 		passBox.setFont(new Font("Default", Font.BOLD, 20));
 		passBox.setPreferredSize(new Dimension(170, 30));
 		passBox.setMinimumSize(new Dimension(170, 30));
@@ -137,8 +139,8 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		loginBox.setText("Enter Username   ");
 		shot.add(new JMenuItem("Connect 4"));
 		onlineList.addListSelectionListener(this);
-		
-		
+
+
 		mainmode.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"clickButton"); //Zach's Current way of chat, enter key working
 		mainmode.getRootPane().getActionMap().put("clickButton", new AbstractAction(){
 			public void actionPerformed(ActionEvent ae) 
@@ -146,7 +148,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				loginButton.doClick();
 			}
 		});
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -162,6 +164,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 			loginBox.setText("");
 		else if(arg0.getSource() == passBox)
 			passBox.setText("");
+		else if(arg0.getSource() == chatOut){
+			if(chatOut.getText().equals("Outgoing"))
+				chatOut.setText("");
+		}
 	}
 
 	@Override
@@ -170,7 +176,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		if(arg0.getSource() == loginBox && loginBox.getText().isEmpty())
 			loginBox.setText("Enter Username");
 		//else if(arg0.getSource() == passBox && passBox.getPassword().length == 0)
-			//passBox.setText("Enter Password   ");
+		//passBox.setText("Enter Password   ");
 	}
 
 	@Override
@@ -182,7 +188,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 					errormsg.setText("Error: Must enter a valid Username!");
 					return;
 				}
-					
+
 				else if(loginBox.getText().equals("")) //if blank, ignore
 					return;
 				s = new Socket(ip_Address, 2020); //create connection to server
@@ -195,10 +201,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 					errormsg.setText("Error: Incorrect Username or Password");
 					return;
 				}
-				p1 = new PlayerAccount(loginBox.getText(), String.valueOf(passBox.getPassword())); //create a new player account with typed in username/password now that we've signed in
+				p1 = new PlayerAccount(loginBox.getText().toUpperCase(), String.valueOf(passBox.getPassword())); //create a new player account with typed in username/password now that we've signed in
 				mainmode.dispose(); //destroy the window, load up new ones for a signed in account
 				mainmode = null;
-				mainmode = new JFrame("Welcome to GameHub!");
+				mainmode = new JFrame("Welcome to GameHub " +p1.getUsername() +"!");
 				mainmode.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				mainmode.setSize(500, 500);
 				mainmode.setLocation(400, 200);
@@ -212,17 +218,20 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				onlineWindow.setMinimumSize(new Dimension(650, 600));
 				onlineList.setFont(new Font("Default", Font.BOLD, 30));
 				onlineList.setPreferredSize(new Dimension(150,470));
-				
+
 				chatIn.setText("Incoming!" + System.lineSeparator());
 				chatIn.setFont(new Font("Default", Font.BOLD, 20));
 				chatIn.setSize(300, 470);
+				chatIn.setEditable(false);
 				chatHistory.setPreferredSize(new Dimension(450, 470));
 				chatOutbox.setPreferredSize(new Dimension(500,60));
-				chatOut.setText("Outcoming");
+				chatOut.setText("Outgoing");
 				chatOut.setLineWrap(true);
+				chatOut.addFocusListener(this);
 				//chatOut.setPreferredSize(new Dimension(500, 100));
 				//chatOut.set
 				chatOut.setFont(new Font("Default", Font.BOLD, 20));
+				chatOut.addKeyListener(this);
 				OnlinePanel.add(chatHistory);
 				OnlinePanel.add(splitter);
 				OnlinePanel.add(onlineList);
@@ -232,13 +241,13 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				//OnlinePanel.add(shot);
 				onlineWindow.add(OnlinePanel);
 				onlineWindow.add(OnlineBottomPanel, "South");
-				
+
 				//For using the enter key in order to submit a chat
-				
+
 				onlineWindow.setVisible(true);
 				Point loc = mainmode.getLocation();
 				onlineWindow.setLocation(loc.x+500, loc.y);
-				
+
 				onlineWindow.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_0,0),"clickButton");
 				onlineWindow.getRootPane().getActionMap().put("clickButton", new AbstractAction(){
 					public void actionPerformed(ActionEvent ae)
@@ -246,14 +255,14 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 						chatSubmitButton.doClick();
 					}
 				});
-				
+
 				new Thread(this).start(); //begin separate thread for listening on the created socket
 			}
-			
+
 			catch(IOException | ClassNotFoundException e){
 				errormsg.setText(e.getMessage());
 			}
-			
+
 		}
 		else if (arg0.getSource() == registerButton){
 			//put code here
@@ -261,14 +270,14 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		else if(arg0.getSource() == ticButton){
 			try { //send invite if pressed
 				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.tictactoe)); //send new GameInvite to server to be forwarded to other client
-				System.out.println("Pledge of allegiance"); //just there for debugging
-				new TicTacToe(oos, ois); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
-				System.out.println("Opening tictactoe");
+				//System.out.println("Pledge of allegiance"); //just there for debugging
+				//new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
+				//System.out.println("Opening tictactoe");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 		else if(arg0.getSource() == connButton){
 			try {//send a game invite! Same idea as ticButton
@@ -280,7 +289,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 			}
 		}
 		else if(arg0.getSource() == chatSubmitButton){
-			
+
 			try {
 				oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone")); //Sends the chatMessage to everyone
 				chatOut.setText(""); //Clear out the box
@@ -294,9 +303,9 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 	@Override
 	public void run() {
 		//this is where I begin to run the code after login
-	
+
 		/*
-		 * This loop listens for input and demultiplexes it to handle it depending on what type of object it is
+		 * This loop listens for input and de-multiplexes it to handle it depending on what type of object it is
 		 * E.g if it is chatmessage, echo it to everyone. If it is a gameInvite, selectively forward it, etc..
 		 */
 		while(true){
@@ -307,7 +316,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 					onlineList.setListData((String[]) message);
 				}
 				else if(message instanceof GameInvite){ //It recieved a gameInvite, proceed to create a notification window
-					
+
 					GameInvite invite = (GameInvite) message; 
 					System.out.println("Got invite from " +invite.from + " to " +invite.to+ "!");
 					if(invite.to.equalsIgnoreCase(p1.username)){
@@ -330,7 +339,15 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 								System.out.println("Accepted invite!");
 								if(invite.game.contains(GameInvite.tictactoe)){ //now that you created invite, load up tic tac toe.. haven't added one for connect4
 									System.out.println("what");
-									new TicTacToe(oos, ois);
+									try {
+										new TicTacToe(p1.getUsername(), invite.from, false);
+									} catch (UnknownHostException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
 								}
 								inviteWindow.dispose(); //destroy invite/notificaiton window as no longer needed
 							}
@@ -338,7 +355,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 						middlePanel.add(acceptButton);
 						JButton denyButton = new JButton("Deny");
 						denyButton.addActionListener(new ActionListener() {
-							
+
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								// Opposite of accepted... it is denied
@@ -357,7 +374,10 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 						inviteWindow.add(middlePanel);
 						inviteWindow.setTitle("Invite from " +invite.from + "!");
 						inviteWindow.setVisible(true);
-						
+					}
+					else if(invite.from.equals(p1.getUsername()) && invite.isAccepted()){
+						System.out.println("Oppoenet accepted invite, opening game now");
+						new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
 					}
 				}
 				else if(message instanceof ChatMessage){
@@ -367,9 +387,9 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 				} 
 				//this does not CATCH anything that isn't one of these! The games should catch the rest!
 				else{
-					//this is where I look at my matches list and handle it correspondingly(forward it to whoever is also in match)
+					System.out.println("Hey, received something:" + message);//this is where I look at my matches list and handle it correspondingly(forward it to whoever is also in match)
 				}
-				
+
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -383,7 +403,7 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 		ticButton.setEnabled(true);
 		connButton.setEnabled(true);
 	}
-	
+
 	/**
 	 * This is a method that I found in order to figure out how to resize
 	 * the icons for the games.
@@ -396,14 +416,40 @@ public class GamehubLogIn implements FocusListener, ActionListener, Runnable, Li
 	 * @return
 	 */
 	private static BufferedImage resize(BufferedImage img, int newW, int newH) { 
-	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-	    Graphics2D g2d = dimg.createGraphics();
-	    g2d.drawImage(tmp, 0, 0, null);
-	    g2d.dispose();
+		Graphics2D g2d = dimg.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
 
-	    return dimg;
+		return dimg;
 	}  
+	
+	public void keyPressed(KeyEvent kp) {  
+		//If Enter Is Pressed
+		if(kp.getKeyCode() == KeyEvent.VK_ENTER) { 
+			try {
+				oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone")); //Sends the chatMessage to everyone
+				chatOut.setText(""); //Clear out the box
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

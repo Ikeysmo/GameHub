@@ -17,9 +17,11 @@ public class GameHubServer implements Runnable{
 	private int portNumber = 2020; //port number
 	private ServerSocket ss;
 	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String, String>(); //Collection of who's in matches with who
+	private GameHubGameServer gameServer;
 	public GameHubServer() throws IOException {
 	
-		ss = new ServerSocket(2020);
+		ss = new ServerSocket(portNumber);
+		gameServer = new GameHubGameServer(this);
 		System.out.println(ss.getInetAddress());
 		//try to retrieve a saved list of everyone who's ever registered
 		try{ 
@@ -40,6 +42,9 @@ public class GameHubServer implements Runnable{
 
 	}
 
+	public ConcurrentHashMap<String, ObjectOutputStream> getOnlineList(){
+		return onlineList;
+		}
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		new GameHubServer();
@@ -170,8 +175,10 @@ public class GameHubServer implements Runnable{
 							//create a new match!
 							System.out.println("Creating match!");
 							//matches is added twice because of how concurrentHashMaps work. Needs to be substituted for likely multidimensional vector
-							matches.put(invite.from.toUpperCase(), invite.to.toUpperCase()); //add Client 1 to matches, that points to Client 2
-							matches.put(invite.to.toUpperCase(), invite.from.toUpperCase()); //add Client 2 to matches, that points to Client 1
+							gameServer.addMatch(invite.from.toUpperCase(), invite.to.toUpperCase());
+							send(invite, invite.from); //send it one more time!
+							//matches.put(invite.from.toUpperCase(), invite.to.toUpperCase()); //add Client 1 to matches, that points to Client 2
+							//matches.put(invite.to.toUpperCase(), invite.from.toUpperCase()); //add Client 2 to matches, that points to Client 1
 						}
 						else if(!invite.isChecked() || !invite.isAccepted()){ //send it to the person if denied or not checked!
 							sendToAll(messageFromClient); // send some not-a-text-message object to all clients! It generally won't be sent to all
@@ -192,6 +199,7 @@ public class GameHubServer implements Runnable{
 					}
 					else{
 						//if I can find my own name in match, send it to the guy i'm linked to
+						System.out.println("Got something tic tac toe related");
 						if(matches.containsKey(userName)){
 							//I'm in a match
 							send(messageFromClient, matches.get(userName)); //send to one guy
@@ -202,6 +210,7 @@ public class GameHubServer implements Runnable{
 			catch(Exception e){
 				//oos.writeObject(chatName + " is leaving the chat room");
 				//sendToAll(message);
+				e.printStackTrace();
 				onlineList.remove(userName);
 				sendToAll("Goodbye to " + userName + " who has just left the chat room.");
 
@@ -232,12 +241,15 @@ public class GameHubServer implements Runnable{
 		}
 	}
 	private synchronized void send(Object message, String username){ //this sends message to one person 
-		ObjectOutputStream temp = onlineList.get(username);
+		ObjectOutputStream temp = onlineList.get(username.toUpperCase());
+		if(temp == null)
+			System.out.println("What's wrong?");
 		try {
 			temp.writeObject(message);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println(e);
 		}
 	}
 

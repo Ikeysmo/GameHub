@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -20,215 +22,60 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-public class TicTacToe implements ActionListener, Runnable{
+public class TicTacToe implements Runnable{
 	JFrame gameMenu = null;
-	JRadioButton pvp = new JRadioButton("Local PVP");
-	JRadioButton playerCPUE = new JRadioButton("Player v CPU(easy)");
-	JRadioButton playerCPUH = new JRadioButton("Player v CPU(hard)");
-	JRadioButton pvpOnline = new JRadioButton("Remote PVP");
-	JButton newGame = new JButton("New Game");
 	JPanel mainPanel = new JPanel();
 	JPanel menubar = new JPanel();
-	JLabel instr1 = new JLabel("Remote Player IP ADDRESS:");
 	JLabel errorMsg = new JLabel();
-	JTextField ip_field = new JTextField();
-	JTextField player1name = new JTextField("Player 1 Name");
-	JTextField player2name = new JTextField("Player 2 Name");
 	JPanel secondPanel = new JPanel();
 	JFrame mudda;
 	BoardPanel foo;
 	public int turn = 0;
 	private TicTacToePlayer[] players = new TicTacToePlayer[2];
 	private char[][] board = new char[3][3];
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
 
-	public TicTacToe() {
-		// TODO Auto-generated constructor stub
-		gameMenu = new JFrame("Tic-Tac-Toe!");
-		gameMenu.setSize(600, 160);
-		gameMenu.setMinimumSize(new Dimension(500,180));
-		gameMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		pvp.addActionListener(this);
-		playerCPUE.addActionListener(this);
-		playerCPUH.addActionListener(this);
-		pvpOnline.addActionListener(this);
-		newGame.addActionListener(this);
-		ButtonGroup group = new ButtonGroup();
-		group.add(pvp);
-		group.add(playerCPUE);
-		group.add(playerCPUH);
-		group.add(pvpOnline);
-		menubar.add(pvp);
-		menubar.add(playerCPUE);
-		menubar.add(playerCPUH);
-		menubar.add(pvpOnline);
-		menubar.add(newGame);
-		mainPanel.add(menubar);
-		errorMsg.setFont(new Font("Default", Font.BOLD, 15));
-		errorMsg.setForeground(Color.red);
-		instr1.setFont(new Font("Default", Font.BOLD, 15));
-		ip_field.setFont(new Font("Default", Font.BOLD, 15));
-		ip_field.setPreferredSize(new Dimension(150,20));
-		ip_field.setEditable(false);
-		player1name.setPreferredSize(new Dimension(150,20));
-		player1name.setFont(new Font("Default", Font.BOLD, 15));
-		pvp.setSelected(true);
-		player2name.setPreferredSize(new Dimension(150,20));
-		player2name.setFont(new Font("Default", Font.BOLD, 15));
-		secondPanel.add(instr1);
-		secondPanel.add(ip_field);
-		secondPanel.add(Box.createRigidArea(new Dimension(100,0)));
-		secondPanel.add(player1name);
-		secondPanel.add(player2name);
-		gameMenu.getContentPane().add(mainPanel,"North");
-		gameMenu.getContentPane().add(secondPanel, "Center");
-		gameMenu.getContentPane().add(errorMsg, "South");
-		//add this to something else //gameWindow.getContentPane().add(new BoardPanel(),"Center");
-		
-		//Keeps the whole GUI from shutting down
-		gameMenu.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-
-
-		gameMenu.setVisible(true);
-	}
-
-	public TicTacToe(ObjectOutputStream oos, ObjectInputStream ois) {
-		// TODO Auto-generated constructor stub
+	public TicTacToe(String localplayer, String remoteplayer, Boolean goFirst) throws UnknownHostException, IOException {
+		//player 1 represents this guy's version
+		Socket s = new Socket("localhost", 2021);
+		oos = new ObjectOutputStream(s.getOutputStream());
+		oos.writeObject(localplayer);
+		ois = new ObjectInputStream(s.getInputStream());
+		//System.out.println("First p: "+localplayer + ", Second p: " + remoteplayer);
+		if(!goFirst){
+			players[1] = new TicTacToePlayer(localplayer); //you become player num 2
+			players[1].getTic(this);
+			players[1].assignPiece('X');
+			players[0] = new RemotePlayer(oos, ois, this, remoteplayer, 'O'); //this guys go first
+		}else {
+			players[0] = new TicTacToePlayer(localplayer);
+			players[0].getTic(this);
+			players[0].assignPiece('O');
+			players[1] = new RemotePlayer(oos, ois, this, remoteplayer, 'X');
+		}
 		if(mudda != null)
 			mudda.dispose();
-		mudda = new JFrame("Player Online");
+		mudda = new JFrame(remoteplayer + " is Online!");
 		mudda.setSize(500, 500);
 		mudda.setVisible(true);
-		players[0] = new TicTacToePlayer(player1name.getText());
-		players[1] = new RemotePlayer(oos, ois, this, players[0]);
-		players[0].getTic(this);
+		System.out.println("Should be another checkpoint");		
 		foo = new BoardPanel(players[0], players[1] , mudda);
 		mudda.add(foo);
+		
 		new Thread(this).start();
 	}
 
-	public static void main(String[] args) {
-		new TicTacToe();
-	}
 	public char[][] getBoard(){
-		return board;
+		return board;	
 	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getSource() == pvpOnline){
-			//ungray text field
-			ip_field.setEditable(true);
-			player1name.setEditable(true);
-			player2name.setEditable(false);
-		}
-		if(e.getSource() == pvp){
-			ip_field.setEditable(false);
-			player1name.setEditable(true);
-			player2name.setEditable(true);
-		}
-		if(e.getSource() == playerCPUE){
-			ip_field.setEditable(false);
-			player1name.setEditable(true);
-			player2name.setEditable(false);
-		}
-		if(e.getSource() == playerCPUH){
-			ip_field.setEditable(false);
-			player1name.setEditable(true);
-			player2name.setEditable(false);
-		}
+						
 
-		if(e.getSource() == newGame){
-			if(pvp.isSelected()){
-				errorMsg.setText("");
-				/*if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
-					errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
-					return;
-				}
-				if(player2name.getText().isEmpty() || player2name.getText().equals("Player 2 Name")){
-					errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
-					return;
-				}*/
-				if(mudda != null)
-					mudda.dispose();
-				mudda = new JFrame("Player v Player (Local)");
-				mudda.setSize(500, 500);
-				mudda.setVisible(true);
-				players[0] = new TicTacToePlayer(player1name.getText());
-				players[1] = new TicTacToePlayer(player2name.getText());
-				players[0].getTic(this);
-				players[1].getTic(this);
-				foo = new BoardPanel(players[0], players[1] , mudda);
-				mudda.add(foo);
-
-				//show two fields...
-			}
-			else if (pvpOnline.isSelected()){
-				errorMsg.setText("");
-				if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
-					errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
-					return;
-				}
-				if(mudda != null)
-					mudda.dispose();
-				mudda = new JFrame("Player Online");
-				mudda.setSize(500, 500);
-				mudda.setVisible(true);
-				players[0] = new TicTacToePlayer(player1name.getText());
-				players[1] = new RemotePlayer(ip_field.getText(), this, players[0]);
-				players[0].getTic(this);
-				foo = new BoardPanel(players[0], players[1] , mudda);
-				mudda.add(foo);
-				//show one field
-			}
-			else if(playerCPUE.isSelected()){
-				errorMsg.setText("");
-				if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
-					errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
-					return;
-				}
-				if(mudda != null)
-					mudda.dispose();
-				mudda = new JFrame("Player vs AI");
-				mudda.setSize(500, 500);
-				mudda.setVisible(true);
-				players[0] = new TicTacToePlayer(player1name.getText());
-				players[1] = new CPUPlayer(CPUPlayer.EASY, this);
-				players[0].getTic(this);
-				foo = new BoardPanel(players[0], players[1] , mudda);
-				mudda.add(foo);
-				//get field
-			}
-			else if(playerCPUH.isSelected()){
-				errorMsg.setText("");
-				if(player1name.getText().isEmpty() || player1name.getText().equals("Player 1 Name")){
-					errorMsg.setText("Error: Must enter a name for player 1 and player 2!");
-					return;
-				}
-				if(mudda != null)
-					mudda.dispose();
-				mudda = new JFrame("Player vs AI");
-				mudda.setSize(500, 500);
-				mudda.setVisible(true);
-				players[0] = new TicTacToePlayer(player1name.getText());
-				players[1] = new CPUPlayer(CPUPlayer.HARD,this);
-				players[0].getTic(this);
-				foo = new BoardPanel(players[0], players[1] , mudda);
-				mudda.add(foo);
-				//get field
-			}
-			
-			
-			new Thread(this).start();
-			//handle thy business
-		}
-	}
 //=====================================================================
 	
 	public void run() {
 		board = new char[3][3];
 		boolean gameOver = false;
-		players[0].assignPiece('X');
-		players[1].assignPiece('O');
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -239,10 +86,17 @@ public class TicTacToe implements ActionListener, Runnable{
 			mudda.setTitle("It is " + players[turn].getName() + "'s turn!");
 			
 			try {
-				Point d = players[turn].makeMove();
+				Point d = players[turn].makeMove(); //does different depending on what type of player
 				
-				if(players[1] instanceof RemotePlayer){
-					RemotePlayer temp = (RemotePlayer) players[1];
+				if(players[turn] instanceof RemotePlayer){ 
+				}
+				else{
+					RemotePlayer temp;
+					if(turn == 0)
+						temp = (RemotePlayer) players[1]; //this has to be instance of RP
+					else
+						temp = (RemotePlayer) players[0]; //this has to be RP
+					
 					temp.updateAll(d); //send it out to everyone
 				}
 			} catch (IOException e) {
@@ -256,6 +110,8 @@ public class TicTacToe implements ActionListener, Runnable{
 			if(turn == 1)
 				turn = 0;
 			else turn = 1;
+			for(int i = 0; i < 3; i++)
+					System.out.println(String.valueOf(board[i][0]) + String.valueOf(board[i][1]) + String.valueOf(board[i][2]));
 			System.out.println("turn is now: " + turn);
 		}
 		//now find out winner
@@ -372,6 +228,8 @@ private void findWinner() {
 		if(board[numx][numy] == 'X' || board[numx][numy] == 'O'){
 				return false;
 		} else{ //Then do the move
+			System.out.println("Updating board at " + (numx+1) + "," + (numy+1));
+			System.out.println("This is the piece " + p1.getPiece());
 			board[numx][numy] = p1.getPiece();
 			foo.updateBoard(board);
 			foo.repaint();
