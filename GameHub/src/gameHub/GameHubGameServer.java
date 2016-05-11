@@ -85,7 +85,7 @@ public class GameHubGameServer implements Runnable {
 			return;
 		}
 		if(!matches.containsKey(firstMessage.toUpperCase())){ //if opponent isn't in matches, then close thread and maybe socket too!
-			System.out.println("Blue bananansnssnanss from " + firstMessage);
+			System.out.println("(rejected) Blue bananansnssnanss from " + firstMessage);
 			return;
 		}
 		onlineList.put(firstMessage.toUpperCase(), oos); //add to list!
