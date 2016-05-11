@@ -362,7 +362,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		else if(arg0.getSource() == connButton){
 			try {//send a game invite! Same idea as ticButton
 				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.connect4));
-				new ConnectFour(oos, ois);
+				//new ConnectFour(oos, ois);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -429,6 +429,17 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 										e.printStackTrace();
 									}
 								}
+								else if(invite.game.contains(GameInvite.connect4)){
+									System.out.println("trying to open conn4 now!");
+									try{
+										new ConnectFour(p1.getUsername(), invite.from, false);
+									}
+									catch(UnknownHostException e){
+										;
+									}
+									catch(IOException e){;}
+									
+								}
 								inviteWindow.dispose(); //destroy invite/notificaiton window as no longer needed
 							}
 						}); //make local function
@@ -457,7 +468,10 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 					}
 					else if(invite.from.equals(p1.getUsername()) && invite.isAccepted()){
 						System.out.println("Oppoenet accepted invite, opening game now");
-						new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
+						if(invite.game.equals(invite.tictactoe))
+							new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
+						else if (invite.game.equals(invite.connect4))
+							new ConnectFour(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
 					}
 				}
 				else if(message instanceof ChatMessage){

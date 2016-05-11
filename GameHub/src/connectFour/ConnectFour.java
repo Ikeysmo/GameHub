@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -19,8 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
-import ticTacToe.TicTacToePlayer;
 
 public class ConnectFour implements ActionListener, Runnable {
 	JFrame gameMenu = null;
@@ -44,6 +44,8 @@ public class ConnectFour implements ActionListener, Runnable {
 	public int turn = 0;
 	private ConnectFourPlayer[] players = new ConnectFourPlayer[2];
 	private char[][] board = new char[10][10];
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
 	
 	public ConnectFour() {
 		gameMenu = new JFrame("Connect-Four!");
@@ -93,8 +95,30 @@ public class ConnectFour implements ActionListener, Runnable {
 		gameMenu.setVisible(true);
 	}
 	
-	public ConnectFour(ObjectOutputStream oos, ObjectInputStream ois) {
-		// TODO Auto-generated constructor stub
+	public ConnectFour(String localPlayer, String remotePlayer, boolean goFirst) throws UnknownHostException, IOException {
+		Socket s = new Socket("localhost", 2021);
+		oos = new ObjectOutputStream(s.getOutputStream());
+		oos.writeObject(localPlayer);
+		ois = new ObjectInputStream(s.getInputStream());
+	
+		//end
+		if(!goFirst){
+			players[0] = new RemotePlayer(oos, ois, this, remotePlayer, 'X');
+			players[1] = new ConnectFourPlayer(localPlayer);
+			players[1].getConnectFour(this);
+		}
+		else{
+			players[0] = new ConnectFourPlayer(localPlayer);
+			players[0].getConnectFour(this);
+			players[1] = new RemotePlayer(oos, ois, this, remotePlayer, 'O');
+		}
+		
+		mudda = new JFrame("Player Online");
+		mudda.setSize(500, 500);
+		mudda.setVisible(true);
+		foo = new BoardPanel(players[0], players[1], mudda);
+		mudda.add(foo);
+		new Thread(this).start();
 	}
 
 	public static void main(String[] args) {
@@ -230,10 +254,22 @@ public class ConnectFour implements ActionListener, Runnable {
 			try {
 				Point d = players[turn].makeMove();
 				
-				if(players[1] instanceof RemotePlayer){
-					RemotePlayer temp = (RemotePlayer) players[1];
+				if(players[turn] instanceof connectFour.RemotePlayer){
+					
+				}
+				else{
+					connectFour.RemotePlayer temp;
+					if(turn == 0)
+						temp = (connectFour.RemotePlayer) players[1]; //this has to be instance of RP
+					else
+						temp = (connectFour.RemotePlayer) players[0]; //this has to be RP
+					
 					temp.updateAll(d); //send it out to everyone
 				}
+//				if(players[1] instanceof RemotePlayer){
+//					RemotePlayer temp = (RemotePlayer) players[1];
+//					temp.updateAll(d); //send it out to everyone
+//				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

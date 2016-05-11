@@ -13,6 +13,8 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import ticTacToe.TicTacToe;
+
 public class RemotePlayer extends ConnectFourPlayer implements Runnable {
 	int port = 2000;
 	String ip_address;
@@ -36,6 +38,7 @@ public class RemotePlayer extends ConnectFourPlayer implements Runnable {
 			piece = 'O';
 			//player 2	
 		}
+		
 		catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,6 +74,15 @@ public class RemotePlayer extends ConnectFourPlayer implements Runnable {
 		
 	}
 
+	public RemotePlayer(ObjectOutputStream oos2, ObjectInputStream ois2, ConnectFour tic, String playername, char piece) {
+		// Player name represents the opposing online player's account. Gamehub Login should have this!
+		ois = ois2; //input stream
+		oos = oos2; //output stream to server
+		this.tic = tic; //this is reference to tic tac toe to call things, set turn
+		this.name = playername; 
+		this.piece = piece;
+	}
+	
 	@Override
 	public Point makeMove() throws IOException {
 		// TODO Auto-generated method stub
