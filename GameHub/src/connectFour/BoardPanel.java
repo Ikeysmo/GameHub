@@ -35,9 +35,9 @@ public class BoardPanel extends JPanel {
 	/* Tell whose turn it is */
 	private int turn = 0; //alternate between 0 and 1
 	/* First Piece*/
-	public final static char X = 'X';
+	public final static char PIECE1 = 'X';
 	/* Second Piece*/
-	public final static char O = 'O';
+	public final static char PIECE2 = 'O';
 	
 	/**
 	 * Constructor of BoardPanel
