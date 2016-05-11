@@ -1,5 +1,13 @@
 package ticTacToe;
 
+/**
+ * This is the Remote Player for TicTacToe
+ * 
+ * @author Zachary Jones
+ * @author Isaiah Smoak
+ * @version 1.0
+ */
+
 import java.awt.Point;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,33 +22,53 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class RemotePlayer extends TicTacToePlayer implements Runnable {
+	/* Object Input Stream*/
 	ObjectInputStream ois;
+	/* Object Output Stream*/
 	ObjectOutputStream oos;
 	
 	
-	
-	public RemotePlayer(ObjectOutputStream oos2, ObjectInputStream ois2, TicTacToe tic, String playername, char piece) {
-		// Player name represents the opposing online player's account. Gamehub Login should have this!
-		ois = ois2; //input stream
-		oos = oos2; //output stream to server
-		this.tic = tic; //this is reference to tic tac toe to call things, set turn
-		this.name = playername; 
+	/**
+	 * Constructor of the RemotePlayer
+	 * Player name represents the opposing online player's account. Gamehub Login should have this!
+	 * 
+	 * @param oos input stream
+	 * @param ois output stream to server
+	 * @param tic this is reference to tic tac toe to call things, set turn
+	 * @param piece The piece of the player
+	 */
+	public RemotePlayer(ObjectOutputStream oos, ObjectInputStream ois, TicTacToe tic, String name, char piece) {
+		this.ois = ois;
+		this.oos = oos;
+		this.tic = tic;
+		this.name = name; 
 		this.piece = piece;
 	}
+	
+	/**
+	 * Getter method for the player name
+	 * 
+	 * @return player name
+	 */
 	public String getName(){
 		return name;
 	}
+	
+	/**
+	 * Method for the Remote player to make a move
+	 * 
+	 * @return point where move was made
+	 */
 	@Override
 	public Point makeMove() throws IOException {
-		// TODO Auto-generated method stub
 		try {
 			Point answer;
 			while(true){
-				 System.out.println("Waitingo on move from remote!");
+				 //Waiting on move from remote!
 				 answer = (Point)ois.readObject();
-				 System.out.println("Got the move!");
+				 //Got the move!
 				 if(answer == null){
-					 System.out.println("shouldn't receive null!");
+					 //Error occured
 				 }
 				 if(tic.updateMove(answer.x, answer.y, this)) //if this is true, valid move! Return
 					break;
@@ -52,26 +80,17 @@ public class RemotePlayer extends TicTacToePlayer implements Runnable {
 		}
 		return null;
 	}
-	
+	//TODO: What is everything?
+	/**
+	 * This method updates everything?
+	 * update everything.. which is sending data to server
+	 * 
+	 * @param p Point where move was made
+	 */
 	public void updateAll(Point p) throws IOException{
-		//update everything.. which is sending data to server
-		System.out.println("Sending move to server now!");
+		//Sending move to server now!
 		oos.writeObject(p);
 		
 	}
-
 	
-	public void run(){ //not using this.. why???
-		//recieving...
-		Point answer;
-		while(true){
-			try {
-				answer = (Point) ois.readObject();
-				System.out.println(answer);
-			} 
-			catch (ClassNotFoundException | IOException e) {}
-		}
-	}
-	
-//end of class
 }
