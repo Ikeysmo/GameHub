@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>
+		Calculator 
+		</title>
+		
+		<style type="text/css">
+			<!--
+				@import url('ic7style.css');
+			-->
+		</style>
+	</head>
+	<div style="background-color:white; padding = 3cm;">
+	
+	<a href="index.html">Home</a>
+	</div>
+	<h3 style ="color:black;">This calculates the area depending on shape!</h3><!--Answered number 1 -->
+	
+	<p>Use the drop down below to select shape</p>
+	<!--Answered number 2 -->
+	
+	<select name = select_shape, onchange="alter_input(value)", id = "sel_shape", default = "N/A">
+	<option>Circle</option>
+	<option>Triangle</option>
+	<option>Square</option>
+	<option>Rectangle</option>
+	</select>
+	
+	
+	<p> Enter the length of a side below </p>
+	<!--Need to make table ... #5 -->
+
+	
+
+	 <span id = "box1"> Radius: </span><input type="number" id="mynum1" value="">
+	<button onclick="getArea()", id = "button2", style = "padding-left: 5px;">Calculate Area</button>
+	
+	<script>
+	function getArea() {
+	    //console.log(myText.value);
+		var y = document.getElementById("sel_shape");
+		var answer;
+		if(y.value == "Circle"){
+		var num1 = document.getElementById("mynum1");
+		answer = parseInt(num1.value)*parseInt(num1.value)*Math.PI;
+		}
+		else if(y.value == "Triangle"){
+		var num1 = document.getElementById("mynum1");
+		var num2 = document.getElementById("mynum2");
+		answer = .5*parseInt(num1.value)*parseInt(num2.value);
+		}
+		else if(y.value == "Square"){
+		var num1 = document.getElementById("mynum1");
+		answer = parseInt(num1.value)*parseInt(num1.value);
+		}
+		else if(y.value == "Rectangle"){
+		var num1 = document.getElementById("mynum1");
+		var num2 = document.getElementById("mynum2");
+		answer = parseInt(num1.value)*parseInt(num2.value);
+		}
+		
+		ans = document.getElementById("answer_box");
+		if(ans == null){
+		ans = document.createElement("P");
+		ans.id = "answer_box";
+		document.body.appendChild(ans);
+		}
+		ans.innerHTML = "Answer: " + answer;
+		
+	}
+	</script>
+	<script>
+	function alter_input(shape){
+	var x; 
+	var last = document.getElementById("button2");
+	if(shape == "Circle"){
+		x = document.getElementById("box1");
+		if(x != null){
+			if(x.innerHTML != "Radius: "){
+			x.innerHTML = "Radius: ";}
+		}
+		else{
+			var u = document.createElement("span");
+			u.id = "box1";
+			u.innerHTML = "Radius: ";
+			h = document.getElementById("mynum1");
+		    document.body.insertBefore(u,h);
+		}
+		x = document.getElementById("box2");
+		if(x != null){
+		document.body.removeChild(x);
+		}
+		x = document.getElementById("mynum2");
+		if(x != null){
+		document.body.removeChild(x);
+		}
+		console.log("second text box should be removed!");
+		}
+	
+	else if(shape == "Triangle"){
+		x = document.getElementById("box2");
+		if(x == null){
+		var y = document.createElement("span")
+		y.id = "box2";
+		y.innerHTML = "Height: ";
+		document.body.insertBefore(y, last);
+		var w = document.createElement("input");
+		w.id = "mynum2";
+		w.paddingLeft = "5px";
+		w.paddingRight = "5px";
+		w.type = "number";
+		document.body.insertBefore(w, last);
+		t = document.getElementById("box1");
+		if (t.innerHTML != "Base: "){
+		t.innerHTML = "Base: ";
+		}
+		console.log("there should be a box and rename!");}
+			else{
+		var y = document.getElementById("box1");
+		var w = document.getElementById("box2");
+			if(y.innerHTML != "Base: " && w.innerHTML != "Height: "){
+			y.innerHTML = "Base: ";
+			w.innerHTML = "Height: ";
+			}
+		}
+	}
+	else if(shape == "Square"){
+		x = document.getElementById("box2");
+		if(x != null){
+		document.body.removeChild(x);
+		x = document.getElementById("mynum2");
+		}
+		if(x != null){
+		document.body.removeChild(x); //remove the two input fields
+		}
+		var y = document.getElementById("box1");
+		if(y.innerHTML != "Side "){
+		y.innerHTML = "Side ";
+		}
+		
+		console.log();
+	}
+	else if(shape == "Rectangle"){
+		x = document.getElementById("box2");
+		if(x == null){
+		var y = document.createElement("span")
+		y.id = "box2";
+		y.innerHTML = "Width: ";
+		document.body.insertBefore(y, last);
+		var w = document.createElement("input");
+		w.id = "mynum2";
+		w.paddingLeft = "5px";
+		w.paddingRight = "5px";
+		w.type = "number";
+		document.body.insertBefore(w, last);
+		t = document.getElementById("box1");
+		if (t.innerHTML != ": "){
+		t.innerHTML = "Length: ";
+		}
+	}
+		else{
+		var y = document.getElementById("box1");
+		var w = document.getElementById("box2");
+			if(y.innerHTML != "Length: " && w.innerHTML != "Width: "){
+			y.innerHTML = "Length: ";
+			w.innerHTML = "Width: ";
+			}
+		}
+	}
+	}
+	</script>
+	</body>
+</html>
+
+
+
+<!-- 	<table class="class">
+	<tr>
+		<th>Class</th>
+		<th>Expected Grade</th>
+	</tr>
+	<tr>
+		<td>Calculus III</td>
+		<td>A-</td>
+	</tr>
+	<tr>
+		<td>ECE 115</td>
+		<td>S</td>
+	</tr>
+	<tr>
+		<td>USC 102</td>
+		<td>A</td>
+	</tr>
+	</table> -->
+	
+	<!-- <img src="Koala450j.jpg" alt="favorite animal" class="pictures"/>  --><!--Number 6 -->

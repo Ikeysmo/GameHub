@@ -22,6 +22,7 @@ public class GameHubServer implements Runnable{
 
 		ss = new ServerSocket(portNumber);
 		gameServer = new GameHubGameServer(this);
+		new GameHubWebServer(); //set up webserver!
 		System.out.println(ss.getInetAddress());
 		//try to retrieve a saved list of everyone who's ever registered
 		try{ 
@@ -57,6 +58,7 @@ public class GameHubServer implements Runnable{
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
 		String firstMessage = null;
+		String userName = null;
 		String password = null;
 		boolean nextClientThreadStarted = false; //this is incase a thread fails before creating a new thread to listen
 		boolean newAccount = false;
@@ -83,7 +85,7 @@ public class GameHubServer implements Runnable{
 		System.out.println(firstMessage);
 		//Parse through firstMessage recieved to see if it matches username/password
 		if(firstMessage.indexOf("/")>0){ //makes sure it has '/'
-			String userName = firstMessage.substring(0, firstMessage.indexOf("/"));
+			userName = firstMessage.substring(0, firstMessage.indexOf("/"));
 			password = firstMessage.substring(firstMessage.indexOf("/") + 1);//done with this part
 			if(userName.contains("*")){
 				newAccount = true;
@@ -214,6 +216,7 @@ public class GameHubServer implements Runnable{
 						user2 = user2.trim().toUpperCase();
 						matches.remove(user1);
 						matches.remove(user2);
+						gameServer.removeMatch(userName);
 					}
 					else{
 						//if I can find my own name in match, send it to the guy i'm linked to

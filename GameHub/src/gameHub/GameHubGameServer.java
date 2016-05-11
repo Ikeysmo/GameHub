@@ -36,6 +36,14 @@ public class GameHubGameServer implements Runnable {
 		}
 	}
 
+	public boolean removeMatch(String username){
+		//remove
+		onlineList.remove(username.toUpperCase()); //remove from list
+		String user2 = matches.get(username.toUpperCase()); //get second player in match
+		matches.remove(username.toUpperCase()); //remove both players from match
+		matches.remove(user2);
+		return true;
+	}
 
 
 	@Override
@@ -97,6 +105,7 @@ public class GameHubGameServer implements Runnable {
 						String user2 = tempMessage.substring(0, tempMessage.indexOf(' '));
 						user1 = user1.trim().toUpperCase();
 						user2 = user2.trim().toUpperCase();
+						System.out.println("Removing users");
 						matches.remove(user1);
 						matches.remove(user2);
 					}
@@ -112,7 +121,8 @@ public class GameHubGameServer implements Runnable {
 			}
 
 		}
-		catch( ClassNotFoundException | IOException de){;}
+		catch( ClassNotFoundException | IOException de){
+			System.out.println("hey someone just left... should remove!");}
 	}
 	private void send(Object messageFromClient, String username) {
 		//onlineList = GHS.getOnlineList(); //use own, local version!

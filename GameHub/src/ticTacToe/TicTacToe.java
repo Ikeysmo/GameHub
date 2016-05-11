@@ -62,7 +62,7 @@ public class TicTacToe implements Runnable{
 		System.out.println("Should be another checkpoint");		
 		foo = new BoardPanel(players[0], players[1] , mudda);
 		mudda.add(foo);
-		
+		mudda.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //what i ideally want is to have server end match when done
 		new Thread(this).start();
 	}
 
