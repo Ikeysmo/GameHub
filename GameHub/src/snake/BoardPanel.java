@@ -34,6 +34,10 @@ public class BoardPanel extends JPanel {
 	private char[][] board = new char[ROWLENGTH][COLUMNLENGTH];
 	/* Tell whose turn it is */
 	private int turn = 0; //alternate between 0 and 1
+	/* First Piece*/
+	public final static char X = 'X';
+	/* Second Piece*/
+	public final static char O = 'O';
 	
 	/**
 	 * Constructor of BoardPanel
@@ -95,10 +99,10 @@ public class BoardPanel extends JPanel {
 		for(int i = 0; i < ROWLENGTH*COLUMNLENGTH; i++){
 			for(int j = 0; j < ROWLENGTH*COLUMNLENGTH; j++){
 				//If that spot has a piece in it
-				if (board[i][j] == 'X')
+				if (board[i][j] == X)
 					g.setColor(Color.blue);
 				
-				if (board[i][j] == 'O')
+				if (board[i][j] == O)
 					g.setColor(Color.red);
 					
 				//TODO: Need to fix the offset on the ovals so
@@ -107,7 +111,7 @@ public class BoardPanel extends JPanel {
 				int locationy = (height/20)*(2*j);
 					
 				//g.drawString(String.valueOf(board[i][j]), locationx, locationy);
-				if( board[i][j] == 'X' || board[i][j] == 'O')
+				if( board[i][j] == X || board[i][j] == O)
 					g.fillOval(locationx + ROWLENGTH, locationy + COLUMNLENGTH, ROWLENGTH*COLUMNLENGTH, ROWLENGTH*COLUMNLENGTH); 
 					
 			}

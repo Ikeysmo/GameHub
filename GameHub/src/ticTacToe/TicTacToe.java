@@ -1,5 +1,13 @@
 package ticTacToe;
 
+/**
+ * The heart of the TicTacToe game
+ * 
+ * @author Zachary Jones
+ * @author Isaiah Smoak
+ * @version 1.0
+ */
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -23,19 +31,74 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 public class TicTacToe implements Runnable{
+	
+	/* The number of players*/
+	final public static int PLAYERNUM = 2;
+	/* The number of columns*/
+	final public static int COLUMNNUM = 10;
+	/* The number of rows*/
+	final public static int ROWNUM = 10;
+	/* Four winning pieces */
+	final public static int FOURPIECES = 4;
+	/* Bottom of the column */
+	final public static int BOTTOM_OF_COLUMN = 9;
+	
+	/* Piece One */
+	final public static char PIECE1 = 'X';
+	/* Piece Two */
+	final public static char PIECE2 = 'O';
+	/* Player 1 */ 
+	final public static int PLAYER_1 = 0;
+	/* Player 2 */
+	final public static int PLAYER_2 = 1;
+	
+	/*Frame Height*/
+	final public static int FRAMEHEIGHT = 160;
+	/*Frame Width*/
+	final public static int FRAMEWIDTH = 600;
+	
+	/*Min Frame Height*/
+	final public static int MINFRAMEHEIGHT = 180;
+	/*Min Frame Width*/
+	final public static int MIN FRAMEWIDTH = 500;
+	
+	/*Winning Screen Height */
+	final public static int WINFRAMEHEIGHT = 100;
+	/*Winning Screen Width */
+	final public static int WINFRAMEWIDTH = 350;
+	
+	/* Main JFrame */
 	JFrame gameMenu = null;
+	/* Main Panel */
 	JPanel mainPanel = new JPanel();
+	/* Menu Bar Panel*/
 	JPanel menubar = new JPanel();
+	/* Error Message Label*/
 	JLabel errorMsg = new JLabel();
+	/* Second Panel*/
 	JPanel secondPanel = new JPanel();
+	//TODO: What does mudda mean?
 	JFrame mudda;
+	//TODO: What does foo mean?
 	BoardPanel foo;
+	/* Tells whose turn it is*/
 	public int turn = 0;
-	private TicTacToePlayer[] players = new TicTacToePlayer[2];
-	private char[][] board = new char[3][3];
+	/*Players in the game*/
+	private TicTacToePlayer[] players = new TicTacToePlayer[PLAYERNUM];
+	/*The board being used*/
+	private char[][] board = new char[ROWSNUM][COLUMNSNUM];
+	/* Object Output stream*/
 	private ObjectOutputStream oos;
+	/* Object Input Stream*/
 	private ObjectInputStream ois;
 
+	/**
+	 * The constructor of Tic Tac Toe
+	 * 
+	 * @param localplayer Is the local player
+	 * @param remoteplayer Is the remote player
+	 * @param goFirst Who goes first
+	 */
 	public TicTacToe(String localplayer, String remoteplayer, Boolean goFirst) throws UnknownHostException, IOException {
 		//player 1 represents this guy's version
 		Socket s = new Socket("localhost", 2021);
@@ -44,15 +107,15 @@ public class TicTacToe implements Runnable{
 		ois = new ObjectInputStream(s.getInputStream());
 		//System.out.println("First p: "+localplayer + ", Second p: " + remoteplayer);
 		if(!goFirst){
-			players[1] = new TicTacToePlayer(localplayer); //you become player num 2
-			players[1].getTic(this);
-			players[1].assignPiece('X');
-			players[0] = new RemotePlayer(oos, ois, this, remoteplayer, 'O'); //this guys go first
+			players[PLAYER_2] = new TicTacToePlayer(localplayer); //you become player num 2
+			players[PLAYER_2].getTic(this);
+			players[PLAYER_2].assignPiece(PIECE1);
+			players[PLAYER_1] = new RemotePlayer(oos, ois, this, remoteplayer, PIECE2); //this guys go first
 		}else {
-			players[0] = new TicTacToePlayer(localplayer);
-			players[0].getTic(this);
-			players[0].assignPiece('O');
-			players[1] = new RemotePlayer(oos, ois, this, remoteplayer, 'X');
+			players[PLAYER_1] = new TicTacToePlayer(localplayer);
+			players[PLAYER_1].getTic(this);
+			players[PLAYER_1].assignPiece(PIECE2);
+			players[PLAYER_2] = new RemotePlayer(oos, ois, this, remoteplayer, PIECE1);
 		}
 		if(mudda != null)
 			mudda.dispose();
@@ -60,26 +123,30 @@ public class TicTacToe implements Runnable{
 		mudda.setSize(500, 500);
 		mudda.setVisible(true);
 		System.out.println("Should be another checkpoint");		
-		foo = new BoardPanel(players[0], players[1] , mudda);
+		foo = new BoardPanel(players[PLAYER_1], players[PLAYER_2] , mudda);
 		mudda.add(foo);
 		mudda.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //what i ideally want is to have server end match when done
 		new Thread(this).start();
 	}
 
+	/**
+	 * Getter method for the board
+	 * 
+	 * @return the board
+	 */
 	public char[][] getBoard(){
 		return board;	
 	}
-						
-
-//=====================================================================
 	
+	/**
+	 * Where the game is ran
+	 */
 	public void run() {
-		board = new char[3][3];
+		board = new char[ROWSNUM][COLUMNSNUM];
 		boolean gameOver = false;
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		while(!gameOver){
@@ -93,16 +160,15 @@ public class TicTacToe implements Runnable{
 				else{
 					RemotePlayer temp;
 					if(turn == 0)
-						temp = (RemotePlayer) players[1]; //this has to be instance of RP
+						temp = (RemotePlayer) players[PLAYER_2]; //this has to be instance of RP
 					else
-						temp = (RemotePlayer) players[0]; //this has to be RP
+						temp = (RemotePlayer) players[PLAYER_1]; //this has to be RP
 					
 					temp.updateAll(d); //send it out to everyone
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} //I want this to happen, and then wait until this is done
+			}
 			
 			
 			gameOver = detectGame(); //let know if game is over
@@ -111,121 +177,96 @@ public class TicTacToe implements Runnable{
 				turn = 0;
 			else turn = 1;
 			for(int i = 0; i < 3; i++)
-					System.out.println(String.valueOf(board[i][0]) + String.valueOf(board[i][1]) + String.valueOf(board[i][2]));
+				for(int j = 0; j < 3; j++) {
+					System.out.println(String.valueOf(board[i][j]));
+				}
+				System.out.println();
 			System.out.println("turn is now: " + turn);
 		}
-		//now find out winner
 		findWinner();
 	}
 	
-private void findWinner() {
-	// TODO Auto-generated method stub
-	int playerWon = -1;
-	for(int i = 0; i < 2; i++){
-		//verticals
-		if(board[0][0] == players[i].getPiece() && board[0][1] == players[i].getPiece() && board[0][2] == players[i].getPiece())
-			playerWon = i;
-		if(board[1][0] == players[i].getPiece() && board[1][1] == players[i].getPiece() && board[1][2] == players[i].getPiece())
-			playerWon = i;
-		if(board[2][0] == players[i].getPiece() && board[2][1] == players[i].getPiece() && board[2][2] == players[i].getPiece())
-			playerWon = i;
-		//horizontals
-		if(board[0][0] == players[i].getPiece() && board[1][0] == players[i].getPiece() && board[2][0] == players[i].getPiece())
-			playerWon = i;
-		if(board[0][1] == players[i].getPiece() && board[1][1] == players[i].getPiece() && board[2][1] == players[i].getPiece())
-			playerWon = i;
-		if(board[0][2] == players[i].getPiece() && board[1][2] == players[i].getPiece() && board[2][2] == players[i].getPiece())
-			playerWon = i;
-		//diagonals
-		if(board[0][0] == players[i].getPiece() && board[1][1] == players[i].getPiece() && board[2][2] == players[i].getPiece())
-			playerWon = i;
-		if(board[0][2] == players[i].getPiece() && board[1][1] == players[i].getPiece() && board[2][0] == players[i].getPiece())
-			playerWon = i;
-		
+	private void findWinner() {
+		int playerWon = -1;
+		for(int i = 0; i < PLAYERNUM; i++){
+			if(players[PLAYER_1].getPiece() == isWinner()) {
+				playerWon = PLAYER_1;
+			} else if (PLAYER_2].getPiece() == isWinner()) {
+				playerWon = PLAYERS_2;
+			}
+		}
+		JFrame finished = new JFrame("Game!");
+		finished.setSize(350, 100);
+		JLabel label = new JLabel();
+		label.setFont(new Font("Default", Font.BOLD, 20));
+		label.setForeground(Color.red);
+		if(playerWon == -1)
+			label.setText("It is a draw!");
+		else
+			label.setText(" And winner is " + players[playerWon].getName() + "!");
+		finished.add(label, "Center");
+		finished.setVisible(true);
+	
 		
 	}
-	JFrame finished = new JFrame("Game!");
-	finished.setSize(350, 100);
-	JLabel label = new JLabel();
-	label.setFont(new Font("Default", Font.BOLD, 20));
-	label.setForeground(Color.red);
-	if(playerWon == -1)
-		label.setText("It is a draw!");
-	else
-		label.setText(" And winner is " + players[playerWon].getName() + "!");
-	finished.add(label, "Center");
-	finished.setVisible(true);
 
-	
-}
 
-//=====================================================================
-	
-	private boolean detectGame() {
-		// TODO Auto-generated method stub
-		//first see if it's full
-		if(detectFull())
-			return true;
-		
+	/**
+	 * Helper method to figure out if there is a winner
+	 * 
+	 * @return 'X', 'O', ''
+	 */
+	private char isWinner() {
 		//vertical
-		char piece = 'X';
+		char piece = PIECE1;
 		for(int i = 0; i < 3; i++){
 			if(board[i][0] == piece &&board[i][1] == piece && board[i][2] == piece)
-				return true;
+				return PIECE1;
 		}
 		
 		//horizontal
 		for(int i = 0; i < 3; i++){
 			if(board[0][i] == piece &&board[1][i] == piece && board[2][i] == piece)
-				return true;
+				return PIECE1;
 		}
 		
 		//diagonals
 		if(board[0][0] == piece && board[1][1] == piece && board[2][2] == piece)
-			return true;
+			return PIECE1;
 		if(board[0][2] == piece && board[1][1] == piece && board[2][0] == piece)
-			return true;
+			return PIECE1;
 		
 		
 		//now try for '0'
-		piece = 'O';
+		piece = PIECE2;
 		for(int i = 0; i < 3; i++){
 			if(board[i][0] == piece &&board[i][1] == piece && board[i][2] == piece)
-				return true;
+				return PIECE2;
 		}
 		//horizontal
 		for(int i = 0; i < 3; i++){
 			if(board[0][i] == piece &&board[1][i] == piece && board[2][i] == piece)
-				return true;
+				return PIECE2;
 		}
 		//diagonals
 		if(board[0][0] == piece && board[1][1] == piece && board[2][2] == piece)
-			return true;
+			return PIECE2;
 		if(board[0][2] == piece && board[1][1] == piece && board[2][0] == piece)
-			return true;
+			return PIECE2;
 		//else...
-		return false;
+		return '';
 	}
-	private boolean detectFull() {
-		// TODO Auto-generated method stub
-		for(int i = 0; i < 3; i++){
-			for(int j = 0; j<3; j++){
-				if(board[i][j] != 'X' && board[i][j] != 'O'){
-					
-					return false;
-				}
-					
-			}
-		}
-		return true;
-	}
+	
+	/**
+	 * This method updates everything after the moves
+	 * 
+	 * @param numx x-cord of move
+	 * @param numy y-cord of move
+	 * @param p1 The player
+	 * @return Was the move possible
+	 */
 	public boolean updateMove(int numx, int numy, TicTacToePlayer p1){
-		
-		//if(detectGame())//false
-		//	return false;
-		
-			//Is the place already taken?
-		if(board[numx][numy] == 'X' || board[numx][numy] == 'O'){
+		if(board[numx][numy] == PIECE1 || board[numx][numy] == PIECE2){
 				return false;
 		} else{ //Then do the move
 			System.out.println("Updating board at " + (numx+1) + "," + (numy+1));
@@ -233,22 +274,21 @@ private void findWinner() {
 			board[numx][numy] = p1.getPiece();
 			foo.updateBoard(board);
 			foo.repaint();
-			//printBoard();
+			//printBoard(); //For debuging purposes
 			return true;
 		}
 			
 		
 	}
-
+	/**
+	 * This helper method is for printing out the board to the console
+	 * 
+	 */
 	private void printBoard() {
-		// TODO Auto-generated method stub
-		for(int i = 0; i < 3; i++)
-			System.out.print(String.valueOf(board[i][0]));
-		System.out.println("");
-		for(int i = 0; i < 3; i++)
-			System.out.print(String.valueOf(board[i][1]));
-		System.out.println("");
-		for(int i = 0; i < 3; i++)
-			System.out.print(String.valueOf(board[i][2]));
+		for(int j = 0; j < COLUMNSNUM; j++) {
+			for(int i = 0; i < ROWSNUM; i++)
+				System.out.print(String.valueOf(board[i][j]));
+			System.out.println("");
+		}
 	}
 }
