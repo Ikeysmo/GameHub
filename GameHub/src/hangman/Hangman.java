@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -75,7 +76,9 @@ public class Hangman implements ActionListener, Runnable{
 		}
 	}
 
-
+	public void startNewThread(){ //this is ONLY needed for gameOver method!
+		new Thread(this).start();
+	}
 	private void gameOver() {
 		// TODO Auto-generated method stub
 		JFrame endWindow = new JFrame("GameOver");
@@ -83,9 +86,25 @@ public class Hangman implements ActionListener, Runnable{
 		correctWord.setFont(new Font("Default", Font.BOLD, 25));
 		correctWord.setForeground(Color.blue);
 		endWindow.getContentPane().add(correctWord);
-		endWindow.setSize(500, 100);
+		endWindow.setSize(500, 150);
+		JButton newGame = new JButton("Play Again?");
+		endWindow.add(newGame, "South");
+		newGame.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								mainWindow.dispose();
+								endWindow.dispose();
+								mainWindow = new JFrame("Hangman!");
+								mainWindow.setSize(800, 800);
+								mainWindow.setResizable(false);
+								mainWindow.setVisible(true);
+								startNewThread();
+							}
+						});
 		endWindow.setVisible(true);
 		endWindow.setLocationRelativeTo(mainWindow);
+		//this code below goes to new hangman
+
 	}
 
 	@Override
