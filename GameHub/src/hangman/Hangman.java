@@ -140,6 +140,7 @@ public class Hangman implements ActionListener, Runnable{
 		for(int i = 0; i < 26; i++){
 			ButtonLetter bl = new ButtonLetter(temp);
 			bl.addActionListener(this);
+			bl.setFont(new Font("Default", Font.BOLD, 15));
 			buttonPanel.add(bl);
 			temp ++;
 		}
