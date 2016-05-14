@@ -99,9 +99,9 @@ public class TicTacToe implements Runnable{
 	 * @param remoteplayer Is the remote player
 	 * @param goFirst Who goes first
 	 */
-	public TicTacToe(String localplayer, String remoteplayer, Boolean goFirst) throws UnknownHostException, IOException {
+	public TicTacToe(String localplayer, String remoteplayer, Boolean goFirst, String ipaddress) throws UnknownHostException, IOException {
 		//player 1 represents this guy's version
-		Socket s = new Socket("localhost", 2021);
+		Socket s = new Socket(ipaddress, 2021);
 		oos = new ObjectOutputStream(s.getOutputStream());
 		oos.writeObject(localplayer);
 		ois = new ObjectInputStream(s.getInputStream());

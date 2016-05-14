@@ -170,8 +170,8 @@ public class ConnectFour implements ActionListener, Runnable {
 	 * @param remotePlayer The remote player
 	 * @param goFirst Who goes first
 	 */
-	public ConnectFour(String localPlayer, String remotePlayer, boolean goFirst) throws UnknownHostException, IOException {
-		Socket s = new Socket("localhost", 2021);
+	public ConnectFour(String localPlayer, String remotePlayer, boolean goFirst, String ipaddress) throws UnknownHostException, IOException {
+		Socket s = new Socket(ipaddress, 2021);
 		oos = new ObjectOutputStream(s.getOutputStream());
 		oos.writeObject(localPlayer);
 		ois = new ObjectInputStream(s.getInputStream());

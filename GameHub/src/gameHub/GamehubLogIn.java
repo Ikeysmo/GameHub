@@ -74,7 +74,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	//private JButton connButton = new JButton("Connect4!");
 	private JLabel errormsg = new JLabel();
 	private JPopupMenu shot = new JPopupMenu();
-	private String ip_Address = "localhost";
+	private String ip_Address = "192.12.4.5";
 	private Socket s;
 	private JTextArea chatOut = new JTextArea();
 	private JTextArea chatIn = new JTextArea();
@@ -92,8 +92,9 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	JPanel OnlineBottomPanel = new JPanel();
 
 
-	public GamehubLogIn() {
-
+	public GamehubLogIn(String ipaddress) {
+		if(ipaddress != null) 
+			ip_Address = ipaddress;
 		//Try to make the images
 		try {
 			BufferedImage ticTacToeIcon = ImageIO.read(new File("tic_tac_toe.png")); //gets the image for TicTacToe
@@ -162,7 +163,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new GamehubLogIn(); //load GameHub dynamically instead of static, so we can pass it actionListeners
+		new GamehubLogIn(args[0]); //load GameHub dynamically instead of static, so we can pass it actionListeners
 	}
 
 	@Override
@@ -429,7 +430,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								if(invite.game.contains(GameInvite.tictactoe)){ //now that you created invite, load up tic tac toe.. haven't added one for connect4
 									System.out.println("what");
 									try {
-										new TicTacToe(p1.getUsername(), invite.from, false);
+										new TicTacToe(p1.getUsername(), invite.from, false, ip_Address);
 									} catch (UnknownHostException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
@@ -441,7 +442,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								else if(invite.game.contains(GameInvite.connect4)){
 									System.out.println("trying to open conn4 now!");
 									try{
-										new ConnectFour(p1.getUsername(), invite.from, false);
+										new ConnectFour(p1.getUsername(), invite.from, false, ip_Address);
 									}
 									catch(UnknownHostException e){
 										;
@@ -478,9 +479,9 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 					else if(invite.from.equals(p1.getUsername()) && invite.isAccepted()){
 						System.out.println("Oppoenet accepted invite, opening game now");
 						if(invite.game.equals(invite.tictactoe))
-							new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
+							new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
 						else if (invite.game.equals(invite.connect4))
-							new ConnectFour(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
+							new ConnectFour(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address);
 					}
 				}
 				else if(message instanceof ChatMessage){
