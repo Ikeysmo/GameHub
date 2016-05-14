@@ -1,35 +1,80 @@
 package gameHub;
 
+/**
+ * This method is to send a game invite
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.io.Serializable;
 
 public class GameInvite implements Serializable{
+	/* Tic Tac Toe */
 	public static final String tictactoe = "tictactoe";
+	/* Connect Four */
 	public static final String connect4 = "connect4";
+	/* Snake */
+	public static final String snake = "snake";
+	/* Hangman */
+	public static final String hangman = "hangman";
+	/* The message from the other person */
 	String from;
+	/* The message to the other person */
 	String to;
+	/* The game that is being played */
 	String game;
+	/* Was the invite accepted */
 	private boolean accepted;
-	private boolean checked = false; //this goes true if it's been checked at any point!
+	/* Was the invite checked */
+	/* this goes true if it's been checked at any point! */
+	private boolean checked = false;
 	
+	/**
+	 * Was the invite accepted
+	 */
 	public void Accept(){
 		accepted = true;
 		checked = true;
 	}
+	
+	/**
+	 * Was the invite denied
+	 */
 	public void Deny(){
 		accepted = false;
 		checked = true;
 	}
+	
+	/**
+	 * If the invite was accepted or not
+	 * 
+	 * @return is accepted
+	 */
 	public boolean isAccepted(){
 		return accepted;
 	}
 	
+	/**
+	 * If the invite was checked or not
+	 * 
+	 * @return is checked
+	 */
 	public boolean isChecked(){
 		return checked;
 	}
+	
+	/**
+	 * The constructor of GameInvite
+	 * 
+	 * @param from Message from
+	 * @param to Message to
+	 * @param game Which game being played
+	 */
 	public GameInvite(String from, String to, String game) {
-		// TODO Auto-generated constructor stub
 		this.from = from;
-		this.to= to;
+		this.to = to;
 		this.game = game;
 	}
 
