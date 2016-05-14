@@ -1,5 +1,14 @@
 package hangman;
 
+/**
+ * This class handles the dictionary of words that can
+ * be used in Hangman
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -9,12 +18,19 @@ import java.io.IOException;
 
 public class DictionaryHandler {
 
+	/**
+	 * Constructor of Dictionary Handler
+	 */
 	public DictionaryHandler() {
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * The main method of Dictionary Handler
+	 * 
+	 * @param args
+	 * @throws FileNotFoundException
+	 */
 	public static void main(String[] args) throws FileNotFoundException {
-		// TODO Auto-generated method stub
 		String newline = System.lineSeparator();
 		FileReader fr = new FileReader("dictonary_english_special.txt");
 		BufferedReader br = new BufferedReader(fr);
@@ -37,7 +53,6 @@ public class DictionaryHandler {
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(holder);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

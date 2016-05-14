@@ -23,13 +23,21 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	/* The board being played on*/
 	private BoardPanel panel = null;
 	/* The TicTacToe game*/
-	protected TicTacToe tic = null;
+	protected ConnectFour connectFour = null;
 	/* X-cord of the move */
 	protected int numx = -1;
 	/* Y-cord of the move */
 	protected int numy = -1;
 	/* Piece of this player*/
 	protected char piece;
+	/* Number of Columns */
+	public final static int COLUMNNUM = 10;
+	/* Number of Rows */
+	public final static int ROWNUM = 10;
+	
+	public ConnectFourPlayer() {
+		
+	}
 	
 	/**
 	 * Makes the move for the player
@@ -60,8 +68,8 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	@Override
 	public synchronized void mousePressed(MouseEvent e) {
 		
-		int widthFactor = panel.getWidth()/COLUMNSNUM;
-		int heightFactor = panel.getHeight()/ROWSNUM;
+		int widthFactor = panel.getWidth()/COLUMNNUM;
+		int heightFactor = panel.getHeight()/ROWNUM;
 		numx = e.getX()/widthFactor;
 		numy = e.getY()/heightFactor;
 		
@@ -134,5 +142,20 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	 */
 	public void getConnectFour(ConnectFour connectFour) {
 		this.connectFour = connectFour;
+	}
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

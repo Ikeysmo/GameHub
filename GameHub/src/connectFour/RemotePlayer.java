@@ -23,6 +23,10 @@ public class RemotePlayer extends ConnectFourPlayer implements Runnable {
 	ObjectOutputStream oos;
 	public ConnectFour tic;
 	
+	public RemotePlayer() {
+		
+	}
+	
 	public RemotePlayer(String ipAddress, ConnectFour tic, ConnectFourPlayer op) {
 		this.tic = tic;
 		

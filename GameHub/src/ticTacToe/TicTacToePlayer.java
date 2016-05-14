@@ -34,6 +34,10 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	/* Name of the player*/
 	protected String name;
 	
+	public TicTacToePlayer() {
+		
+	}
+	
 	/**
 	 * Constructor of TicTacToePlayer
 	 * 

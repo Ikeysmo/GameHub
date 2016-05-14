@@ -94,7 +94,7 @@ public class BoardPanel extends JPanel {
 		
 		//draw the pieces
 		for(int i = 0; i < ROWLENGTH; i++){
-			for(int j = 0; j < COLUMNLENGTH j++){
+			for(int j = 0; j < COLUMNLENGTH; j++){
 				if(board[i][j] == PIECE1 || board[i][j] == PIECE2)
 					if (board[i][j] == PIECE1)
 						g.setColor(Color.blue);

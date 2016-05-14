@@ -60,7 +60,7 @@ public class ConnectFour implements ActionListener, Runnable {
 	/*Min Frame Height*/
 	final public static int MINFRAMEHEIGHT = 180;
 	/*Min Frame Width*/
-	final public static int MIN FRAMEWIDTH = 500;
+	final public static int MINFRAMEWIDTH = 500;
 	
 	/*Winning Screen Height */
 	final public static int WINFRAMEHEIGHT = 100;
@@ -104,9 +104,9 @@ public class ConnectFour implements ActionListener, Runnable {
 	/*Tells you whose turn it is*/
 	public int turn = 0;
 	/*The players in the game*/
-	private ConnectFourPlayer[] players = new ConnectFourPlayer[PLAYERSNUM];
+	private ConnectFourPlayer[] players = new ConnectFourPlayer[PLAYERNUM];
 	/*The board being used */
-	private char[][] board = new char[ROWSNUM][COLUMNSNUM];
+	private char[][] board = new char[ROWNUM][COLUMNNUM];
 	/* Object Output Stream */
 	private ObjectOutputStream oos;
 	/* Object Input Stream */
@@ -178,14 +178,14 @@ public class ConnectFour implements ActionListener, Runnable {
 	
 		//end
 		if(!goFirst){
-			players[PLAYER_1] = new RemotePlayer(oos, ois, this, remotePlayer, PIECE_1);
+			players[PLAYER_1] = new RemotePlayer(oos, ois, this, remotePlayer, PIECE1);
 			players[PLAYER_2] = new ConnectFourPlayer(localPlayer);
 			players[PLAYER_2].getConnectFour(this);
 		}
 		else{
 			players[PLAYER_1] = new ConnectFourPlayer(localPlayer);
 			players[PLAYER_1].getConnectFour(this);
-			players[PLAYER_2] = new RemotePlayer(oos, ois, this, remotePlayer, PIECE_2);
+			players[PLAYER_2] = new RemotePlayer(oos, ois, this, remotePlayer, PIECE2);
 		}
 		
 		mudda = new JFrame("Player Online");
@@ -273,7 +273,7 @@ public class ConnectFour implements ActionListener, Runnable {
 			mudda = new JFrame("Player Online");
 			mudda.setSize(500, 500);
 			mudda.setVisible(true);
-			players[PLAYER_1] = new ConectFourPlayer(player1name.getText());
+			players[PLAYER_1] = new ConnectFourPlayer(player1name.getText());
 			players[PLAYER_2] = new RemotePlayer(ip_field.getText(), this, players[0]);
 			players[PLAYER_1].getConnectFour(this);
 			foo = new BoardPanel(players[PLAYER_1], players[PLAYER_2], mudda);
@@ -329,7 +329,7 @@ public class ConnectFour implements ActionListener, Runnable {
 	 * 
 	 */
 	public void run() {
-		board = new char[ROWSNUM][COLUMNSNUM];
+		board = new char[ROWNUM][COLUMNNUM];
 		boolean gameOver = false;
 		players[PLAYER_1].assignPiece(PIECE1);
 		players[PLAYER_2].assignPiece(PIECE2);
@@ -435,9 +435,9 @@ public class ConnectFour implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == PIECE1 || board[i][j] == PIECE2 ) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 						int pieces = 1;
@@ -487,9 +487,9 @@ public class ConnectFour implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == PIECE1 || board[i][j] == PIECE2 ) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 						int pieces = 1;
@@ -557,9 +557,9 @@ public class ConnectFour implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == PIECE1 || board[i][j] == PIECE2 ) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 					int pieces = 1;
@@ -608,9 +608,9 @@ public class ConnectFour implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == PIECE1 || board[i][j] == PIECE2) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 					int pieces = 1;
@@ -680,8 +680,8 @@ public class ConnectFour implements ActionListener, Runnable {
 	 * 
 	 */
 	private void printBoard() {
-		for(int j = 0; j < COLUMNSNUM; j++) {
-			for(int i = 0; i < ROWSNUM; i++)
+		for(int j = 0; j < COLUMNNUM; j++) {
+			for(int i = 0; i < ROWNUM; i++)
 				System.out.print(String.valueOf(board[i][j]));
 			System.out.println("");
 		}

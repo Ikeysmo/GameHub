@@ -93,4 +93,7 @@ public class RemotePlayer extends TicTacToePlayer implements Runnable {
 		
 	}
 	
+	public void run() {
+		
+	}
 }
