@@ -1,5 +1,13 @@
 package gameHub;
 
+/**
+ * The login to get into GameHub
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -49,6 +57,7 @@ import ticTacToe.TicTacToe;
 
 //just here to configure github!
 public class GamehubLogIn implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
+	
 	private JFrame mainmode = new JFrame("Welcome to GameHub!");
 	private JFrame onlineWindow = new JFrame("Online List");
 	private JList gamesList = new JList();
