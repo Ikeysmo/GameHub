@@ -1,5 +1,22 @@
 package gameHub;
 
+/**
+ * The GameHub game server class
+ * 
+ * This server opens a port, and listens for connections to relay
+ * GAME DATA!
+ * 
+ * This has methods to find out
+ * - Find out who's online
+ * - Handle it accordingly
+ *
+ * NOTE: Authoratitive, GameHubServer only offers/request matches
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,22 +26,36 @@ import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
-/*This server opens up a port, and listens for connections to relay GAME DATA!
- * This has methods to find out who's online, and handle it accordingly. Authoratitive, GameHubServer only offers/request matches
- */
 public class GameHubGameServer implements Runnable {
+	/* The port for the server */
 	private int gamePortNumber = 2021; //for gaming
+	/* The server Socket for the server */
 	private ServerSocket ss;
-	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String,String>(); //Collection of who's in matches with who
-	private ConcurrentHashMap<String, ObjectOutputStream> onlineList = new ConcurrentHashMap<String, ObjectOutputStream>(); //Collection of who's currently logged in/Online
+	/* Collection of who's in matches with who */
+	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String,String>();
+	/*Collection of who's currently logged in/Online */
+	private ConcurrentHashMap<String, ObjectOutputStream> onlineList = new ConcurrentHashMap<String, ObjectOutputStream>();
+	/* The Server itself */
 	private GameHubServer GHS;
 
+	/**
+	 * The constructor of the GameHubGameServer
+	 * 
+	 * @param e The GameHubServer
+	 * @throws IOException
+	 */
 	public GameHubGameServer(GameHubServer e) throws IOException {
-		//listens on port
 		ss = new ServerSocket(gamePortNumber);
 		GHS = e;
 		new Thread(this).start();
 	}
+	
+	/**
+	 * This method adds a new match
+	 * 
+	 * @param p1 Player one in the match
+	 * @param p2 Player two in the match
+	 */
 	public boolean addMatch(String p1, String p2){ //checks to make sure user isn't in another game too!
 		if(matches.containsKey(p1.toUpperCase()) || matches.containsKey(p2.toUpperCase()))
 			return false;
@@ -36,6 +67,12 @@ public class GameHubGameServer implements Runnable {
 		}
 	}
 
+	/**
+	 * This method removes a match
+	 * 
+	 * @param username The username fo the person to remove
+	 * @return Was the Match removed
+	 */
 	public boolean removeMatch(String username){
 		//remove
 		onlineList.remove(username.toUpperCase()); //remove from list
@@ -46,9 +83,11 @@ public class GameHubGameServer implements Runnable {
 	}
 
 
+	/**
+	 * This method runs the GameHubGameServer
+	 */
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		Socket s = null; //initialize local pointers
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
@@ -124,13 +163,19 @@ public class GameHubGameServer implements Runnable {
 		catch( ClassNotFoundException | IOException de){
 			System.out.println("hey someone just left... should remove!");}
 	}
+	
+	/**
+	 * This message sends messages to clients
+	 * 
+	 * @param messageFromClient The message
+	 * @param username Reciever of the message
+	 */
 	private void send(Object messageFromClient, String username) {
 		//onlineList = GHS.getOnlineList(); //use own, local version!
 		ObjectOutputStream temp = onlineList.get(username);
 		try {
 			temp.writeObject(messageFromClient);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
