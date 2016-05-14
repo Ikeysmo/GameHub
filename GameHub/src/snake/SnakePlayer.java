@@ -22,7 +22,7 @@ public class SnakePlayer extends Player implements MouseListener {
 	public boolean ready = false;
 	/* The Panel for the board*/
 	private BoardPanel panel = null;
-	/* The snake game itself
+	/* The snake game itself */
 	protected Snake snake = null;
 	/* x cord of the piece */
 	protected int numx = -1;
@@ -153,6 +153,24 @@ public class SnakePlayer extends Player implements MouseListener {
 	 //TODO: The name does not match what the method is doing
 	public void getSnake(Snake snake) {
 		this.snake = snake;
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

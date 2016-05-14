@@ -56,7 +56,7 @@ public class Snake implements ActionListener, Runnable {
 	/*Min Frame Height*/
 	final public static int MINFRAMEHEIGHT = 180;
 	/*Min Frame Width*/
-	final public static int MIN FRAMEWIDTH = 500;
+	final public static int MINFRAMEWIDTH = 500;
 	
 	/*Winning Screen Height */
 	final public static int WINFRAMEHEIGHT = 100;
@@ -102,7 +102,7 @@ public class Snake implements ActionListener, Runnable {
 	/*The players in the game*/
 	private SnakePlayer[] players = new SnakePlayer[PLAYERNUM];
 	/*The board being used*/
-	private char[][] board = new char[ROWSNUM*COLUMNSNUM][ROWSNUM*COLUMNSNUM];
+	private char[][] board = new char[ROWNUM*COLUMNNUM][ROWNUM*COLUMNNUM];
 	
 	/**
 	 * The constructor of the Snake class
@@ -291,7 +291,7 @@ public class Snake implements ActionListener, Runnable {
 	 */
 	public void run() {
 		//Make the board
-		board = new char[ROWSNUM*COLUMNSNUM][ROWSNUM*COLUMNSNUM];
+		board = new char[ROWNUM*COLUMNNUM][ROWNUM*COLUMNNUM];
 		//The game is not over
 		boolean gameOver = false;
 		//Player one gets a piece
@@ -397,9 +397,9 @@ public class Snake implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == X || board[i][j] == O ) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 						int pieces = 1;
@@ -449,9 +449,9 @@ public class Snake implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == X || board[i][j] == O ) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 						int pieces = 1;
@@ -519,9 +519,9 @@ public class Snake implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == X || board[i][j] == O ) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 					int pieces = 1;
@@ -570,9 +570,9 @@ public class Snake implements ActionListener, Runnable {
 		//i is rows
 		//j is columns
 		//Check all of the columns
-		for(int j = 0; j < COLUMNSNUM; j++) {
+		for(int j = 0; j < COLUMNNUM; j++) {
 			//Check all of the rows
-			for(int i = 0; i < ROWSNUM; i++) {
+			for(int i = 0; i < ROWNUM; i++) {
 				if (board[i][j] == X || board[i][j] == O) { //The point is not empty
 					try { //handles i <= 9 || j <= 9
 					int pieces = 1;

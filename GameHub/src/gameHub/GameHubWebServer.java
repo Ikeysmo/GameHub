@@ -28,7 +28,7 @@ public class GameHubWebServer implements Runnable {
 	/* The second response */
 	private String http_response_part2 = "\r\n\r\n";
 	/* The name of the website */
-	public final static String WEBSITE_NAME = "gamehub.html"
+	public final static String WEBSITE_NAME = "gamehub.html";
 	
 	/**
 	 * The constructor of the GameHubWebServer

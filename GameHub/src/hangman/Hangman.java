@@ -52,7 +52,7 @@ public class Hangman implements ActionListener, Runnable{
 	/* The height of the end frame */
 	public final static int END_FRAME_HEIGHT = 150;
 	/* The width of the end frame */
-	public final static int END_FAME_WIDTH = 500;
+	public final static int END_FRAME_WIDTH = 500;
 	
 	/**
 	 * The constructor of Hangman

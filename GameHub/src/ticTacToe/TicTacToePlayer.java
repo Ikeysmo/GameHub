@@ -34,6 +34,11 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	/* Name of the player*/
 	protected String name;
 	
+	/* The number of rows */
+	public final static int ROWNUM = 3;
+	/* The number of columns */
+	public final static int COLUMNNUM = 3;
+	
 	public TicTacToePlayer() {
 		
 	}
@@ -75,8 +80,8 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	public synchronized void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-		int widthFactor = panel.getWidth()/COLUMNSNUM;
-		int heightFactor = panel.getHeight()/ROWSNUM;
+		int widthFactor = panel.getWidth()/COLUMNNUM;
+		int heightFactor = panel.getHeight()/ROWNUM;
 		numx = e.getX()/widthFactor;
 		numy = e.getY()/heightFactor;
 		
@@ -131,6 +136,30 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	 */
 	public void getTic(TicTacToe tic){
 		this.tic = tic;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

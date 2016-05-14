@@ -60,7 +60,7 @@ public class TicTacToe implements Runnable{
 	/*Min Frame Height*/
 	final public static int MINFRAMEHEIGHT = 180;
 	/*Min Frame Width*/
-	final public static int MIN FRAMEWIDTH = 500;
+	final public static int MINFRAMEWIDTH = 500;
 	
 	/*Winning Screen Height */
 	final public static int WINFRAMEHEIGHT = 100;
@@ -86,7 +86,7 @@ public class TicTacToe implements Runnable{
 	/*Players in the game*/
 	private TicTacToePlayer[] players = new TicTacToePlayer[PLAYERNUM];
 	/*The board being used*/
-	private char[][] board = new char[ROWSNUM][COLUMNSNUM];
+	private char[][] board = new char[ROWNUM][COLUMNNUM];
 	/* Object Output stream*/
 	private ObjectOutputStream oos;
 	/* Object Input Stream*/
@@ -142,7 +142,7 @@ public class TicTacToe implements Runnable{
 	 * Where the game is ran
 	 */
 	public void run() {
-		board = new char[ROWSNUM][COLUMNSNUM];
+		board = new char[ROWNUM][COLUMNNUM];
 		boolean gameOver = false;
 		try {
 			Thread.sleep(1000);
@@ -170,8 +170,9 @@ public class TicTacToe implements Runnable{
 				e.printStackTrace();
 			}
 			
-			
-			gameOver = detectGame(); //let know if game is over
+			if( isWinner() == PIECE1 || isWinner() == PIECE2) {
+				gameOver = true; //let know if game is over
+			}
 			
 			if(turn == 1)
 				turn = 0;
@@ -191,8 +192,8 @@ public class TicTacToe implements Runnable{
 		for(int i = 0; i < PLAYERNUM; i++){
 			if(players[PLAYER_1].getPiece() == isWinner()) {
 				playerWon = PLAYER_1;
-			} else if (PLAYER_2].getPiece() == isWinner()) {
-				playerWon = PLAYERS_2;
+			} else if (players[PLAYER_2].getPiece() == isWinner()) {
+				playerWon = PLAYER_2;
 			}
 		}
 		JFrame finished = new JFrame("Game!");
@@ -254,7 +255,7 @@ public class TicTacToe implements Runnable{
 		if(board[0][2] == piece && board[1][1] == piece && board[2][0] == piece)
 			return PIECE2;
 		//else...
-		return '';
+		return ' ';
 	}
 	
 	/**
@@ -285,8 +286,8 @@ public class TicTacToe implements Runnable{
 	 * 
 	 */
 	private void printBoard() {
-		for(int j = 0; j < COLUMNSNUM; j++) {
-			for(int i = 0; i < ROWSNUM; i++)
+		for(int j = 0; j < COLUMNNUM; j++) {
+			for(int i = 0; i < ROWNUM; i++)
 				System.out.print(String.valueOf(board[i][j]));
 			System.out.println("");
 		}
