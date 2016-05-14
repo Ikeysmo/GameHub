@@ -1,5 +1,13 @@
 package gameHub;
 
+/**
+ * The Gamehub Server
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
