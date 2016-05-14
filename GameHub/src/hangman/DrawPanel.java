@@ -1,5 +1,13 @@
 package hangman;
 
+/**
+ * This is the Draw Panel for hangman
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -13,21 +21,35 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class DrawPanel extends JPanel {
-/*this is must provide a function that draws the latest image*/
+	/* All of the poses of the Hang Man */
 	private BufferedImage[] hangmanposes;
+	/* The current word being done */
 	private String currWord = null;
+	/* The test word being done */
 	private char[] testWord = null;
+	/* The state of the poses right now */
 	private int pose = 0;
+	/* The number of poses in the hangman */
+	public final static int NUM_OF_POSES = 6;
+	
+	/**
+	 * The constructor of the Draw Panel
+	 * 
+	 * @throws IOException
+	 */
 	public DrawPanel() throws IOException {
-		// TODO Auto-generated constructor stub
 		setBackground(Color.white);
-		hangmanposes = new BufferedImage[6];
-		for(int i = 0; i < 6; i++){
+		hangmanposes = new BufferedImage[NUM_OF_POSES];
+		for(int i = 0; i < NUM_OF_POSES; i++){
 			hangmanposes[i] = ImageIO.read(new File("hangman" + (i+1) + ".png"));
 		}
-		System.out.println("done");
 	}
 	
+	/**
+	 * The paint method for the Draw Panel
+	 * 
+	 * @param g The Graphics
+	 */
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
@@ -53,11 +75,19 @@ public class DrawPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * This method is for adding a letter to the respective slot
+	 */
 	public void addLetter(char letter, int temp){
-		/*add letter to respective slot */
 		testWord[temp] = letter;
 		repaint();
 	}
+	
+	/**
+	 * Method to get the next state of the Hang Man
+	 * 
+	 * @return The new pose
+	 */
 	public int getNextState(){
 		//displays the latest state
 		if(pose < 6)
@@ -66,11 +96,20 @@ public class DrawPanel extends JPanel {
 		return pose;
 	}
 	
+	/**
+	 * Method to reset the state of the Hang Man to the
+	 * first one
+	 */
 	public void resetState(){
 		pose = 0;
 		repaint();
 	}
 
+	/**
+	 * Set the new word to test word
+	 * 
+	 * @param currentWord
+	 */
 	public void setWord(String currentWord) {
 		currWord = currentWord;
 		testWord = new char[currWord.length()];
@@ -80,8 +119,12 @@ public class DrawPanel extends JPanel {
 		repaint();
 	}
 
+	/**
+	 * The game over method
+	 * 
+	 * Not sure what it does...
+	 */
 	public void gameOver() {
-		// TODO Auto-generated method stub
 		
 	}
 }

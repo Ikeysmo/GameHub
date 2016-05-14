@@ -1,5 +1,13 @@
 package hangman;
 
+/**
+ * This is where the logic of Hangman happens
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -19,18 +27,44 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 public class Hangman implements ActionListener, Runnable{
+	
+	/* The Main Window */
 	private JFrame mainWindow;
+	/* The list of words */
 	private Vector<String> wordList = new Vector<String>();
+	/* The Draw Panel */
 	private DrawPanel drawPanel;
+	/* The button panel */
 	private JPanel buttonPanel;
+	/* The word being used now */
 	private String currentWord;
+	/* The number of lifes you have */
 	private int lifes = 0;
+	/* The reader of the words in the dictionary */
+	private FileReader fr;
+	/* Used for loading words */
+	private BufferedReader br;
+	
+	/* The height of the frame */
+	public final static int FRAME_HEIGHT = 800;
+	/* The width of the frame */
+	public final static int FRAME_WIDTH = 800;
+	/* The height of the end frame */
+	public final static int END_FRAME_HEIGHT = 150;
+	/* The width of the end frame */
+	public final static int END_FAME_WIDTH = 500;
+	
+	/**
+	 * The constructor of Hangman
+	 * 
+	 * @throws IOException
+	 */
 	public Hangman() throws IOException {
 		FileReader fr = new FileReader("dictonary_english_hangman.txt");
-		BufferedReader br = new BufferedReader(fr); //loading the words
+		BufferedReader br = new BufferedReader(fr);
 		//load the GUI just to let person know it's there
 		mainWindow = new JFrame("Hangman!");
-		mainWindow.setSize(800, 800);
+		mainWindow.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		mainWindow.setResizable(false);
 		mainWindow.setVisible(true);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,16 +78,25 @@ public class Hangman implements ActionListener, Runnable{
 		new Thread(this).start();
 	}
 
+	/**
+	 * The main method
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
 		new Hangman();
 	}
 
+	/**
+	 * The method for any actions performed
+	 * 
+	 * @param e The action that triggers the method
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		ButtonLetter bl = (ButtonLetter) e.getSource();
-		System.out.println(bl.letter);
+		System.out.println(bl.letter); //The letter that was pressed
 		bl.setEnabled(false);
 		String hitLetter = String.valueOf(bl.letter);
 		if(currentWord.contains(hitLetter.toUpperCase()))
@@ -76,17 +119,23 @@ public class Hangman implements ActionListener, Runnable{
 		}
 	}
 
+	/**
+	 * This method starts a new thread
+	 */
 	public void startNewThread(){ //this is ONLY needed for gameOver method!
 		new Thread(this).start();
 	}
+	
+	/**
+	 * The game over method
+	 */
 	private void gameOver() {
-		// TODO Auto-generated method stub
 		JFrame endWindow = new JFrame("GameOver");
 		JLabel correctWord = new JLabel("The correct word was: "+ currentWord + "!");
 		correctWord.setFont(new Font("Default", Font.BOLD, 25));
 		correctWord.setForeground(Color.blue);
 		endWindow.getContentPane().add(correctWord);
-		endWindow.setSize(500, 150);
+		endWindow.setSize(END_FRAME_WIDTH, END_FRAME_HEIGHT);
 		JButton newGame = new JButton("Play Again?");
 		endWindow.add(newGame, "South");
 		newGame.addActionListener(new ActionListener() {
@@ -95,7 +144,7 @@ public class Hangman implements ActionListener, Runnable{
 								mainWindow.dispose();
 								endWindow.dispose();
 								mainWindow = new JFrame("Hangman!");
-								mainWindow.setSize(800, 800);
+								mainWindow.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 								mainWindow.setResizable(false);
 								mainWindow.setVisible(true);
 								startNewThread();
@@ -103,10 +152,12 @@ public class Hangman implements ActionListener, Runnable{
 						});
 		endWindow.setVisible(true);
 		endWindow.setLocationRelativeTo(mainWindow);
-		//this code below goes to new hangman
 
 	}
 
+	/**
+	 * This method has the game loop for the game
+	 */
 	@Override
 	public void run() {
 
@@ -114,7 +165,6 @@ public class Hangman implements ActionListener, Runnable{
 		try {
 			drawPanel = new DrawPanel();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
