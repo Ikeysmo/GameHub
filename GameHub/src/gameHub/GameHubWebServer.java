@@ -1,5 +1,13 @@
 package gameHub;
 
+/**
+ * This class is for the GameHub Web Server
+ * 
+ * @author Isaiah Smoak
+ * @author Zachary Jones
+ * @version 1.0
+ */
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,12 +19,24 @@ import java.net.Socket;
 
 
 public class GameHubWebServer implements Runnable {
+	/* The socket used for the server */
 	private ServerSocket websocket; 
+	/* The string of HTML */
 	private String html_String = ""; 
+	/* The first response */
 	private String http_response_part1 = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: ";
+	/* The second response */
 	private String http_response_part2 = "\r\n\r\n";
+	/* The name of the website */
+	public final static String WEBSITE_NAME = "gamehub.html"
+	
+	/**
+	 * The constructor of the GameHubWebServer
+	 * 
+	 * @throws IOException
+	 */
 	public GameHubWebServer() throws IOException {
-		FileReader fr = new FileReader("gamehub.html");
+		FileReader fr = new FileReader(WEBSITE_NAME);
 		BufferedReader br = new BufferedReader(fr);
 		
 		while(true){
@@ -32,6 +52,10 @@ public class GameHubWebServer implements Runnable {
 		new Thread(this).start();	
 		}
 
+	/**
+	 * This method runs the Gamehub website
+	 * server
+	 */
 	@Override
 	public void run() {
 		while(true){
@@ -42,7 +66,6 @@ public class GameHubWebServer implements Runnable {
 			dos.writeUTF(http_response_part1+html_String.length()+http_response_part2+html_String);
 			dos.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		}
