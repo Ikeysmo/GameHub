@@ -13,6 +13,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -132,6 +133,36 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		connButton.setEnabled(true);
 		ticButton.setEnabled(true);
 		mainPanel.add(welcome);
+		BufferedImage pop = null;
+		try {
+			pop = ImageIO.read(new File("gamepad.png"));
+			System.out.println("whaddup");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		JPanel imagepanel = new JPanel(){
+//			private BufferedImage image;
+//			public void JPanel(BufferedImage l){
+//				image = l;
+//			}
+//			public void paint(Graphics g){
+//				super.paint(g);
+//				g.drawImage(image, 0, 0, null);
+//				
+//			}
+//			public void addImage(BufferedImage di){
+//				this.image = di;
+//			}
+//		};
+//		
+		ImageIcon img = new ImageIcon(pop);
+		JLabel img_show = new JLabel(new ImageIcon(pop));
+		JLabel instru = new JLabel("Enter username and password below!");
+		instru.setFont(new Font("default", Font.BOLD, 20));
+		
+		mainPanel.add(img_show);
+		mainPanel.add(instru);
 		mainPanel.add(loginBox);
 		mainPanel.add(passBox);
 		mainPanel.add(loginButton);
@@ -139,14 +170,15 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		errormsg.setForeground(Color.red);
 		mainmode.getContentPane().add(mainPanel);
 		mainmode.getContentPane().add(errormsg, "South");
-		mainmode.setSize(550,170);
+		mainmode.setSize(600,600);
 		mainmode.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainmode.setVisible(true);
 		mainmode.requestFocus();
 		loginButton.addActionListener(this);
 		registerButton.addActionListener(this);
 		chatSubmitButton.addActionListener(this);
-		loginBox.setText("Enter Username   ");
+
+		loginBox.setText("Username");
 		shot.add(new JMenuItem("Connect 4"));
 		onlineList.addListSelectionListener(this);
 
