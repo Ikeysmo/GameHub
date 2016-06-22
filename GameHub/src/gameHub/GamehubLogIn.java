@@ -49,9 +49,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -80,7 +82,8 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	private JButton chatSubmitButton = new JButton("Submit");
 	JScrollPane chatHistory = new JScrollPane(chatIn);
 	JScrollPane chatOutbox = new JScrollPane(chatOut);
-
+	private JButton tictactoeButton;
+	private JButton connectfourButton;
 	public GamehubLogIn(String ipaddress) {
 		if(ipaddress != null) 
 			ip_Address = ipaddress;
@@ -239,6 +242,14 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				chatOut.setText(""); //Clear out the box
 			} catch (IOException e){e.printStackTrace();}
 		}
+		
+		else if(arg0.getSource() == connectfourButton){
+			System.out.println("create invite window!");
+			//new GameInvite(from, to, game)
+		}
+		else if(arg0.getSource() == tictactoeButton){
+			System.out.println("create invite window!");
+		}
 	}
 	private void get_online_window(){
 		if(mainWindow != null && !mainWindow.isShowing())
@@ -247,49 +258,69 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		mainWindow = new JFrame("Welcome to GameHub " +p1.getUsername() +"!");
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.setMinimumSize(new Dimension(1024,800));
+		mainWindow.setResizable(false);
 		mainWindow.setVisible(true);
-		mainWindow.getContentPane().setBackground(Color.ORANGE);
+		mainWindow.getContentPane().setBackground(new Color(52,36,74));
+		mainWindow.setLayout(null);
 		//mainWindow.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
-		onlineList.setFont(new Font("Default", Font.BOLD, 30));
+		onlineList.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 30));
 		onlineList.setPreferredSize(new Dimension(224,600));
-		JPanel mainPanel = new JPanel();
-		JPanel primaryPanel = new JPanel();
-		JPanel secondaryPanel = new JPanel();
-		mainPanel.setBackground(Color.orange);
-		mainPanel.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
-		JPanel subPanel = new JPanel();
-		subPanel.setPreferredSize(new Dimension(800,600));
-		subPanel.setBackground(Color.orange);
-		subPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		primaryPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		primaryPanel.add(subPanel);
-		primaryPanel.add(new JSplitPane(JSplitPane.VERTICAL_SPLIT));
+		onlineList.setBackground(new Color(215,204,230));
+		//stopped
+		JTabbedPane mainPanel = new JTabbedPane();
 		
-		primaryPanel.add(onlineList);
-		mainPanel.add(primaryPanel);
-		secondaryPanel.setBackground(Color.orange);
-		secondaryPanel.setPreferredSize(new Dimension(1024,200));
-		mainPanel.add(secondaryPanel);
-		chatIn.setText("Incoming!" + System.lineSeparator());
-		chatIn.setFont(new Font("Default", Font.BOLD, 20));
-		chatIn.setSize(300, 270);
-		chatIn.setEditable(false);
-		chatHistory.setPreferredSize(new Dimension(1000, 80));
-		chatOutbox.setPreferredSize(new Dimension(800,40));
-		chatOut.setText("Outgoing");
-		chatOut.setLineWrap(true);
-		chatOut.addFocusListener(this);
-		chatOut.setFont(new Font("Default", Font.BOLD, 20));
-		chatOut.addKeyListener(this);
-		JPanel chatPanel = new JPanel();
-		secondaryPanel.add(chatHistory);
-		//chatPanel.add(splitter);
-		secondaryPanel.add(chatOutbox);
-		secondaryPanel.add(chatSubmitButton);
-		//chatPanel.add(onlineList);
+		JPanel homePanel = new JPanel();
+		JScrollPane bd = new JScrollPane(homePanel);
+		JPanel scorePanel = new JPanel();
+		JPanel trophyPanel = new JPanel();
+		homePanel.setBackground(Color.white);
+		scorePanel.setBackground(Color.blue);
+		trophyPanel.setBackground(Color.green);
+		mainPanel.setForeground(Color.cyan);
+		mainPanel.setBackground(Color.orange);
+		mainPanel.addTab("Home", bd);
+		//add code to flesh out home panel or show games
+		ImageIcon tictac = new ImageIcon("tic_tac_toe.png", "tictactoe");
+		ImageIcon con4 = new ImageIcon("connect4.png", "connect 4");
+		tictactoeButton = new JButton(tictac);
+		connectfourButton = new JButton(con4);
+		tictactoeButton.setEnabled(false);
+		//homePanel.add(new JLabel("Do the thing here!"));
+		homePanel.add(tictactoeButton);
+		homePanel.add(connectfourButton);
+		tictactoeButton.addActionListener(this);
+		connectfourButton.addActionListener(this);
+		mainPanel.addTab("Scores", scorePanel);
+		mainPanel.addTab("Trophies", trophyPanel);
+		JPanel onlinePanel = new JPanel();
+		JPanel chatPanel = new JPanel(); //for the bottom
+		mainPanel.setBackground(new Color(52,36,74));
+		mainPanel.setBounds(0, 0, 800, 600);
+		onlinePanel.setBackground(new Color(52,36,74));
+		onlinePanel.setBounds(804, 0, 215, 600);
+		onlineList.setBorder(new LineBorder(Color.black));
+		chatPanel.setBackground(new Color(52,36,74));
+		JLabel this_online = new JLabel("Who's Online");
+		this_online.setForeground(Color.white);
+		this_online.setFont(new Font("Arial MT Bold", Font.BOLD, 15));
+		onlinePanel.add(this_online);
+		onlinePanel.add(onlineList);
+		chatPanel.setBounds(0, 600, 1024, 200);
+		chatIn.setPreferredSize(new Dimension(1010, 100));
+		chatIn.setFont(new Font("Default", Font.BOLD, 15));
+		chatIn.setBorder(new LineBorder(Color.black));
+		chatOut.setPreferredSize(new Dimension(900,50));
+		chatOut.setFont(new Font("default", Font.BOLD, 15));
+		chatIn.setForeground(Color.BLUE);
+		chatIn.setBackground(new Color(185,219,217));
+		chatOut.setBorder(new LineBorder(Color.black));
+		chatPanel.add(chatIn);
+		chatPanel.add(chatOut);
+		chatPanel.add(chatSubmitButton);
 		mainWindow.add(mainPanel);
-		//mainWindow.add(mainPanel);
-	}
+		mainWindow.add(onlinePanel);
+		mainWindow.add(chatPanel);
+			}
 
 	public void get_scores(){;}
 	public void add_trophy(){;}
@@ -396,6 +427,8 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				//this does not CATCH anything that isn't one of these! The games should catch the rest!
 				else{
 					System.out.println("Hey, received something:" + message);//this is where I look at my matches list and handle it correspondingly(forward it to whoever is also in match)
+					
+					chatIn.append(message.toString()+ "!");
 				}
 
 			} catch (ClassNotFoundException | IOException e) {
@@ -406,7 +439,12 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	}
 
 	@Override
-	public void valueChanged(ListSelectionEvent arg0) {}
+	public void valueChanged(ListSelectionEvent arg0) {
+		if(!tictactoeButton.isEnabled() || !connectfourButton.isEnabled()){
+			tictactoeButton.setEnabled(true);
+			connectfourButton.setEnabled(true);
+		}
+	}
 
 	/**
 	 * This is a method that I found in order to figure out how to resize
