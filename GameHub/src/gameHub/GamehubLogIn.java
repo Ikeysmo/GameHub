@@ -56,6 +56,8 @@ import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Caret;
+import javax.swing.text.Document;
 
 import connectFour.ConnectFour;
 import ticTacToe.TicTacToe;
@@ -73,7 +75,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	private JLabel errormsg = new JLabel();
 	private String ip_Address = "192.12.4.5";
 	private Socket s;
-	private JTextArea chatOut = new JTextArea();
+	private JTextField chatOut = new JTextField();
 	private JTextArea chatIn = new JTextArea();
 	private JSplitPane splitter = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 	private PlayerAccount p1;
@@ -188,6 +190,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				ois = new ObjectInputStream(s.getInputStream()); 
 				String serverReply = (String) ois.readObject();
 				System.out.println("Server Reply:" + serverReply); 
+				chatIn.append(serverReply + "!" + System.lineSeparator());
 				if(!serverReply.contains("Welcome")){ //server sends back welcome... if not, then error --> incorrect username/password!
 					errormsg.setText("Error: Incorrect Username or Password");
 					return;
@@ -286,6 +289,8 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		
 		JPanel homePanel = new JPanel();
 		JScrollPane bd = new JScrollPane(homePanel);
+		JScrollPane wd = new JScrollPane(chatIn);
+		wd.setPreferredSize(new Dimension(1010,100));
 		JPanel scorePanel = new JPanel();
 		JPanel trophyPanel = new JPanel();
 		homePanel.setBackground(Color.white);
@@ -323,10 +328,10 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		onlinePanel.add(this_online);
 		onlinePanel.add(onlineList);
 		chatPanel.setBounds(0, 600, 1024, 200);
-		chatIn.setPreferredSize(new Dimension(1010, 100));
+		//chatIn.setPreferredSize(new Dimension(1010, 100));
 		chatIn.setFont(new Font("Default", Font.BOLD, 15));
 		chatIn.setBorder(new LineBorder(Color.black));
-		chatOut.setPreferredSize(new Dimension(900,50));
+		chatOut.setPreferredSize(new Dimension(920,30));
 		chatOut.setFont(new Font("default", Font.BOLD, 15));
 		chatIn.setForeground(Color.BLUE);
 		chatIn.setBackground(new Color(185,219,217));
@@ -334,7 +339,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		chatOut.addKeyListener(this);
 		chatOut.setBorder(new LineBorder(Color.black));
 		chatIn.setEditable(false);
-		chatPanel.add(chatIn);
+		chatPanel.add(wd);
 		chatPanel.add(chatOut);
 		chatPanel.add(chatSubmitButton);
 		mainWindow.add(mainPanel);
@@ -447,6 +452,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 					else
 						chatIn.setForeground(Color.red);  */
 					chatIn.append(chat.from + ": " + chat.message); //reveal chat message to GUI window
+					chatIn.setCaretPosition(chatIn.getDocument().getLength());
 				} 
 				//this does not CATCH anything that isn't one of these! The games should catch the rest!
 				else{
@@ -496,14 +502,17 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		//If Enter Is Pressed
 		if(kp.getKeyCode() == KeyEvent.VK_ENTER) { 
 			if(kp.getSource() == chatOut){
+				chatSubmitButton.doClick();
+				/*
 				System.out.println("popyth");
 				try {
 					oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone")); //Sends the chatMessage to everyone
 					chatOut.setText(""); //Clear out the box
+					chatOut.setCaretPosition(0);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}*/
 			}
 			else if (kp.getSource() == passBox){
 				System.out.println("hallelujah");
