@@ -84,12 +84,12 @@ public class BoardPanel extends JPanel {
 		int height = getHeight();
 		
 		for(int i = 1; i < ROWLENGTH; i++) {
-			g.drawLine((width/ROWLENGTH)*i, 0, (width/ROWLENGTH*COLUMNLENGTH)*i, height);
+			g.drawLine((width/ROWLENGTH)*i, 0, (width/ROWLENGTH)*i, height);
 		}
 		
 		//Draws the horizontal lines on the grid
 		for(int i = 1; i < COLUMNLENGTH; i++) {
-			g.drawLine(0, (height/COLUMNLENGTH)*i, width , (height/ROWLENGTH*COLUMNLENGTH)*i);
+			g.drawLine(0, (height/COLUMNLENGTH)*i, width , (height/ROWLENGTH)*i);
 		}
 		
 		//draw the pieces

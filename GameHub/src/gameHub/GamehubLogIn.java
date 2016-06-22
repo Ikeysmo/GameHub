@@ -95,14 +95,15 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		mainWindow.requestFocus(); //gets focus of window so loginBox isn't empty
 		loginBox.setFont(new Font("Default", Font.BOLD, 20));
 		loginBox.addFocusListener(this);
-		loginBox.addKeyListener(this);
+		passBox.addKeyListener(this);
+		//loginBox.addKeyListener(this);
 		loginBox.setPreferredSize(new Dimension(170,30));
 		loginBox.setMinimumSize(new Dimension(170,30));
 		passBox.setFont(new Font("Default", Font.BOLD, 20));
 		passBox.setPreferredSize(new Dimension(170, 30));
 		passBox.setMinimumSize(new Dimension(170, 30));
 		passBox.addFocusListener(this);
-		passBox.addKeyListener(this);
+		//passBox.addKeyListener(this);
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBackground(Color.orange);
 		mainPanel.add(welcomeMessage);
@@ -245,17 +246,31 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		
 		else if(arg0.getSource() == connectfourButton){
 			System.out.println("create invite window!");
-			//new GameInvite(from, to, game)
+			//new GameInvite window created here
+			try {
+				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.connect4));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if(arg0.getSource() == tictactoeButton){
 			System.out.println("create invite window!");
+			//new gameinvite window created here
+			try {
+				oos.writeObject(new GameInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.tictactoe));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 	}
 	private void get_online_window(){
 		if(mainWindow != null && !mainWindow.isShowing())
 			mainWindow.dispose(); //destroy the window, load up new ones for a signed in account
 		mainWindow = null;
-		mainWindow = new JFrame("Welcome to GameHub " +p1.getUsername() +"!");
+		mainWindow = new JFrame("Welcome to GameHub " +p1.getUsername() +"!" + System.lineSeparator());
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.setMinimumSize(new Dimension(1024,800));
 		mainWindow.setResizable(false);
@@ -274,11 +289,13 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		JPanel scorePanel = new JPanel();
 		JPanel trophyPanel = new JPanel();
 		homePanel.setBackground(Color.white);
-		scorePanel.setBackground(Color.blue);
+		scorePanel.setBackground(new Color(240,250,240));
 		trophyPanel.setBackground(Color.green);
 		mainPanel.setForeground(Color.cyan);
 		mainPanel.setBackground(Color.orange);
 		mainPanel.addTab("Home", bd);
+		scorePanel.add(new JLabel("This is where to put scores!"));
+		trophyPanel.add(new JLabel("Trophy listing!"));
 		//add code to flesh out home panel or show games
 		ImageIcon tictac = new ImageIcon("tic_tac_toe.png", "tictactoe");
 		ImageIcon con4 = new ImageIcon("connect4.png", "connect 4");
@@ -313,7 +330,10 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		chatOut.setFont(new Font("default", Font.BOLD, 15));
 		chatIn.setForeground(Color.BLUE);
 		chatIn.setBackground(new Color(185,219,217));
+		chatOut.requestFocus();
+		chatOut.addKeyListener(this);
 		chatOut.setBorder(new LineBorder(Color.black));
+		chatIn.setEditable(false);
 		chatPanel.add(chatIn);
 		chatPanel.add(chatOut);
 		chatPanel.add(chatSubmitButton);
@@ -422,13 +442,17 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				else if(message instanceof ChatMessage){
 					System.out.println("Abe Lincoln");
 					ChatMessage chat = (ChatMessage) message;
+					/*if(chat.from.equalsIgnoreCase(p1.getUsername()))
+						chatIn.setForeground(Color.blue);
+					else
+						chatIn.setForeground(Color.red);  */
 					chatIn.append(chat.from + ": " + chat.message); //reveal chat message to GUI window
 				} 
 				//this does not CATCH anything that isn't one of these! The games should catch the rest!
 				else{
 					System.out.println("Hey, received something:" + message);//this is where I look at my matches list and handle it correspondingly(forward it to whoever is also in match)
 					
-					chatIn.append(message.toString()+ "!");
+					chatIn.append(message.toString()+ "!" + System.lineSeparator());
 				}
 
 			} catch (ClassNotFoundException | IOException e) {
@@ -471,15 +495,22 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	public void keyPressed(KeyEvent kp) {  
 		//If Enter Is Pressed
 		if(kp.getKeyCode() == KeyEvent.VK_ENTER) { 
-			try {
-				oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone")); //Sends the chatMessage to everyone
-				chatOut.setText(""); //Clear out the box
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(kp.getSource() == chatOut){
+				System.out.println("popyth");
+				try {
+					oos.writeObject(new ChatMessage(chatOut.getText(),p1.getUsername() , "Everyone")); //Sends the chatMessage to everyone
+					chatOut.setText(""); //Clear out the box
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			
+			else if (kp.getSource() == passBox){
+				System.out.println("hallelujah");
+				loginButton.doClick();
+			}
 		}
+	
 	}
 
 	@Override
