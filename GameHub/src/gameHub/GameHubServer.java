@@ -15,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +28,7 @@ public class GameHubServer implements Runnable{
 	private GameHubGameServer gameServer;
 	public GameHubServer() throws IOException {
 
-		ss = new ServerSocket(portNumber, 0, InetAddress.getByName(null));
+		ss = new ServerSocket(portNumber);
 		gameServer = new GameHubGameServer(this);
 		//new GameHubWebServer(); //set up webserver!
 		System.out.println(ss.getInetAddress());
