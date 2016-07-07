@@ -25,7 +25,8 @@ public class HttpWebServer{
 		ServeForever();
 	}
 	public static void main(String[] args) throws Exception { //expected to be given port number
-		new HttpWebServer(Integer.parseInt(args[0]));
+		//new HttpWebServer(Integer.parseInt(args[0]));
+		new HttpWebServer(Integer.parseInt("8080"));
 	}
 	
 	public void ServeForever(){
