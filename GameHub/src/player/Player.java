@@ -1,4 +1,4 @@
-package gameHub;
+package player;
 
 /**
  * The abstract class for the Player
@@ -13,9 +13,19 @@ import java.io.IOException;
 public class Player {
 	/* The name of the player */
 	public String name;
+	/* high scores */
+	public HighScores highScores;
+	/* Friends */
+	public String[] friends;
+	/*Trophies */
+	public Trophies trophies;
+	/* Awards */
+	public Awards awards;
+	/* Data */
+	public Data data;
 	
 	/**
-	 * Constructor of the Player class
+ 	 * Constructor of the Player class
 	 */
 	public Player() {
 	}

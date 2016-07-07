@@ -437,7 +437,9 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		System.out.println("create invite window!");
 		//new game invite window created here
 		try {
-			oos.writeObject(new GameInvite(username, selectedValue, game));
+			if (!username.equals(selectedValue)) {
+				oos.writeObject(new GameInvite(username, selectedValue, game));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

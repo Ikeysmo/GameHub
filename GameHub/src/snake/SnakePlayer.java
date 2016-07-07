@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
-import gameHub.Player;
+import player.Player;
 
 public class SnakePlayer extends Player implements MouseListener {
 	/* Tell if the mouse is not clicked*/

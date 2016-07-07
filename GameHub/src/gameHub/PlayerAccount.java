@@ -10,6 +10,8 @@ package gameHub;
 
 import java.net.ConnectException;
 
+import player.Player;
+
 public class PlayerAccount {
 	/* The username of the player*/
 	String username;

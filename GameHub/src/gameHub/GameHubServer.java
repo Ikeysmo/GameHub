@@ -27,12 +27,15 @@ public class GameHubServer implements Runnable{
 	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String, String>(); //Collection of who's in matches with who
 	private GameHubGameServer gameServer;
 	public GameHubServer() throws IOException {
+		System.out.println("-------GAMEHUB SERVER-------\n");
+		System.out.println("----------------------------\n");
 
 		ss = new ServerSocket(portNumber);
 		gameServer = new GameHubGameServer(this);
 		//new GameHubWebServer(); //set up webserver!
 		ss.getInetAddress(); //for static reasons
 		System.out.println("HOST ADDRESS: \n" + InetAddress.getLocalHost().getHostAddress());
+		System.out.println("----------------------------\n");
 		//try to retrieve a saved list of everyone who's ever registered
 		try{ 
 			FileInputStream fis = new FileInputStream("Accounts.data");
