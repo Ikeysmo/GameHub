@@ -12,7 +12,6 @@ public class HttpResponse {
 	
 	final String newLine = "\r\n";
 	public HttpResponse() {
-		// TODO Auto-generated constructor stub
 		
 	}
 	

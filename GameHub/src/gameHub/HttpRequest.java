@@ -1,6 +1,4 @@
 package gameHub;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 public class HttpRequest {
 	String path_File_name;

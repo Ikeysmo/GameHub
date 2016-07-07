@@ -12,7 +12,6 @@ import java.net.Socket;
 
 public class HttpWebServer{
 	private ServerSocket s;
-	private String ip_Address;
 	private int port = 0;
 	private HttpRequest clientRequest;
 	
@@ -67,6 +66,7 @@ public class HttpWebServer{
 					else
 						html_String += temp;
 				}
+				br.close();
 				HttpResponse resp = new HttpResponse();
 				resp.setStatus(200);
 				resp.setLength(html_String.getBytes().length); //does whatever

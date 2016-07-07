@@ -8,13 +8,13 @@ package gameHub;
  * @version 1.0
  */
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +31,8 @@ public class GameHubServer implements Runnable{
 		ss = new ServerSocket(portNumber);
 		gameServer = new GameHubGameServer(this);
 		//new GameHubWebServer(); //set up webserver!
-		System.out.println(ss.getInetAddress());
+		ss.getInetAddress(); //for static reasons
+		System.out.println("HOST ADDRESS: \n" + InetAddress.getLocalHost().getHostAddress());
 		//try to retrieve a saved list of everyone who's ever registered
 		try{ 
 			FileInputStream fis = new FileInputStream("Accounts.data");
@@ -50,12 +51,8 @@ public class GameHubServer implements Runnable{
 		new Thread(this).start(); //start thread(s) for listening
 
 	}
-
-	public ConcurrentHashMap<String, ObjectOutputStream> getOnlineList(){
-		return onlineList;
-	}
+	
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
 		new GameHubServer();
 	}
 
@@ -82,7 +79,6 @@ public class GameHubServer implements Runnable{
 			oos = new ObjectOutputStream(s.getOutputStream()); // prepare to send
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("Initial connect failure: " + e);
 			try {s.close();}           // try to hang up
 			catch(Exception ioe){}     // s already terminated!
@@ -108,13 +104,11 @@ public class GameHubServer implements Runnable{
 					oos.writeObject("Invalid format"); //generic message sent
 					System.out.println("Failed to Join! Client didn't enter valid characters!");
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				try { //10.2 close!
 					s.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return; //
@@ -131,7 +125,6 @@ public class GameHubServer implements Runnable{
 						oss.writeObject(passwords);
 						fos.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -142,7 +135,6 @@ public class GameHubServer implements Runnable{
 						s.close();
 					}
 					catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					return; //
@@ -160,7 +152,6 @@ public class GameHubServer implements Runnable{
 						s.close();
 						return;
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} //handles if passwords don't match
@@ -175,8 +166,8 @@ public class GameHubServer implements Runnable{
 			//part 13
 			System.out.println(userName + " is joining");
 			try{
+				sendToAll("Everybody Welcome " + userName);
 				oos.writeObject("Welcome " + userName);
-				sendToAll("Welcome " + userName);
 				onlineList.put(userName, oos); //have to test rejoin from new location
 				//do
 				String[] chatNameLists = onlineList.keySet().toArray(new String[0]);
@@ -189,8 +180,20 @@ public class GameHubServer implements Runnable{
 			}
 			try{
 				while(true){
+					
 					Object messageFromClient = ois.readObject();//wait for MY client to say something
 					System.out.println("Received '" + messageFromClient + "' from " + userName); // (debug trace)
+					
+					//This is for if any requests to leave the server are made
+					if(messageFromClient.equals("0x000000")) {
+						onlineList.remove(userName);
+						sendToAll("Goodbye to " + userName + " who has just left the chat room.");
+						String[] chatNameLists = onlineList.keySet().toArray(new String[0]);
+						sendToAll(chatNameLists);
+						s.close();
+						break;
+					}
+					
 					if (messageFromClient instanceof ChatMessage){
 						ChatMessage chat = (ChatMessage) messageFromClient;
 						System.out.println("Hey you've got mail!");
@@ -233,15 +236,11 @@ public class GameHubServer implements Runnable{
 							//I'm in a match
 							send(messageFromClient, matches.get(userName)); //send to one guy
 						}
-					}
+					}	
 				}
 			}
 			catch(Exception e){
-				//oos.writeObject(chatName + " is leaving the chat room");
-				//sendToAll(message);
 				e.printStackTrace();
-				onlineList.remove(userName);
-				sendToAll("Goodbye to " + userName + " who has just left the chat room.");
 
 			}
 		}//now go to part 3?
@@ -264,7 +263,6 @@ public class GameHubServer implements Runnable{
 			try {
 				clientOOS.writeObject(message);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -276,7 +274,6 @@ public class GameHubServer implements Runnable{
 		try {
 			temp.writeObject(message);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e);
 		}

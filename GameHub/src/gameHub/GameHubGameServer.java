@@ -109,7 +109,6 @@ public class GameHubGameServer implements Runnable {
 
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("Initial connect failure: " + e);
 			try {s.close();}           // try to hang up
 			catch(Exception ioe){}     // s already terminated!
