@@ -9,9 +9,15 @@ package gameHub;
  */
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -27,6 +33,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -48,6 +56,10 @@ import connectFour.ConnectFour;
 import ticTacToe.TicTacToe;
 
 public class GamehubLogIn implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
+	
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	double width = screenSize.getWidth();
+	double height = screenSize.getHeight();
 	
 	/* The player's Account */
 	private PlayerAccount p1;
@@ -81,7 +93,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	 */
 	private JFrame mainWindow = new JFrame("Welcome to GameHub!");
 	private JPanel mainWindowPanel = new JPanel();
-	private JLabel welcomeMessage = new JLabel("Welcome to GameHub. Please sign in now!");
+	private JLabel welcomeMessage = new JLabel("Welcome to GameHub");
 	private JLabel instru = new JLabel("Enter username and password below!");
 	private JTextField loginBox = new JTextField("Enter Username");
 	private JPasswordField passBox = new JPasswordField("");
@@ -131,13 +143,28 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	 */
 	public void setUpIp_AddressWindow() {
 		ipAddressWindow.requestFocus();
-		ipAddressWindow.setSize(new Dimension(600,600));
-		ipAddressPanel.setSize(new Dimension(500,500));
+		ipAddressWindow.toFront();
+		ipAddressWindow.setBackground(Color.cyan);
+		ipAddressWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
+		//ipAddressWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		ipAddressWindow.setUndecorated(true);
+		ipAddressWindow.setLocation((int)width/2 - 300, (int)height/2 - 50);
+		//ipAddressWindow.setOpacity(0.75F);
+		
+		ipAddressWindow.setSize(new Dimension(600,100));
+		
+		ipAddressPanel.setSize(new Dimension(600,100));
 		ipAddressPanel.setLayout(new GridLayout());
+		ipAddressPanel.setBorder(BorderFactory.createLineBorder(Color.cyan, 10));
+		
 		ipAddressBox.setSize(new Dimension(200, 100));
+		ipAddressBox.setFont(new Font("default", Font.BOLD, 20));
+		
 		ipAddressMessage.setSize(new Dimension(200, 100));
+		
 		ipAddressSubmit.setSize(new Dimension(200, 100));
 		ipAddressSubmit.addActionListener(this);
+		
 		ipAddressPanel.add(ipAddressMessage);
 		ipAddressPanel.add(ipAddressBox);
 		ipAddressPanel.add(ipAddressSubmit);
@@ -152,9 +179,26 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	 * @author Zachary R Jones
 	 */
 	public void setUpMainWindow() {
+		
+		mainWindow.requestFocus();
+		mainWindow.toFront();
+		mainWindow.setBackground(Color.cyan);
+		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
+		//mainWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mainWindow.setUndecorated(true);
+		mainWindow.setLocation((int)width/2 - 300, (int)height/2 - 300);
+		
+		loginButton.setBackground(Color.cyan);
+		loginButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		registerButton.setBackground(Color.cyan);
+		registerButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+		
 		//games.setListData(listData);
-		welcomeMessage.setFont(new Font("Default", Font.BOLD, 20));
-		welcomeMessage.setForeground(Color.DARK_GRAY);
+		welcomeMessage.setFont(new Font("Default", Font.BOLD, 40));
+		//welcomeMessage.setForeground(Color.DARK_GRAY);
+		welcomeMessage.setBackground(Color.LIGHT_GRAY);
+		welcomeMessage.setBorder(BorderFactory.createLineBorder(Color.gray, 5));
+		instru.setBorder(BorderFactory.createLineBorder(Color.gray, 5));
 		mainWindow.requestFocus(); //gets focus of window so loginBox isn't empty
 		loginBox.setFont(new Font("Default", Font.BOLD, 20));
 		loginBox.addFocusListener(this);
@@ -178,6 +222,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 			e.printStackTrace();
 		}
 		instru.setFont(new Font("default", Font.BOLD, 20));
+		mainWindowPanel.setBorder(BorderFactory.createLineBorder(Color.red, 10));
 		mainWindowPanel.add(instru);
 		mainWindowPanel.add(Box.createRigidArea(new Dimension(100, 20)));
 		mainWindowPanel.add(loginBox);
@@ -187,7 +232,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		errormsg.setForeground(Color.red);
 		mainWindow.getContentPane().add(mainWindowPanel);
 		mainWindow.getContentPane().add(errormsg, "South");
-		mainWindow.setSize(590,660);
+		mainWindow.setSize(590,700);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.setVisible(true);
 		mainWindow.requestFocus();
