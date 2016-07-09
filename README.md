@@ -3,6 +3,9 @@ Hub for playing tic tac toe, pong and more!
 
 - chat (history?)
 - 
+1) Console commands (commented in the code what to add)
+2) Graphics upgrade (Need to research the other Java GUI a little bit more)
+3) 
 
 
 OTHER PROJECT IDEAS
