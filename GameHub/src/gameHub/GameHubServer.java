@@ -19,6 +19,10 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameHubServer implements Runnable{
@@ -26,18 +30,142 @@ public class GameHubServer implements Runnable{
 	ConcurrentHashMap<String, String> passwords = new ConcurrentHashMap<String, String>(); //Collection of passwords
 	private int portNumber = 2020; //port number
 	private ServerSocket ss;
+	private final String COMMANDERROR = "ERROR! Invalid Command!";
+	private final String ADMIN_PASS = "ENGINEER";
 	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String, String>(); //Collection of who's in matches with who
 	private GameHubGameServer gameServer;
 	public GameHubServer() throws IOException {
 		System.out.println("-------GAMEHUB SERVER-------\n");
 		System.out.println("----------------------------\n");
-
+		
 		ss = new ServerSocket(portNumber);
 		gameServer = new GameHubGameServer(this);
 		//new GameHubWebServer(); //set up webserver!
 		ss.getInetAddress(); //for static reasons
 		System.out.println("HOST ADDRESS: \n" + InetAddress.getLocalHost().getHostAddress());
 		System.out.println("----------------------------\n");
+		System.out.println("(Type \"help\" for server commands)");
+		Thread t = new Thread(new Runnable(){
+			public void run(){
+				InputStreamReader cin = new InputStreamReader(System.in);
+				BufferedReader br = new BufferedReader(cin);
+				while(true){
+					String command;
+					try {
+						command = br.readLine();
+						//System.out.println("Recieved: " + command);
+						command = command.trim();
+						command = command.toUpperCase();
+						String[] command_array = command.split(" ");
+						//System.out.println(Arrays.toString(command_array));
+						switch (command_array[0]){
+						case "HELP":
+							System.out.println("Here are commands:\n----------------------------\n*get ipaddress\n*add username [username]\n*remove username [username]\n*get online_list\n*get password [username] [admin_password]\n*remove game [username]\n");
+							break;
+						case "GET":
+							if(command_array.length < 1){
+								System.out.println(COMMANDERROR);
+								break;}
+							switch(command_array[1]){
+							case "IPADDRESS":
+								System.out.println("SUCCESS: IP Address is " + InetAddress.getLocalHost().getHostAddress());
+								break;
+							case "ONLINE_LIST":
+								//return online list
+								if(onlineList.isEmpty())
+									System.out.println("SUCCESS: Sorry, no one is online!");
+								else{
+									//ConcurrentHashMap<String, ObjectOutputStream> list =(ConcurrentHashMap<String, ObjectOutputStream>) onlineList;
+									Vector<String> onlist = new Vector<String>();
+									for(Entry k : onlineList.entrySet()){
+										onlist.addElement((String) k.getKey());
+									}
+									System.out.println("Online List\n--------------------------");
+									Object[] conn_list = onlist.toArray();
+									for(int i = 0; i < conn_list.length; i++)
+										System.out.println(conn_list[i]);
+									System.out.println("--------------------------\nFinished printing online list!");
+								}
+								break;
+							case "PASSWORD": //did not implement the developer password yet
+								if(command_array.length == 3){
+									String user_search = command_array[2];
+									String retr_password = passwords.get(user_search);
+									if(retr_password == null)
+										System.out.println("ERROR! Username does not exist!");
+									else
+										System.out.println("SUCCESS: " + user_search + " password is " + passwords.get(user_search));
+								}
+								else
+									System.out.println(COMMANDERROR);
+								//try to find the person, if he isn't there, scream problem!
+								break;
+							default:
+								System.out.println(COMMANDERROR);
+							}
+							break;
+						case "ADD":
+							switch(command_array[1]){
+							case "ACCOUNT": 
+								if(command_array.length == 4){
+									// 2 and 3 are the username/password
+									if(passwords.get(command_array[1]) == null){
+										passwords.put(command_array[2], command_array[3]);
+										System.out.println("SUCCESS: Account was successfully added!");
+									}
+									else{
+										System.out.println("SUCCESS: Sorry, user already exists. Please remove then add!");
+									}
+								}
+								else
+									System.out.println(COMMANDERROR);
+								break;
+							default:
+								System.out.println(COMMANDERROR);
+							}
+							break;
+						case "REMOVE":
+							switch(command_array[1]){
+						
+							case "USERNAME": 
+								if(command_array.length == 4){
+									if(command_array[3].equals(ADMIN_PASS)){
+										//search for username
+										String check = passwords.remove(command_array[2]);
+										if(check == null)
+											System.out.println("The username does not exist!");
+										else
+											System.out.println("Successfully removed username!");
+									}
+									else
+										System.out.println("AUTHENTICATION FAILURE! INCORRECT ADMIN PASSWORD!");
+								}
+								else
+									System.out.println(COMMANDERROR);
+								break;
+							case "GAME": //
+								System.out.println("This is not implemented yet!");
+								break;
+							default:
+								System.out.println(COMMANDERROR);
+							}
+							break;
+						case "EXIT":
+							System.out.println("Exit command is not implemented yet!");
+							break;
+						default:
+							System.out.println(COMMANDERROR);
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					
+				}
+			}
+		});
+		t.start();
 		//try to retrieve a saved list of everyone who's ever registered
 		try{ 
 			FileInputStream fis = new FileInputStream("Accounts.data");
@@ -184,8 +312,6 @@ public class GameHubServer implements Runnable{
 				//do nothing!
 			}
 			try{
-				Thread t1= new Thread(new KeyboardInput());
-				t1.start();
 				while(true){
 
 					Object messageFromClient = ois.readObject();//wait for MY client to say something
