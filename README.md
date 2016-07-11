@@ -2,6 +2,8 @@
 Hub for playing tic tac toe, pong and more!
 <img src="/GameHub/gamepad.png" width="250">
 
+______________________________________________________________________________________________________
+# Tasks
 - [ ] Implement a Log for Server to keep track of all happenings
 - [ ] Console commands (commented in the code what to add)
 - [ ] Graphics upgrade (Need to research the other Java GUI a little bit more)
@@ -30,8 +32,8 @@ Hub for playing tic tac toe, pong and more!
 - [ ] Make android app for the game (more like a manual for the game), but we will add more functionality to it
 - [ ] Anymore you can think of, go for it :) We can talk about which of this you would like in the post-beta(? name) But I believe all of this can be done
 
-- ______________________________________________________________________________________________________
-OTHER PROJECT IDEAS
+______________________________________________________________________________________________________
+# Other Project Ideas
 -  Full fledged RPS Game
 -  Google chat sort of
 -  Python communciation with Apps (Updaters)
