@@ -29,7 +29,7 @@ Hub for playing tic tac toe, pong and more!
 - Make android app for the game (more like a manual for the game), but we will add more functionality to it
 - Anymore you can think of, go for it :) We can talk about which of this you would like in the post-beta(? name) But I believe all of this can be done
 
-- ########################################################################################################
+- ______________________________________________________________________________________________________
 OTHER PROJECT IDEAS
 -  Full fledged RPS Game
 -  Google chat sort of
