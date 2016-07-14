@@ -2,6 +2,29 @@
 Hub for playing tic tac toe, pong and more!
 <img src="/GameHub/gamepad.png" width="250">
 
+#Isaiahs List
+#Graphics Upgrading:
+- [ ] graphics upgrade
+- [ ] better the graphics of gamehub
+- [ ] invite system improvement
+- [ ] cleaner chat client
+- [ ] cleaner online list
+
+#Refactoring:
+- [ ] set of APIs for server
+- [ ] redesign of how game works
+- [ ] make baseGameClass
+- [ ] clean up code 
+
+#Features:
+- [ ] highscores/trophies
+- [ ] log system server (done)
+
+#Games:
+- [ ] TicTacToe
+- [ ] Conn4...
+- [ ] etc..
+
 ______________________________________________________________________________________________________
 # Tasks
 - [ ] Implement a Log for Server to keep track of all happenings
