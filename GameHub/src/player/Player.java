@@ -7,12 +7,18 @@ package player;
  * @author Zachary Jones
  */
 
+import games.Game;
+
 import java.awt.Point;
 import java.io.IOException;
 
-public class Player {
+import ticTacToe.BoardPanel;
+
+public abstract class Player {
 	/* The name of the player */
 	public String name;
+	/* Current Game */
+	public Game game;
 	/* high scores */
 	public HighScores highScores;
 	/* Friends */
@@ -30,15 +36,25 @@ public class Player {
 	public Player() {
 	}
 	
+	public Player(String name) {
+		this.name = name;
+	}
+	
+	public Game getCurrentGame() {
+		return game;
+	}
+	
+	public void setCurrentGame(Game game) {
+		this.game = game;
+	}
+	
 	/**
 	 * Make move method for the players
 	 * 
 	 * @return The point where the move was made
 	 * @throws IOException
 	 */
-	public Point makeMove() throws IOException {
-		return null;
-	}
+	public abstract Point makeMove(BoardPanel boardPanel) throws IOException;
 	
 	/**
 	 * Shows the score of the player
@@ -64,5 +80,55 @@ public class Player {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public Awards getAwards() {
+		return awards;
+	}
+	
+	public Data getData() {
+		return data;
+	}
+	
+	public Trophies getTrophies() {
+		return trophies;
+	}
+	
+	public HighScores getHighScores() {
+		return highScores;
+	}
+	
+	public void setAwards(Awards awards) {
+		this.awards = awards;
+	}
+	
+	public void setData(Data data) {
+		this.data = data;
+	}
+	
+	public void setTrophies(Trophies trophies) {
+		this.trophies = trophies;
+	}
+	
+	public void setHighScores(HighScores highScores) {
+		this.highScores = highScores;
+	}
+	
+	public void showAwards() {
+		awards.toString();
+	}
+	
+	public void showData() {
+		data.toString();
+	}
+	
+	public void showTrophies() {
+		trophies.toString();
+	}
+	
+	public void showHighScores() {
+		highScores.toString();
+	}
+	
+	
 
 }

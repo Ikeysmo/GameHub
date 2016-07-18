@@ -49,11 +49,25 @@ public class BoardPanel extends JPanel {
 	 */
 	public BoardPanel(TicTacToePlayer p1, TicTacToePlayer p2, JFrame currWindow) {
 		// TODO Auto-generated constructor stub
-		p1.getPanel(this);
-		p2.getPanel(this);
+		p1.setPanel(this);
+		p2.setPanel(this);
 
 		frame = currWindow;
 		
+	}
+	
+	public BoardPanel(TicTacToePlayer p1, RemotePlayer p2, JFrame currWindow) {
+		//TODO Auto-generated constructor stub
+		p1.setPanel(this);
+		p2.setPanel(this);
+		frame = currWindow;
+	}
+	
+	public BoardPanel(RemotePlayer p1, RemotePlayer p2, JFrame currWindow) {
+		//TODO Auto-generated constructor stub
+		p1.setPanel(this);
+		p2.setPanel(this);
+		frame = currWindow;
 	}
 	
 	/**

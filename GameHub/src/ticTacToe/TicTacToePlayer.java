@@ -31,8 +31,6 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	protected int numy = -1;
 	/* Piece of this player*/
 	protected char piece;
-	/* Name of the player*/
-	protected String name;
 	
 	/* The number of rows */
 	public final static int ROWNUM = 3;
@@ -40,7 +38,7 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	public final static int COLUMNNUM = 3;
 	
 	public TicTacToePlayer() {
-		
+		super();
 	}
 	
 	/**
@@ -49,7 +47,20 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	 * @param name The name of the player
 	 */
 	public TicTacToePlayer(String name){
+		super();
 		this.name = name;
+	}
+	
+	/**
+	 * Assigns a piece to the player (Setter)
+	 * 
+	 * @param 'X' or 'O'
+	 */
+	public void assignPiece(char x){
+		if(x == 'X' || x == 'O')
+			this.piece = x; //assign piece if this piece is legal!
+		else
+			throw new IllegalArgumentException();
 	}
 	
 	/**
@@ -57,7 +68,7 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	 * 
 	 * @return The point of the move made
 	 */
-	public synchronized Point makeMove() throws IOException {
+	public synchronized Point makeMove(BoardPanel panel) throws IOException {
 		while(true){
 			try {
 				panel.addMouseListener(this);
@@ -91,27 +102,6 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	}
 	
 	/**
-	 * Getter method for the name of the player
-	 * 
-	 * @return the name of the player
-	 */
-	public String getName(){
-		return name;
-	}
-	
-	/**
-	 * Assigns a piece to the player (Setter)
-	 * 
-	 * @param 'X' or 'O'
-	 */
-	public void assignPiece(char x){
-		if(x == 'X' || x == 'O')
-			this.piece = x; //assign piece if this piece is legal!
-		else
-			throw new IllegalArgumentException();
-	}
-	
-	/**
 	 * Getter method for the piece
 	 * 
 	 * @return the piece of the player
@@ -125,7 +115,7 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	 * 
 	 * @return the board
 	 */
-	public void getPanel(BoardPanel panel){
+	public void setPanel(BoardPanel panel){
 		this.panel = panel;
 	}
 	
@@ -134,7 +124,7 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	 * 
 	 * @return the TicTacToe game
 	 */
-	public void getTic(TicTacToe tic){
+	public void setGame(TicTacToe tic){
 		this.tic = tic;
 	}
 

@@ -8,6 +8,8 @@ package connectFour;
  * @version 1.0
  */
 
+import hangman.Hangman;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;

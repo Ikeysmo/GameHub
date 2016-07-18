@@ -147,7 +147,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		ipAddressWindow.setBackground(Color.cyan);
 		ipAddressWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
 		//ipAddressWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		ipAddressWindow.setUndecorated(true);
+		//ipAddressWindow.setUndecorated(true);
 		ipAddressWindow.setLocation((int)width/2 - 300, (int)height/2 - 50);
 		//ipAddressWindow.setOpacity(0.75F);
 		
@@ -185,7 +185,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		mainWindow.setBackground(Color.cyan);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
 		//mainWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		mainWindow.setUndecorated(true);
+		//mainWindow.setUndecorated(true);
 		mainWindow.setLocation((int)width/2 - 300, (int)height/2 - 300);
 		
 		loginButton.setBackground(Color.cyan);
@@ -532,7 +532,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								if(invite.game.contains(GameInvite.tictactoe)){ //now that you created invite, load up tic tac toe.. haven't added one for connect4
 									System.out.println("what");
 									try {
-										new TicTacToe(p1.getUsername(), invite.from, false, ip_Address);
+										new TicTacToe(p1.getUsername(), invite.from, false, ip_Address, false);
 									} catch (UnknownHostException e) {
 										e.printStackTrace();
 									} catch (IOException e) {
@@ -577,7 +577,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 					else if(invite.from.equals(p1.getUsername()) && invite.isAccepted()){
 						System.out.println("Opponent accepted invite, opening game now");
 						if(invite.game.equals(GameInvite.tictactoe))
-							new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
+							new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
 						else if (invite.game.equals(GameInvite.connect4))
 							new ConnectFour(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address);
 					}

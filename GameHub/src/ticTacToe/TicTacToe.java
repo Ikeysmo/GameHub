@@ -8,36 +8,32 @@ package ticTacToe;
  * @version 1.0
  */
 
+
+import games.Game;
+
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
 
-public class TicTacToe implements Runnable{
+import player.Player;
+
+public class TicTacToe extends Game implements Runnable{
 	
 	/* The number of players*/
 	final public static int PLAYERNUM = 2;
 	/* The number of columns*/
-	final public static int COLUMNNUM = 10;
+	final public static int COLUMNNUM = 3;
 	/* The number of rows*/
-	final public static int ROWNUM = 10;
+	final public static int ROWNUM = 3;
 	/* Four winning pieces */
 	final public static int FOURPIECES = 4;
 	/* Bottom of the column */
@@ -52,45 +48,39 @@ public class TicTacToe implements Runnable{
 	/* Player 2 */
 	final public static int PLAYER_2 = 1;
 	
-	/*Frame Height*/
-	final public static int FRAMEHEIGHT = 160;
-	/*Frame Width*/
-	final public static int FRAMEWIDTH = 600;
-	
-	/*Min Frame Height*/
-	final public static int MINFRAMEHEIGHT = 180;
-	/*Min Frame Width*/
-	final public static int MINFRAMEWIDTH = 500;
-	
-	/*Winning Screen Height */
-	final public static int WINFRAMEHEIGHT = 100;
-	/*Winning Screen Width */
-	final public static int WINFRAMEWIDTH = 350;
-	
-	/* Main JFrame */
-	JFrame gameMenu = null;
-	/* Main Panel */
-	JPanel mainPanel = new JPanel();
-	/* Menu Bar Panel*/
-	JPanel menubar = new JPanel();
-	/* Error Message Label*/
-	JLabel errorMsg = new JLabel();
-	/* Second Panel*/
-	JPanel secondPanel = new JPanel();
-	//TODO: What does mudda mean?
-	JFrame mudda;
-	//TODO: What does foo mean?
-	BoardPanel foo;
 	/* Tells whose turn it is*/
 	public int turn = 0;
-	/*Players in the game*/
-	private TicTacToePlayer[] players = new TicTacToePlayer[PLAYERNUM];
 	/*The board being used*/
 	private char[][] board = new char[ROWNUM][COLUMNNUM];
 	/* Object Output stream*/
 	private ObjectOutputStream oos;
 	/* Object Input Stream*/
 	private ObjectInputStream ois;
+	/* Is it remote play?*/
+	boolean isRemote = false;
+	/*Goes first? */
+	boolean goFirst;
+	
+	public static void main(String args[]) {
+		new TicTacToe();
+	}
+	
+	public TicTacToe() {
+		super("Tic Tac Toe", "ticTacToeIcon.gif", new JFrame(), new JPanel(), 700, 700, 500, 500, 2);
+		TicTacToePlayer p1 = new TicTacToePlayer("Zachary");
+		p1.setGame(this);
+		p1.assignPiece(PIECE1);
+		setPlayer(PLAYER_2, (Player)p1);
+		TicTacToePlayer p2 = new TicTacToePlayer("Isaiah");
+		p2.setGame(this);
+		p2.assignPiece(PIECE2);
+		setPlayer(PLAYER_1, (Player)p2);
+		
+		setGamePanel(new BoardPanel(p1, p2 , getGameFrame()));
+		
+		this.getGameFrame().setVisible(true);
+		new Thread(this).start();
+	}
 
 	/**
 	 * The constructor of Tic Tac Toe
@@ -99,34 +89,47 @@ public class TicTacToe implements Runnable{
 	 * @param remoteplayer Is the remote player
 	 * @param goFirst Who goes first
 	 */
-	public TicTacToe(String localplayer, String remoteplayer, Boolean goFirst, String ipaddress) throws UnknownHostException, IOException {
+	public TicTacToe(String localplayer, String remoteplayer, boolean goFirst, String ipaddress, Boolean gofirst) throws UnknownHostException, IOException {
+		super("Tic Tac Toe", "ticTacToeIcon.gif", new JFrame(), new JPanel(), 700, 700, 500, 500, 2);
+		this.goFirst = gofirst;
+		System.out.println("here we go");
 		//player 1 represents this guy's version
 		Socket s = new Socket(ipaddress, 2021);
 		oos = new ObjectOutputStream(s.getOutputStream());
 		oos.writeObject(localplayer);
 		ois = new ObjectInputStream(s.getInputStream());
-		//System.out.println("First p: "+localplayer + ", Second p: " + remoteplayer);
-		if(!goFirst){
-			players[PLAYER_2] = new TicTacToePlayer(localplayer); //you become player num 2
-			players[PLAYER_2].getTic(this);
-			players[PLAYER_2].assignPiece(PIECE1);
-			players[PLAYER_1] = new RemotePlayer(oos, ois, this, remoteplayer, PIECE2); //this guys go first
-		}else {
-			players[PLAYER_1] = new TicTacToePlayer(localplayer);
-			players[PLAYER_1].getTic(this);
-			players[PLAYER_1].assignPiece(PIECE2);
-			players[PLAYER_2] = new RemotePlayer(oos, ois, this, remoteplayer, PIECE1);
+		if(goFirst) {
+			//setTurn(0);
+			RemotePlayer p2 = new RemotePlayer(oos, ois, this, localplayer);
+			p2.setGame(this);
+			p2.assignPiece(PIECE1);
+			setPlayer(PLAYER_2, (Player)p2);
+			RemotePlayer p1 = new RemotePlayer(oos, ois, this, remoteplayer); //This guy goes first
+			p1.setGame(this);
+			p1.assignPiece(PIECE2);
+			setPlayer(PLAYER_1, (Player)p1);
+			
+			setGamePanel(new BoardPanel(p1, p2 , getGameFrame()));
+			
+			this.getGameFrame().setVisible(true);
+			new Thread(this).start();
+		} else {
+			//setTurn(1);
+			RemotePlayer p1 = new RemotePlayer(oos, ois, this, localplayer);
+			p1.setGame(this);
+			p1.assignPiece(PIECE2);
+			setPlayer(PLAYER_1, (Player)p1);
+			RemotePlayer p2 = new RemotePlayer(oos, ois, this, remoteplayer); //This guy goes first
+			p2.setGame(this);
+			p2.assignPiece(PIECE1);
+			setPlayer(PLAYER_2, (Player)p2);
+			
+			setGamePanel(new BoardPanel(p2, p1 ,getGameFrame()));
+			
+			this.getGameFrame().setVisible(true);
+			this.goFirst = goFirst;
+			new Thread(this).start();
 		}
-		if(mudda != null)
-			mudda.dispose();
-		mudda = new JFrame(remoteplayer + " is Online!");
-		mudda.setSize(500, 500);
-		mudda.setVisible(true);
-		System.out.println("Should be another checkpoint");		
-		foo = new BoardPanel(players[PLAYER_1], players[PLAYER_2] , mudda);
-		mudda.add(foo);
-		mudda.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //what i ideally want is to have server end match when done
-		new Thread(this).start();
 	}
 
 	/**
@@ -149,40 +152,51 @@ public class TicTacToe implements Runnable{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		this.getGameFrame().setTitle("It is " + (this.getPlayer(turn)).getName() + "'s turn!");
 		while(!gameOver){
-			mudda.setTitle("It is " + players[turn].getName() + "'s turn!");
-			
 			try {
-				Point d = players[turn].makeMove(); //does different depending on what type of player
-				
-				if(players[turn] instanceof RemotePlayer){ 
-				}
-				else{
-					RemotePlayer temp;
-					if(turn == 0)
-						temp = (RemotePlayer) players[PLAYER_2]; //this has to be instance of RP
-					else
-						temp = (RemotePlayer) players[PLAYER_1]; //this has to be RP
+				System.out.println(goFirst);
+				Point d = null;
+				System.out.println(this.getPlayer(turn).getName() + ":'s Turn");
+					if(this.getPlayer(turn) instanceof TicTacToePlayer){
+						System.out.println("Is a TicTacToePlayer's turn");
+							d = ((TicTacToePlayer)this.getPlayer(turn)).makeMove((BoardPanel)this.getGamePanel()); //does different depending on what type of player
+							TicTacToePlayer tempLocal;
+							tempLocal = (TicTacToePlayer)this.getPlayer(turn); //this has to be instance of RP
+							this.updateMove(d.x, d.y, tempLocal);
+					} else {
+						System.out.println("Is a RemotePlayer's turn");
+						this.getPlayer(turn).makeMove((BoardPanel)this.getGamePanel()); //does different depending on what type of player
+						System.out.println("The move was sent");
+						d = ((RemotePlayer)this.getPlayer(turn)).updateAll();
+						RemotePlayer tempLocal = (RemotePlayer)this.getPlayer(PLAYER_1);
+						this.updateMove(d.x, d.y, tempLocal);
+						RemotePlayer tempRemote = (RemotePlayer)this.getPlayer(PLAYER_2);
+						this.updateMove(d.x, d.y, tempRemote);
+					}
 					
-					temp.updateAll(d); //send it out to everyone
-				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 			if( isWinner() == PIECE1 || isWinner() == PIECE2) {
 				gameOver = true; //let know if game is over
 			}
 			
+			int numOfPieces = 0;
+			
 			if(turn == 1)
 				turn = 0;
 			else turn = 1;
-			for(int i = 0; i < 3; i++)
-				for(int j = 0; j < 3; j++) {
-					System.out.println(String.valueOf(board[i][j]));
+			for(int i = 0; i < ROWNUM; i++) {
+				for(int j = 0; j < COLUMNNUM; j++) {
+					if (board[i][j] == 'O' || board[i][j] == 'X') {
+						numOfPieces++;
+					}
 				}
-				System.out.println();
-			System.out.println("turn is now: " + turn);
+			}
+				if(numOfPieces == 9) {
+					gameOver = true;
+				}
 		}
 		findWinner();
 	}
@@ -190,10 +204,28 @@ public class TicTacToe implements Runnable{
 	private void findWinner() {
 		int playerWon = -1;
 		for(int i = 0; i < PLAYERNUM; i++){
-			if(players[PLAYER_1].getPiece() == isWinner()) {
-				playerWon = PLAYER_1;
-			} else if (players[PLAYER_2].getPiece() == isWinner()) {
-				playerWon = PLAYER_2;
+			if(this.getPlayer(PLAYER_1) instanceof TicTacToePlayer){
+				if(this.getPlayer(PLAYER_2) instanceof TicTacToePlayer){
+					if(((TicTacToePlayer)getPlayer(PLAYER_1)).getPiece() == isWinner()) {
+						playerWon = PLAYER_1;
+					} else if (((TicTacToePlayer)getPlayer(PLAYER_2)).getPiece() == isWinner()) {
+						playerWon = PLAYER_2;
+					}
+				} else if(this.getPlayer(PLAYER_2) instanceof RemotePlayer) {
+					if(((TicTacToePlayer)getPlayer(PLAYER_1)).getPiece() == isWinner()) {
+						playerWon = PLAYER_1;
+					} else if (((RemotePlayer)getPlayer(PLAYER_2)).getPiece() == isWinner()) {
+						playerWon = PLAYER_2;
+					}
+				}
+			} else if(this.getPlayer(PLAYER_1) instanceof RemotePlayer) {
+				if(this.getPlayer(PLAYER_2) instanceof TicTacToePlayer){
+					if(((RemotePlayer)getPlayer(PLAYER_1)).getPiece() == isWinner()) {
+						playerWon = PLAYER_1;
+					} else if (((TicTacToePlayer)getPlayer(PLAYER_2)).getPiece() == isWinner()) {
+						playerWon = PLAYER_2;
+					}
+				}
 			}
 		}
 		JFrame finished = new JFrame("Game!");
@@ -204,7 +236,7 @@ public class TicTacToe implements Runnable{
 		if(playerWon == -1)
 			label.setText("It is a draw!");
 		else
-			label.setText(" And winner is " + players[playerWon].getName() + "!");
+			label.setText(" And winner is " + (this.getPlayer(playerWon)).getName() + "!"); //TODO Fix this
 		finished.add(label, "Center");
 		finished.setVisible(true);
 	
@@ -266,30 +298,21 @@ public class TicTacToe implements Runnable{
 	 * @param p1 The player
 	 * @return Was the move possible
 	 */
-	public boolean updateMove(int numx, int numy, TicTacToePlayer p1){
+	public boolean updateMove(int numx, int numy, Player p){
 		if(board[numx][numy] == PIECE1 || board[numx][numy] == PIECE2){
 				return false;
 		} else{ //Then do the move
-			System.out.println("Updating board at " + (numx+1) + "," + (numy+1));
-			System.out.println("This is the piece " + p1.getPiece());
-			board[numx][numy] = p1.getPiece();
-			foo.updateBoard(board);
-			foo.repaint();
-			//printBoard(); //For debuging purposes
+			if(p instanceof RemotePlayer) {
+				board[numx][numy] = ((RemotePlayer)p).getPiece();
+			} else {
+				System.out.println("NEVER!!!!!!!!!");
+				board[numx][numy] = ((TicTacToePlayer)p).getPiece();
+			}
+			((BoardPanel)getGamePanel()).updateBoard(board);
+			getGameFrame().repaint();
 			return true;
 		}
 			
 		
-	}
-	/**
-	 * This helper method is for printing out the board to the console
-	 * 
-	 */
-	private void printBoard() {
-		for(int j = 0; j < COLUMNNUM; j++) {
-			for(int i = 0; i < ROWNUM; i++)
-				System.out.print(String.valueOf(board[i][j]));
-			System.out.println("");
-		}
 	}
 }
