@@ -98,33 +98,33 @@ public class TicTacToe extends Game implements Runnable{
 		oos = new ObjectOutputStream(s.getOutputStream());
 		oos.writeObject(localplayer);
 		ois = new ObjectInputStream(s.getInputStream());
-		if(goFirst) {
+		if(!goFirst) {
 			//setTurn(0);
-			RemotePlayer p2 = new RemotePlayer(oos, ois, this, localplayer);
+			TicTacToePlayer p2 = new TicTacToePlayer(localplayer);
 			p2.setGame(this);
 			p2.assignPiece(PIECE1);
 			setPlayer(PLAYER_2, (Player)p2);
-			RemotePlayer p1 = new RemotePlayer(oos, ois, this, remoteplayer); //This guy goes first
+			TicTacToePlayer p1 = new RemotePlayer(oos, ois, this, remoteplayer, PIECE2); //This guy goes first
 			p1.setGame(this);
 			p1.assignPiece(PIECE2);
 			setPlayer(PLAYER_1, (Player)p1);
 			
-			setGamePanel(new BoardPanel(p1, p2 , getGameFrame()));
+			setGamePanel(new BoardPanel((TicTacToePlayer)this.getPlayer(PLAYER_1),(TicTacToePlayer)this.getPlayer(PLAYER_2),getGameFrame()));
 			
 			this.getGameFrame().setVisible(true);
 			new Thread(this).start();
 		} else {
 			//setTurn(1);
-			RemotePlayer p1 = new RemotePlayer(oos, ois, this, localplayer);
+			TicTacToePlayer p1 = new TicTacToePlayer(localplayer);
 			p1.setGame(this);
 			p1.assignPiece(PIECE2);
 			setPlayer(PLAYER_1, (Player)p1);
-			RemotePlayer p2 = new RemotePlayer(oos, ois, this, remoteplayer); //This guy goes first
+			TicTacToePlayer p2 = new RemotePlayer(oos, ois, this, remoteplayer, PIECE1); //This guy goes first
 			p2.setGame(this);
 			p2.assignPiece(PIECE1);
 			setPlayer(PLAYER_2, (Player)p2);
 			
-			setGamePanel(new BoardPanel(p2, p1 ,getGameFrame()));
+			setGamePanel(new BoardPanel((TicTacToePlayer)this.getPlayer(PLAYER_1), (TicTacToePlayer)this.getPlayer(PLAYER_2) ,getGameFrame()));
 			
 			this.getGameFrame().setVisible(true);
 			this.goFirst = goFirst;
@@ -154,25 +154,21 @@ public class TicTacToe extends Game implements Runnable{
 		}
 		this.getGameFrame().setTitle("It is " + (this.getPlayer(turn)).getName() + "'s turn!");
 		while(!gameOver){
+			
 			try {
-				System.out.println(goFirst);
-				Point d = null;
-				System.out.println(this.getPlayer(turn).getName() + ":'s Turn");
-					if(this.getPlayer(turn) instanceof TicTacToePlayer){
-						System.out.println("Is a TicTacToePlayer's turn");
-							d = ((TicTacToePlayer)this.getPlayer(turn)).makeMove((BoardPanel)this.getGamePanel()); //does different depending on what type of player
-							TicTacToePlayer tempLocal;
-							tempLocal = (TicTacToePlayer)this.getPlayer(turn); //this has to be instance of RP
-							this.updateMove(d.x, d.y, tempLocal);
-					} else {
-						System.out.println("Is a RemotePlayer's turn");
-						this.getPlayer(turn).makeMove((BoardPanel)this.getGamePanel()); //does different depending on what type of player
-						System.out.println("The move was sent");
-						d = ((RemotePlayer)this.getPlayer(turn)).updateAll();
-						RemotePlayer tempLocal = (RemotePlayer)this.getPlayer(PLAYER_1);
-						this.updateMove(d.x, d.y, tempLocal);
-						RemotePlayer tempRemote = (RemotePlayer)this.getPlayer(PLAYER_2);
-						this.updateMove(d.x, d.y, tempRemote);
+				
+				Point d = this.getPlayer(turn).makeMove();
+				
+					if(this.getPlayer(turn) instanceof RemotePlayer){
+					}
+					else{
+						RemotePlayer temp;
+						if(turn == 0)
+							temp = (RemotePlayer) this.getPlayer(PLAYER_2); //this has to be instance of RP
+						else
+							temp = (RemotePlayer) this.getPlayer(PLAYER_1); //this has to be RP
+						
+						temp.updateAll(d); //send it out to everyone
 					}
 					
 			} catch (IOException e) {

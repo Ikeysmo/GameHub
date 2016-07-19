@@ -68,7 +68,7 @@ public class TicTacToePlayer extends Player implements MouseListener{
 	 * 
 	 * @return The point of the move made
 	 */
-	public synchronized Point makeMove(BoardPanel panel) throws IOException {
+	public synchronized Point makeMove() throws IOException {
 		while(true){
 			try {
 				panel.addMouseListener(this);

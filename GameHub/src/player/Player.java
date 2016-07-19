@@ -54,7 +54,7 @@ public abstract class Player {
 	 * @return The point where the move was made
 	 * @throws IOException
 	 */
-	public abstract Point makeMove(BoardPanel boardPanel) throws IOException;
+	public abstract Point makeMove() throws IOException;
 	
 	/**
 	 * Shows the score of the player
