@@ -103,7 +103,6 @@ public class TicTacToe extends Game implements Runnable{
 		oos.writeObject(localplayer);
 		ois = new ObjectInputStream(s.getInputStream());
 		if(!goFirst) {
-			//setTurn(0);
 			TicTacToePlayer p2 = new TicTacToePlayer(localplayer);
 			p2.setGame(this);
 			p2.assignPiece(PIECE1);
@@ -118,7 +117,6 @@ public class TicTacToe extends Game implements Runnable{
 			this.getGameFrame().setVisible(true);
 			new Thread(this).start();
 		} else {
-			//setTurn(1);
 			TicTacToePlayer p1 = new TicTacToePlayer(localplayer);
 			p1.setGame(this);
 			p1.assignPiece(PIECE2);
@@ -133,6 +131,7 @@ public class TicTacToe extends Game implements Runnable{
 			this.getGameFrame().setVisible(true);
 			this.goFirst = goFirst;
 			new Thread(this).start();
+			s.close();
 		}
 	}
 
