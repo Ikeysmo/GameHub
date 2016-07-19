@@ -1,15 +1,29 @@
 package triviaGame;
 
+import games.Game;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import player.Player;
+
 /*This game will have multiple types of brain teasers to work with */
-public class Trivia {
+public class Trivia extends Game {
 
 	public Trivia() {
-		// TODO Auto-generated constructor stub
+		super("Trivia Game", "triviaGame.png", new JFrame(), new JPanel(), 500, 500, 200, 200, 2);
+		getGameFrame().setVisible(true);
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		new Trivia();
 
+	}
+
+	@Override
+	public boolean updateMove(int numx, int numy, Player p1) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
