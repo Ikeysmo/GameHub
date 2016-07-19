@@ -124,7 +124,11 @@ public class DrawPanel extends JPanel {
 	 * 
 	 * Not sure what it does...
 	 */
-	public void gameOver() {
-		
+	public boolean gameOver() {
+		if (String.valueOf(testWord).equals(currWord)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

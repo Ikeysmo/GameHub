@@ -8,9 +8,15 @@ package hangman;
  * @version 1.0
  */
 
+import games.Game;
+
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -20,16 +26,19 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.border.Border;
 
-public class Hangman implements ActionListener, Runnable{
+import player.Player;
+
+public class Hangman extends Game implements ActionListener, Runnable{
 	
-	/* The Main Window */
-	private JFrame mainWindow;
 	/* The list of words */
 	private Vector<String> wordList = new Vector<String>();
 	/* The Draw Panel */
@@ -45,10 +54,6 @@ public class Hangman implements ActionListener, Runnable{
 	/* Used for loading words */
 	private BufferedReader br;
 	
-	/* The height of the frame */
-	public final static int FRAME_HEIGHT = 800;
-	/* The width of the frame */
-	public final static int FRAME_WIDTH = 800;
 	/* The height of the end frame */
 	public final static int END_FRAME_HEIGHT = 150;
 	/* The width of the end frame */
@@ -60,22 +65,29 @@ public class Hangman implements ActionListener, Runnable{
 	 * @throws IOException
 	 */
 	public Hangman() throws IOException {
-		FileReader fr = new FileReader("dictonary_english_hangman.txt");
-		BufferedReader br = new BufferedReader(fr);
+		super("Hangman", "hangman.png", new JFrame(), new JPanel(), 800, 800, 500, 500, 2);
+		this.fr = new FileReader("dictonary_english_hangman.txt");
+		this.br = new BufferedReader(fr);
 		//load the GUI just to let person know it's there
-		mainWindow = new JFrame("Hangman!");
-		mainWindow.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		mainWindow.setResizable(false);
-		mainWindow.setVisible(true);
-		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		populateWordList();
+		
+		new Thread(this).start();
+	}
+	
+	private void populateWordList() {
 		while(true){
-			String temp = br.readLine();
+			String temp;
+			try {
+				temp = br.readLine();
 			if(temp == null)
 				break; //break if null
 			wordList.add(br.readLine()); //have the words I need
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		System.out.println("Now beginning game!");
-		new Thread(this).start();
 	}
 
 	/**
@@ -96,24 +108,27 @@ public class Hangman implements ActionListener, Runnable{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ButtonLetter bl = (ButtonLetter) e.getSource();
-		System.out.println(bl.letter); //The letter that was pressed
 		bl.setEnabled(false);
 		String hitLetter = String.valueOf(bl.letter);
 		if(currentWord.contains(hitLetter.toUpperCase()))
 		{
 			System.out.println("hitter up!");
-			int temp = currentWord.indexOf(bl.letter);
-			while(temp != -1){
-				System.out.println("adding letter!");
-				drawPanel.addLetter(bl.letter, temp);
-				temp = currentWord.indexOf(temp+1);
+			int temp = 0;
+			while(temp < currentWord.length()){
+				if (hitLetter.toUpperCase().equals(String.valueOf((currentWord.charAt(temp))).toUpperCase())) {
+					drawPanel.addLetter(bl.letter, temp);
+				}
+				temp++;
+			}
+			
+			if(drawPanel.gameOver() == true) {
+				gameOver();
 			}
 		}
 		else{
 			lifes = drawPanel.getNextState();
 			System.out.println(lifes);
 			if(lifes == 5){
-				drawPanel.gameOver();
 				gameOver();
 			}
 		}
@@ -131,28 +146,57 @@ public class Hangman implements ActionListener, Runnable{
 	 */
 	private void gameOver() {
 		JFrame endWindow = new JFrame("GameOver");
+		JPanel endPanel = new JPanel();
+		endPanel.setBackground(Color.orange);
+		endPanel.setBorder(BorderFactory.createLineBorder(Color.red, 10));
+		endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
+		
+		JLabel didYouWin = new JLabel("You Lose!!!");
 		JLabel correctWord = new JLabel("The correct word was: "+ currentWord + "!");
+		if (drawPanel.gameOver() == true) {
+			didYouWin = new JLabel("You Win!!!");
+			correctWord = new JLabel("The correct word was: "+ currentWord + "!");
+		}
+		didYouWin.setFont(new Font("Default", Font.ITALIC, 35));
+		didYouWin.setForeground(Color.red);
+		didYouWin.setAlignmentX(Component.CENTER_ALIGNMENT);
 		correctWord.setFont(new Font("Default", Font.BOLD, 25));
 		correctWord.setForeground(Color.blue);
-		endWindow.getContentPane().add(correctWord);
+		correctWord.setAlignmentX(Component.CENTER_ALIGNMENT);
+		endPanel.add(didYouWin);
+		endPanel.add(correctWord);
 		endWindow.setSize(END_FRAME_WIDTH, END_FRAME_HEIGHT);
 		JButton newGame = new JButton("Play Again?");
-		endWindow.add(newGame, "South");
+		newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+		endPanel.add(newGame);
+		endWindow.add(endPanel);
 		newGame.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								mainWindow.dispose();
+								resetAllLetters();
+								getGameFrame().dispose();
 								endWindow.dispose();
-								mainWindow = new JFrame("Hangman!");
-								mainWindow.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-								mainWindow.setResizable(false);
-								mainWindow.setVisible(true);
 								startNewThread();
 							}
 						});
+		endWindow.pack();
 		endWindow.setVisible(true);
-		endWindow.setLocationRelativeTo(mainWindow);
+		endWindow.setLocationRelativeTo(getGameFrame());
 
+	}
+	
+	private void resetAllLetters() {
+		for (Component c : buttonPanel.getComponents()) {
+			char temp = 'A';
+			for(int i = 0; i < 26; i++){
+				if (c instanceof JButton) {
+					if (c.getName().equals(String.valueOf(temp))) {
+						c.setEnabled(true);
+					}
+				}
+				temp++;
+			}
+		}
 	}
 
 	/**
@@ -160,7 +204,7 @@ public class Hangman implements ActionListener, Runnable{
 	 */
 	@Override
 	public void run() {
-
+		this.getGameFrame().setVisible(true);
 		JPanel ultimatePanel = new JPanel();
 		try {
 			drawPanel = new DrawPanel();
@@ -168,17 +212,16 @@ public class Hangman implements ActionListener, Runnable{
 			e.printStackTrace();
 			return;
 		}
-		drawPanel.setPreferredSize(new Dimension(mainWindow.getWidth(),550));
+		drawPanel.setPreferredSize(new Dimension(getGameFrame().getWidth(),550));
+		drawPanel.setBackground(Color.orange);
+		drawPanel.setBorder(BorderFactory.createLineBorder(Color.red, 5));
 		//drawPanel.setBackground(Color.BLACK);
 		buttonPanel = new JPanel();
-		buttonPanel.setPreferredSize(new Dimension(mainWindow.getWidth(), 200));
-		JSplitPane jsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		buttonPanel.setPreferredSize(new Dimension(getGameFrame().getWidth(), 200));
 		buttonPanel.setBackground(Color.red);
 		ultimatePanel.add(drawPanel);
-		//ultimatePanel.add(jsp);
 		ultimatePanel.add(buttonPanel);
-		mainWindow.add(ultimatePanel);
-		System.out.println("There!");
+		getGameFrame().add(ultimatePanel);
 		
 		//get the word
 		int d = (int) (Math.random()*wordList.size());
@@ -189,12 +232,20 @@ public class Hangman implements ActionListener, Runnable{
 		char temp = 'A';
 		for(int i = 0; i < 26; i++){
 			ButtonLetter bl = new ButtonLetter(temp);
+			bl.setName(String.valueOf(temp));
 			bl.addActionListener(this);
 			bl.setFont(new Font("Default", Font.BOLD, 15));
 			buttonPanel.add(bl);
 			temp ++;
 		}
-		mainWindow.revalidate();
+		getGamePanel().revalidate();
+		getGameFrame().revalidate();
+	}
+
+	@Override
+	public boolean updateMove(int numx, int numy, Player p1) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

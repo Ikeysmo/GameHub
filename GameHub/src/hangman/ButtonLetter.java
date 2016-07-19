@@ -21,7 +21,6 @@ public class ButtonLetter extends JButton{
 	 */
 	public ButtonLetter(char letter) {
 		super(String.valueOf(letter));
-		System.out.println(letter);
 		this.letter = letter;
 	}
 
