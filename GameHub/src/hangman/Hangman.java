@@ -65,7 +65,8 @@ public class Hangman extends Game implements ActionListener, Runnable{
 	 * @throws IOException
 	 */
 	public Hangman() throws IOException {
-		super("Hangman", "hangman.png", new JFrame(), new JPanel(), 800, 800, 500, 500, 2);
+		super("Hangman", "hangman.png", new JFrame(), new JPanel(), 800 + 10, 800 + 10, 500 + 10, 500 + 10, 2);
+		this.getGameFrame().setLocation((Game.getScreenSize().width / 2) - this.getGameFrame().getWidth()/2, (Game.getScreenSize().height / 2) - this.getGameFrame().getHeight()/2);;
 		this.fr = new FileReader("dictonary_english_hangman.txt");
 		this.br = new BufferedReader(fr);
 		//load the GUI just to let person know it's there
@@ -126,7 +127,8 @@ public class Hangman extends Game implements ActionListener, Runnable{
 			}
 		}
 		else{
-			lifes = drawPanel.getNextState();
+			if(drawPanel.gameOver() == false)
+				lifes = drawPanel.getNextState();
 			System.out.println(lifes);
 			if(lifes == 5){
 				gameOver();
@@ -215,7 +217,6 @@ public class Hangman extends Game implements ActionListener, Runnable{
 		drawPanel.setPreferredSize(new Dimension(getGameFrame().getWidth(),550));
 		drawPanel.setBackground(Color.orange);
 		drawPanel.setBorder(BorderFactory.createLineBorder(Color.red, 5));
-		//drawPanel.setBackground(Color.BLACK);
 		buttonPanel = new JPanel();
 		buttonPanel.setPreferredSize(new Dimension(getGameFrame().getWidth(), 200));
 		buttonPanel.setBackground(Color.red);

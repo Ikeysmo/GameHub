@@ -21,6 +21,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class DrawPanel extends JPanel {
+	/*Background image*/
+	private Image backgroundImage;
 	/* All of the poses of the Hang Man */
 	private BufferedImage[] hangmanposes;
 	/* The current word being done */
@@ -38,6 +40,7 @@ public class DrawPanel extends JPanel {
 	 * @throws IOException
 	 */
 	public DrawPanel() throws IOException {
+		backgroundImage = ImageIO.read(new File("hangman_background.png"));
 		setBackground(Color.white);
 		hangmanposes = new BufferedImage[NUM_OF_POSES];
 		for(int i = 0; i < NUM_OF_POSES; i++){
@@ -53,26 +56,29 @@ public class DrawPanel extends JPanel {
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
+		int offset = this.getBorder().getBorderInsets(getRootPane()).top;
+		g.drawImage(backgroundImage,  offset,  offset,  this);
 		//where I draw the things that I need
-		g.drawImage(hangmanposes[pose], 150, 0, null );
-		if(currWord == null)
-			return;
-		int posx = 50;
-		for(int i = 0; i < currWord.length(); i++){
-			g.drawLine(posx, 540, posx+50, 540);
-			posx += 75; 
-		}
-		//else draw blank lines!
-		posx = 50; //again
-		for(int i = 0; i < testWord.length; i++){
-			if(testWord[i] == ' '){
-				posx += 75;
-				continue;
+			g.drawImage(hangmanposes[pose], 150, 0, null );
+			g.setColor(Color.orange);
+			if(currWord == null)
+				return;
+			int posx = 50;
+			for(int i = 0; i < currWord.length(); i++){
+				g.drawLine(posx, 540, posx+50, 540);
+				posx += 75; 
 			}
-			g.setFont(new Font("Default", Font.BOLD, 30));
-			g.drawString(String.valueOf(testWord[i]), posx + 25, 535);
-			posx += 75;
-		}
+			//else draw blank lines!
+			posx = 50; //again
+			for(int i = 0; i < testWord.length; i++){
+				if(testWord[i] == ' '){
+					posx += 75;
+					continue;
+				}
+				g.setFont(new Font("Default", Font.BOLD, 30));
+				g.drawString(String.valueOf(testWord[i]), posx + 25, 535);
+				posx += 75;
+			}
 	}
 
 	/**
@@ -90,7 +96,7 @@ public class DrawPanel extends JPanel {
 	 */
 	public int getNextState(){
 		//displays the latest state
-		if(pose < 6)
+		if(pose < NUM_OF_POSES)
 			pose++;
 		repaint();
 		return pose;

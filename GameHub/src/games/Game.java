@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
+import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -14,6 +15,10 @@ import javax.swing.JPanel;
 import player.Player;
 
 public abstract class Game {
+	
+	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	double width = screenSize.getWidth();
+	double height = screenSize.getHeight();
 	
 	private int frameHeight;
 	private int frameWidth;
@@ -203,6 +208,10 @@ public abstract class Game {
 	
 	public void setPlayerNum(int playerNum) {
 		this.playerNum = playerNum;
+	}
+	
+	public static Dimension getScreenSize() {
+		return screenSize;
 	}
 	
 	public abstract boolean updateMove(int numx, int numy, Player p1);
