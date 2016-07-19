@@ -20,20 +20,11 @@ public class BoardPanel extends JPanel {
 	public final static int ROWLENGTH = 10;
 	/* Number of squares in a column*/
 	public final static int COLUMNLENGTH = 10;
-	/* representative of Player vs. PLayer */
-	public final static int PLAYERVPLAYER = 0;
-	/* representative of PLayer vs. CPU */
-	public final static int PLAYERVCPU = 1;
-	/* representative of Remote PLayers */
-	public final static int PLAYERREMOTE = 2;
-	/* Did game over occur */
-	private boolean gameOver = false;
+	/* Number of squares in a column*/
 	/* The frame of the board */
 	private JFrame frame;
 	/* 2-D array for board */
 	private char[][] board = new char[ROWLENGTH][COLUMNLENGTH];
-	/* Tell whose turn it is */
-	private int turn = 0; //alternate between 0 and 1
 	/* First Piece*/
 	public final static char PIECE1 = 'X';
 	/* Second Piece*/
@@ -47,9 +38,20 @@ public class BoardPanel extends JPanel {
 	 * @param currWindow the current window
 	 */
 	public BoardPanel(ConnectFourPlayer p1, ConnectFourPlayer p2, JFrame currWindow) {
-		p1.getPanel(this);
-		p2.getPanel(this);
-		
+		p1.setPanel(this);
+		p2.setPanel(this);
+		frame = currWindow;
+	}
+	
+	public BoardPanel(ConnectFourPlayer p1, RemotePlayer p2, JFrame currWindow) {
+		p1.setPanel(this);
+		p2.setPanel(this);
+		frame = currWindow;
+	}
+	
+	public BoardPanel(RemotePlayer p1, RemotePlayer p2, JFrame currWindow) {
+		p1.setPanel(this);
+		p2.setPanel(this);
 		frame = currWindow;
 	}
 	

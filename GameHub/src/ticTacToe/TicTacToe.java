@@ -155,8 +155,8 @@ public class TicTacToe extends Game implements Runnable{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		this.getGameFrame().setTitle("It is " + (this.getPlayer(turn)).getName() + "'s turn!");
 		while(!gameOver){
+			this.getGameFrame().setTitle("It is " + (this.getPlayer(turn)).getName() + "'s turn!");
 			if (!isLocal) {
 				try {
 				
@@ -216,10 +216,24 @@ public class TicTacToe extends Game implements Runnable{
 					gameOver = true;
 				}
 		}
-		findWinner();
+		winningScreen(findWinner());
 	}
 	
-	private void findWinner() {
+	private void winningScreen(int winnerNum) {
+		JFrame finished = new JFrame("Game!");
+		finished.setSize(350, 100);
+		JLabel label = new JLabel();
+		label.setFont(new Font("Default", Font.BOLD, 20));
+		label.setForeground(Color.red);
+		if(winnerNum == 0)
+			label.setText("It is a draw!");
+		else
+			label.setText(" And winner is " + getPlayer(winnerNum - 1).getName() + "!");
+		finished.add(label, "Center");
+		finished.setVisible(true);
+	}
+
+	private int findWinner() {
 		int playerWon = -1;
 		for(int i = 0; i < PLAYERNUM; i++){
 			if(this.getPlayer(PLAYER_1) instanceof TicTacToePlayer){
@@ -246,19 +260,7 @@ public class TicTacToe extends Game implements Runnable{
 				}
 			}
 		}
-		JFrame finished = new JFrame("Game!");
-		finished.setSize(350, 100);
-		JLabel label = new JLabel();
-		label.setFont(new Font("Default", Font.BOLD, 20));
-		label.setForeground(Color.red);
-		if(playerWon == -1)
-			label.setText("It is a draw!");
-		else
-			label.setText(" And winner is " + (this.getPlayer(playerWon)).getName() + "!"); //TODO Fix this
-		finished.add(label, "Center");
-		finished.setVisible(true);
-	
-		
+		return playerWon;
 	}
 
 
@@ -331,5 +333,13 @@ public class TicTacToe extends Game implements Runnable{
 		}
 			
 		
+	}
+	
+	public boolean validMove(int numx, int numy, Player p) {
+		if(board[numx][numy] == PIECE1 || board[numx][numy] == PIECE2){
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 import org.omg.PortableInterceptor.USER_EXCEPTION;
 
-public class WordWhomp implements ActionLister, Runnable{
+public class WordWhomp implements Runnable{
 	private JFrame mainWindow;
 	
 	public WordWhomp() throws IOException {

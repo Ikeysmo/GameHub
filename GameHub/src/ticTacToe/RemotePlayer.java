@@ -19,6 +19,12 @@ public class RemotePlayer extends TicTacToePlayer implements Runnable {
 	ObjectInputStream ois;
 	/* Object Output Stream*/
 	ObjectOutputStream oos;
+	/*TicTacToe Game */
+	TicTacToe tic;
+	/* The name of the player */
+	String name;
+	/* Piece */
+	char piece;
 	
 	
 	/**

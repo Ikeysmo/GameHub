@@ -1,4 +1,4 @@
-package wordWhomp;
+package snake;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,10 +6,6 @@ import java.awt.Point;
 
 import javax.swing.JPanel;
 
-@SuppressWarnings("serial")
-/**
- * @author Jaryt Bustard
- */
 public class RenderPanel extends JPanel
 {
 
@@ -49,7 +45,11 @@ public class RenderPanel extends JPanel
 
 		if (snake.over)
 		{
+			try {
 			g.drawString(string, (int) (getWidth() / 2 - string.length() * 2.5f), (int) snake.dim.getHeight() / 4);
+			} catch(NullPointerException e) {
+				
+			}
 		}
 
 		string = "Paused!";

@@ -76,7 +76,7 @@ public class TicTacToePlayer extends Player implements MouseListener{
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if(tic.updateMove(numx, numy, this)) //if this is true, valid move!
+			if(tic.validMove(numx, numy, this)) //if this is true, valid move!
 				break;
 		}
 		return new Point(numx,numy);

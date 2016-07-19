@@ -22,7 +22,7 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	public boolean ready = false;
 	/* The board being played on*/
 	private BoardPanel panel = null;
-	/* The TicTacToe game*/
+	/* The ConnectFour game*/
 	protected ConnectFour connectFour = null;
 	/* X-cord of the move */
 	protected int numx = -1;
@@ -30,13 +30,36 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	protected int numy = -1;
 	/* Piece of this player*/
 	protected char piece;
+	
 	/* Number of Columns */
 	public final static int COLUMNNUM = 10;
 	/* Number of Rows */
 	public final static int ROWNUM = 10;
 	
 	public ConnectFourPlayer() {
-		
+		super();
+	}
+	
+	/**
+	 * Constructor of ConnectFourPlayer
+	 * 
+	 * @param name The name of the player
+	 */
+	public ConnectFourPlayer(String name){
+		super();
+		this.name = name;
+	}
+	
+	/**
+	 * Assigns a piece to the player (Setter)
+	 * 
+	 * @param 'X' or 'O'
+	 */
+	public void assignPiece(char x) {
+		if(x == 'X' || x == 'O')
+			this.piece = x;
+		else
+			throw new IllegalArgumentException();
 	}
 	
 	/**
@@ -53,7 +76,7 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if(connectFour.updateMove(numx, numy, this)) // if this is true, valid move!
+			if(connectFour.validMove(numx, numy, this)) // if this is true, valid move!
 				break;
 		}
 		return new Point(numx, numy);
@@ -79,51 +102,12 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	}
 	
 	/**
-	 * Getter method for the name of the player
-	 * 
-	 * @return the name of the player
-	 */
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-	
-	/**
-	 * Getter method for the name of the player
-	 * 
-	 * @return the name of the player
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Assigns a piece to the player (Setter)
-	 * 
-	 * @param 'X' or 'O'
-	 */
-	public void assignPiece(char x) {
-		if(x == 'X' || x == 'O')
-			this.piece = x;
-		else
-			throw new IllegalArgumentException();
-	}
-	
-	/**
 	 * Getter method for the piece
 	 * 
 	 * @return the piece of the player
 	 */
-	public char getPiece() {
+	public char getPiece(){
 		return this.piece;
-	}
-	
-	/**
-	 * Getter method for the name of the player
-	 * 
-	 * @param name The name of the player
-	 */
-	public ConnectFourPlayer(String name) {
-		this.name = name;
 	}
 	
 	/**
@@ -131,30 +115,40 @@ public class ConnectFourPlayer extends Player implements MouseListener {
 	 * 
 	 * @return the board
 	 */
-	public void getPanel(BoardPanel panel) {
+	public void setPanel(BoardPanel panel){
 		this.panel = panel;
 	}
 	
 	/**
-	 * Getter method for the Connect Four game
+	 * Getter method for the ConnectFour game
 	 * 
-	 * @return the Connect Four game
+	 * @return the ConnectFour game
 	 */
-	public void getConnectFour(ConnectFour connectFour) {
+	public void setGame(ConnectFour connectFour){
 		this.connectFour = connectFour;
 	}
+	
+
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
-	public void mouseExited(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
