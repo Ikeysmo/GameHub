@@ -60,6 +60,8 @@ public class TicTacToe extends Game implements Runnable{
 	boolean isRemote = false;
 	/*Goes first? */
 	boolean goFirst;
+	/* Local */
+	private boolean isLocal;
 	
 	public static void main(String args[]) {
 		new TicTacToe();
@@ -67,6 +69,7 @@ public class TicTacToe extends Game implements Runnable{
 	
 	public TicTacToe() {
 		super("Tic Tac Toe", "ticTacToeIcon.gif", new JFrame(), new JPanel(), 700, 700, 500, 500, 2);
+		isLocal = true;
 		TicTacToePlayer p1 = new TicTacToePlayer("Zachary");
 		p1.setGame(this);
 		p1.assignPiece(PIECE1);
@@ -91,6 +94,7 @@ public class TicTacToe extends Game implements Runnable{
 	 */
 	public TicTacToe(String localplayer, String remoteplayer, boolean goFirst, String ipaddress, Boolean gofirst) throws UnknownHostException, IOException {
 		super("Tic Tac Toe", "ticTacToeIcon.gif", new JFrame(), new JPanel(), 700, 700, 500, 500, 2);
+		isLocal = false;
 		this.goFirst = gofirst;
 		System.out.println("here we go");
 		//player 1 represents this guy's version
@@ -154,25 +158,44 @@ public class TicTacToe extends Game implements Runnable{
 		}
 		this.getGameFrame().setTitle("It is " + (this.getPlayer(turn)).getName() + "'s turn!");
 		while(!gameOver){
-			
-			try {
+			if (!isLocal) {
+				try {
 				
-				Point d = this.getPlayer(turn).makeMove();
+					Point d = this.getPlayer(turn).makeMove();
 				
 					if(this.getPlayer(turn) instanceof RemotePlayer){
-					}
-					else{
-						RemotePlayer temp;
-						if(turn == 0)
-							temp = (RemotePlayer) this.getPlayer(PLAYER_2); //this has to be instance of RP
-						else
-							temp = (RemotePlayer) this.getPlayer(PLAYER_1); //this has to be RP
+						}
+						else{
+							RemotePlayer temp;
+							if(turn == 0)
+								temp = (RemotePlayer) this.getPlayer(PLAYER_2); //this has to be instance of RP
+							else
+								temp = (RemotePlayer) this.getPlayer(PLAYER_1); //this has to be RP
 						
-						temp.updateAll(d); //send it out to everyone
-					}
+							temp.updateAll(d); //send it out to everyone
+						}
 					
-			} catch (IOException e) {
-				e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					
+					Point d = this.getPlayer(turn).makeMove();
+				
+					if(this.getPlayer(turn) instanceof RemotePlayer){
+						}
+						else{
+							System.out.println("Is a TicTacToePlayer's turn");
+							d = ((TicTacToePlayer)this.getPlayer(turn)).makeMove(); //does different depending on what type of player
+							TicTacToePlayer tempLocal;
+							tempLocal = (TicTacToePlayer)this.getPlayer(turn); //this has to be instance of RP
+							this.updateMove(d.x, d.y, tempLocal);
+						}
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			if( isWinner() == PIECE1 || isWinner() == PIECE2) {
 				gameOver = true; //let know if game is over
@@ -297,11 +320,10 @@ public class TicTacToe extends Game implements Runnable{
 	public boolean updateMove(int numx, int numy, Player p){
 		if(board[numx][numy] == PIECE1 || board[numx][numy] == PIECE2){
 				return false;
-		} else{ //Then do the move
+		} else { //Then do the move
 			if(p instanceof RemotePlayer) {
 				board[numx][numy] = ((RemotePlayer)p).getPiece();
 			} else {
-				System.out.println("NEVER!!!!!!!!!");
 				board[numx][numy] = ((TicTacToePlayer)p).getPiece();
 			}
 			((BoardPanel)getGamePanel()).updateBoard(board);
