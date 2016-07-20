@@ -8,16 +8,13 @@ package gameHub;
  * @version 1.0
  */
 
+import hangman.Hangman;
+
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -53,7 +50,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import connectFour.ConnectFour;
+import snake.Snake;
 import ticTacToe.TicTacToe;
+import triviaGame.Trivia;
+import wordWhomp.WordWhomp;
 
 public class GamehubLogIn implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
 	
@@ -113,6 +113,10 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	private JButton chatSubmitButton = new JButton("Submit");
 	private JButton tictactoeButton;
 	private JButton connectfourButton;
+	private JButton snakeButton;
+	private JButton hangManButton;
+	private JButton triviaGameButton;
+	private JButton wordWhompButton;
 	private JList onlineList = new JList();
 	private JLabel errormsg = new JLabel();
 	private JPanel homePanel = new JPanel();
@@ -120,8 +124,12 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	private JScrollPane wd = new JScrollPane(chatIn);
 	private JPanel scorePanel = new JPanel();
 	private JPanel trophyPanel = new JPanel();
-	private ImageIcon tictac = new ImageIcon("tic_tac_toe.png", "tictactoe");
-	private ImageIcon con4 = new ImageIcon("connect4.png", "connect 4");
+	private ImageIcon tictac = new ImageIcon("ticTacToeIcon.gif", "tictactoe");
+	private ImageIcon con4 = new ImageIcon("connectFour.png", "connect 4");
+	private ImageIcon snake = new ImageIcon("snake.png", "snake");
+	private ImageIcon hangman = new ImageIcon("hangman.png", "hangman");
+	private ImageIcon triviaGame = new ImageIcon("triviaGame.png", "triviaGame");
+	private ImageIcon wordWhomp = new ImageIcon("wordWhomp.png", "wordWhomp");
 	private JPanel onlinePanel = new JPanel();
 	private JPanel chatPanel = new JPanel(); //for the bottom
 	
@@ -276,6 +284,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		//stopped
 		wd.setPreferredSize(new Dimension(1010,100));
 		homePanel.setBackground(Color.white);
+		homePanel.setLayout(new GridLayout());
 		scorePanel.setBackground(new Color(240,250,240));
 		trophyPanel.setBackground(Color.green);
 		mainPanel.setForeground(Color.cyan);
@@ -285,13 +294,36 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		trophyPanel.add(new JLabel("Trophy listing!"));
 		//add code to flesh out home panel or show games
 		tictactoeButton = new JButton(tictac);
+		tictactoeButton.setSize(5, 5);
 		connectfourButton = new JButton(con4);
+		connectfourButton.setSize(5, 5);
+		snakeButton = new JButton(snake);
+		snakeButton.setSize(5, 5);
+		hangManButton = new JButton(hangman);
+		hangManButton.setSize(5, 5);
+		triviaGameButton = new JButton(triviaGame);
+		triviaGameButton.setSize(5, 5);
+		wordWhompButton = new JButton(wordWhomp);
+		wordWhompButton.setSize(5, 5);
 		tictactoeButton.setEnabled(false);
+		connectfourButton.setEnabled(false);
+		snakeButton.setEnabled(false);
+		hangManButton.setEnabled(false);
+		triviaGameButton.setEnabled(false);
+		wordWhompButton.setEnabled(false);
 		//homePanel.add(new JLabel("Do the thing here!"));
 		homePanel.add(tictactoeButton);
 		homePanel.add(connectfourButton);
+		homePanel.add(snakeButton);
+		homePanel.add(hangManButton);
+		homePanel.add(triviaGameButton);
+		homePanel.add(wordWhompButton);
 		tictactoeButton.addActionListener(this);
 		connectfourButton.addActionListener(this);
+		snakeButton.addActionListener(this);
+		hangManButton.addActionListener(this);
+		triviaGameButton.addActionListener(this);
+		wordWhompButton.addActionListener(this);
 		mainPanel.addTab("Scores", scorePanel);
 		mainPanel.addTab("Trophies", trophyPanel);
 		chatSubmitButton.addActionListener(this);
@@ -464,11 +496,57 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		}
 		
 		else if(arg0.getSource() == connectfourButton){
-			makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.connect4);
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				new ConnectFour();
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.connect4);
+			}
 		}
 		else if(arg0.getSource() == tictactoeButton){
-			makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.tictactoe);
-		} 
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				new TicTacToe();
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.tictactoe);
+			}
+		}
+		else if(arg0.getSource() == snakeButton) {
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				new Snake();
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.snake);
+			}
+		}
+		else if(arg0.getSource() == hangManButton) {
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				try {
+					new Hangman();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.hangman);
+			}
+		}
+		else if(arg0.getSource() == triviaGameButton) {
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				new Trivia();
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.triviaGame);
+			}
+		}
+		else if(arg0.getSource() == wordWhompButton) {
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				try {
+					new WordWhomp();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.wordWhomp);
+			}
+		}
 		else if(arg0.getSource() == ipAddressSubmit) {
 			System.out.println("jkdasjfkd");
 			ip_Address = ipAddressBox.getText();
@@ -482,9 +560,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		System.out.println("create invite window!");
 		//new game invite window created here
 		try {
-			if (!username.equals(selectedValue)) {
 				oos.writeObject(new GameInvite(username, selectedValue, game));
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -530,7 +606,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								}
 								System.out.println("Accepted invite!");
 								if(invite.game.contains(GameInvite.tictactoe)){ //now that you created invite, load up tic tac toe.. haven't added one for connect4
-									System.out.println("what");
 									try {
 										new TicTacToe(p1.getUsername(), invite.from, false, ip_Address, false);
 									} catch (UnknownHostException e) {
@@ -540,15 +615,53 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 									}
 								}
 								else if(invite.game.contains(GameInvite.connect4)){
-									System.out.println("trying to open conn4 now!");
 									try{
-										new ConnectFour(p1.getUsername(), invite.from, false, ip_Address);
+										new ConnectFour(p1.getUsername(), invite.from, false, ip_Address, false);
+									} catch(UnknownHostException e){
+										e.printStackTrace();
+									} catch(IOException e){
+										e.printStackTrace();
 									}
-									catch(UnknownHostException e){
-										;
+								}
+								else if(invite.game.contains(GameInvite.snake)){
+									try{
+										//TODO
+										new Snake(p1.getUsername(), invite.from, false, ip_Address, false);
+									} catch(UnknownHostException e){
+										e.printStackTrace();
+									} catch(IOException e){
+										e.printStackTrace();
 									}
-									catch(IOException e){;}
-									
+								}
+								else if(invite.game.contains(GameInvite.hangman)){
+									try{
+										//TODO
+										new Hangman(p1.getUsername(), invite.from, false, ip_Address, false);
+									} catch(UnknownHostException e){
+										e.printStackTrace();
+									} catch(IOException e){
+										e.printStackTrace();
+									}
+								}
+								else if(invite.game.contains(GameInvite.triviaGame)){
+									try{
+										//TODO
+										new Trivia(p1.getUsername(), invite.from, false, ip_Address, false);
+									} catch(UnknownHostException e){
+										e.printStackTrace();
+									} catch(IOException e){
+										e.printStackTrace();
+									}
+								}
+								else if(invite.game.contains(GameInvite.wordWhomp)){
+									try{
+										//TODO
+										new WordWhomp(p1.getUsername(), invite.from, false, ip_Address, false);
+									} catch(UnknownHostException e){
+										e.printStackTrace();
+									} catch(IOException e){
+										e.printStackTrace();
+									}
 								}
 								inviteWindow.dispose(); //destroy invite/notificaiton window as no longer needed
 							}
@@ -576,10 +689,19 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 					}
 					else if(invite.from.equals(p1.getUsername()) && invite.isAccepted()){
 						System.out.println("Opponent accepted invite, opening game now");
-						if(invite.game.equals(GameInvite.tictactoe))
+						if(invite.game.equals(GameInvite.tictactoe)) {
 							new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
-						else if (invite.game.equals(GameInvite.connect4))
-							new ConnectFour(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address);
+						} else if (invite.game.equals(GameInvite.connect4)) {
+							new ConnectFour(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+						} else if (invite.game.equals(GameInvite.snake)) {
+							new Snake(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+						} else if (invite.game.equals(GameInvite.hangman)) {
+							new Hangman(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+						} else if (invite.game.equals(GameInvite.triviaGame)) {
+							new Trivia(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+						} else if (invite.game.equals(GameInvite.wordWhomp)) {
+							new WordWhomp(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+						}
 					}
 				}
 				else if(message instanceof ChatMessage){
@@ -608,9 +730,18 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
-		if(!tictactoeButton.isEnabled() || !connectfourButton.isEnabled()){
+		if(!tictactoeButton.isEnabled() ||
+				!connectfourButton.isEnabled() ||
+				!snakeButton.isEnabled() ||
+				!hangManButton.isEnabled() ||
+				!triviaGameButton.isEnabled() ||
+				!wordWhompButton.isEnabled()){
 			tictactoeButton.setEnabled(true);
 			connectfourButton.setEnabled(true);
+			snakeButton.setEnabled(true);
+			hangManButton.setEnabled(true);
+			triviaGameButton.setEnabled(true);
+			wordWhompButton.setEnabled(true);
 		}
 	}
 

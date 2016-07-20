@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import player.Player;
+import wordWhomp.WordWhomp;
 
 public class ConnectFour extends Game implements Runnable {
 	

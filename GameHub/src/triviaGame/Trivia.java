@@ -1,5 +1,8 @@
 package triviaGame;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import games.Game;
 
 import javax.swing.JFrame;
@@ -13,6 +16,10 @@ public class Trivia extends Game {
 	public Trivia() {
 		super("Trivia Game", "triviaGame.png", new JFrame(), new JPanel(), 500, 500, 200, 200, 2);
 		getGameFrame().setVisible(true);
+	}
+	
+	public Trivia(String localplayer, String remoteplayer, boolean goFirst, String ipaddress, Boolean gofirst) throws UnknownHostException, IOException {
+		super("Trivia Game", "triviaGame.png", new JFrame(), new JPanel(), 500, 500, 200, 200, 2);
 	}
 
 	public static void main(String[] args) {

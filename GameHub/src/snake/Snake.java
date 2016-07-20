@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import player.Player;
+import wordWhomp.WordWhomp;
 
 public class Snake extends Game implements ActionListener, KeyListener
 {
@@ -40,13 +43,16 @@ public class Snake extends Game implements ActionListener, KeyListener
 
 	public Dimension dim;
 
-	public Snake()
-	{
+	public Snake() {
 		super("Snake", "snake.png", new JFrame(), new JPanel(), 805, 700, 300, 300, 1);
 		getGameFrame().addKeyListener(this);
 		setGamePanel(new RenderPanel());
 		this.getGameFrame().setVisible(true);
 		startGame();
+	}
+	
+	public Snake(String localplayer, String remoteplayer, boolean goFirst, String ipaddress, Boolean gofirst) throws UnknownHostException, IOException {
+		super("Snake", "snake.png", new JFrame(), new JPanel(), 805, 700, 300, 300, 1);
 	}
 
 	public void startGame()

@@ -14,16 +14,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
+import java.net.UnknownHostException;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -32,8 +28,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.border.Border;
 
 import player.Player;
 
@@ -74,6 +68,10 @@ public class Hangman extends Game implements ActionListener, Runnable{
 		populateWordList();
 		
 		new Thread(this).start();
+	}
+	
+	public Hangman(String localplayer, String remoteplayer, boolean goFirst, String ipaddress, Boolean gofirst) throws UnknownHostException, IOException {
+		super("Hangman", "hangman.png", new JFrame(), new JPanel(), 800 + 10, 800 + 10, 500 + 10, 500 + 10, 2);
 	}
 	
 	private void populateWordList() {

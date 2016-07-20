@@ -19,6 +19,10 @@ public class GameInvite implements Serializable{
 	public static final String snake = "snake";
 	/* Hangman */
 	public static final String hangman = "hangman";
+	/* Trivia Game */
+	public static final String triviaGame = "triviaGame";
+	/* Word Whomp */
+	public static final String wordWhomp = "wordWhomp";
 	/* The message from the other person */
 	String from;
 	/* The message to the other person */

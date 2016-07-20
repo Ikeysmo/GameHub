@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import player.Player;
+import wordWhomp.WordWhomp;
 
 public class TicTacToe extends Game implements Runnable{
 	
@@ -179,14 +180,11 @@ public class TicTacToe extends Game implements Runnable{
 				}
 			} else {
 				try {
-					
-					Point d = this.getPlayer(turn).makeMove();
-				
 					if(this.getPlayer(turn) instanceof RemotePlayer){
 						}
 						else{
 							System.out.println("Is a TicTacToePlayer's turn");
-							d = ((TicTacToePlayer)this.getPlayer(turn)).makeMove(); //does different depending on what type of player
+							Point d = ((TicTacToePlayer)this.getPlayer(turn)).makeMove(); //does different depending on what type of player
 							TicTacToePlayer tempLocal;
 							tempLocal = (TicTacToePlayer)this.getPlayer(turn); //this has to be instance of RP
 							this.updateMove(d.x, d.y, tempLocal);
