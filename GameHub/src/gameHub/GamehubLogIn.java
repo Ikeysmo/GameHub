@@ -9,7 +9,14 @@ package gameHub;
  */
 
 import games.Game;
-import hangman.Hangman;
+import games.brickBreaker.BrickBreaker;
+import games.connectFour.ConnectFour;
+import games.hangman.Hangman;
+import games.pong.Pong;
+import games.snake.Snake;
+import games.ticTacToe.TicTacToe;
+import games.triviaGame.Trivia;
+import games.wordWhomp.WordWhomp;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -52,14 +59,6 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import pong.Pong;
-import brickBreaker.BrickBreaker;
-import connectFour.ConnectFour;
-import snake.Snake;
-import ticTacToe.TicTacToe;
-import triviaGame.Trivia;
-import wordWhomp.WordWhomp;
 
 public class GamehubLogIn implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
 	

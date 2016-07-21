@@ -8,11 +8,10 @@ package player;
  */
 
 import games.Game;
+import games.ticTacToe.BoardPanel;
 
 import java.awt.Point;
 import java.io.IOException;
-
-import ticTacToe.BoardPanel;
 
 public abstract class Player {
 	/* The name of the player */

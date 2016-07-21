@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author Isaiah
- *
- */
-package triviaGame;
