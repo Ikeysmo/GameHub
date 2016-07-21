@@ -40,8 +40,8 @@ public class DrawPanel extends JPanel {
 	 * @throws IOException
 	 */
 	public DrawPanel() throws IOException {
-		backgroundImage = ImageIO.read(new File("hangman_background.png"));
-		setBackground(Color.white);
+		//backgroundImage = ImageIO.read(new File("hangman_background.png"));
+		//setBackground(Color.white);
 		hangmanposes = new BufferedImage[NUM_OF_POSES];
 		for(int i = 0; i < NUM_OF_POSES; i++){
 			hangmanposes[i] = ImageIO.read(new File("hangman" + (i+1) + ".png"));
@@ -56,10 +56,10 @@ public class DrawPanel extends JPanel {
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
-		int offset = this.getBorder().getBorderInsets(getRootPane()).top;
-		g.drawImage(backgroundImage,  offset,  offset,  this);
+		//int offset = this.getBorder().getBorderInsets(getRootPane()).top;
+		//g.drawImage(backgroundImage,  offset,  offset,  this);
 		//where I draw the things that I need
-			g.drawImage(hangmanposes[pose], 150, 0, null );
+			g.drawImage(hangmanposes[pose], 0 , 0, null );
 			g.setColor(Color.orange);
 			if(currWord == null)
 				return;
