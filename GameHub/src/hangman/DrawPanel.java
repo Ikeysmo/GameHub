@@ -9,10 +9,11 @@ package hangman;
  */
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.LayoutManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +45,20 @@ public class DrawPanel extends JPanel {
 		//setBackground(Color.white);
 		hangmanposes = new BufferedImage[NUM_OF_POSES];
 		for(int i = 0; i < NUM_OF_POSES; i++){
-			hangmanposes[i] = ImageIO.read(new File("hangman" + (i+1) + ".png"));
+			hangmanposes[i] = (ImageIO.read(new File("hangman" + (i+1) + ".png")));
+		}
+	}
+	
+	public DrawPanel(Dimension dim) throws IOException {
+		this.validate();
+		//backgroundImage = ImageIO.read(new File("hangman_background.png"));
+		//setBackground(Color.white);
+		this.setPreferredSize(dim);
+		this.setSize(dim);
+		hangmanposes = new BufferedImage[NUM_OF_POSES];
+		for(int i = 0; i < NUM_OF_POSES; i++){
+			hangmanposes[i] = (ImageIO.read(new File("hangman" + (i+1) + ".png")));
+			hangmanposes[i] = resize(hangmanposes[i], this.getWidth(), this.getHeight());
 		}
 	}
 	
@@ -54,13 +68,13 @@ public class DrawPanel extends JPanel {
 	 * @param g The Graphics
 	 */
 	@Override
-	public void paint(Graphics g){
-		super.paint(g);
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
 		//int offset = this.getBorder().getBorderInsets(getRootPane()).top;
 		//g.drawImage(backgroundImage,  offset,  offset,  this);
 		//where I draw the things that I need
 			g.drawImage(hangmanposes[pose], 0 , 0, null );
-			g.setColor(Color.orange);
+			g.setColor(Color.white);
 			if(currWord == null)
 				return;
 			int posx = 50;
@@ -75,7 +89,7 @@ public class DrawPanel extends JPanel {
 					posx += 75;
 					continue;
 				}
-				g.setFont(new Font("Default", Font.BOLD, 30));
+				g.setFont(new Font("Comic Sans MS", Font.BOLD, 30));
 				g.drawString(String.valueOf(testWord[i]), posx + 25, 535);
 				posx += 75;
 			}
@@ -137,4 +151,16 @@ public class DrawPanel extends JPanel {
 			return false;
 		}
 	}
+	
+	public BufferedImage resize(BufferedImage img, int newW, int newH) { 
+	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = dimg.createGraphics();
+	    g2d.drawImage(tmp, 0, 0, null);
+	    g2d.dispose();
+	    repaint();
+
+	    return dimg;
+	}  
 }

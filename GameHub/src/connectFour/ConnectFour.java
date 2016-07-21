@@ -12,19 +12,26 @@ package connectFour;
 import games.Game;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import player.Player;
+import ticTacToe.TicTacToe;
 import wordWhomp.WordWhomp;
 
 public class ConnectFour extends Game implements Runnable {
@@ -210,30 +217,71 @@ public class ConnectFour extends Game implements Runnable {
 			System.out.println("turn is now: " + turn);
 		}
 		//now find out winner
-		winningScreen(findWinner());
+		gameOver(findWinner());
 		
 	}
 	
 	/**
-	 * A helper method that displays a window telling who the winner is
-	 * The rules here are not
-	 * 0 = no has one yet
-	 * 1 = player 1 wins
-	 * 2 = player 2 wins
-	 * @param winnderNum Who won
+	 * This method starts a new thread
+	 * @throws IOException 
 	 */
-	private void winningScreen(int winnerNum) {
-		JFrame finished = new JFrame("Game!");
-		finished.setSize(350, 100);
-		JLabel label = new JLabel();
-		label.setFont(new Font("Default", Font.BOLD, 20));
-		label.setForeground(Color.red);
-		if(winnerNum == 0)
-			label.setText("It is a draw!");
-		else
-			label.setText(" And winner is " + getPlayer(winnerNum - 1).getName() + "!");
-		finished.add(label, "Center");
-		finished.setVisible(true);
+	public void startNewThread() throws IOException{ //this is ONLY needed for gameOver method!
+		new Thread(this);
+		Thread.currentThread().interrupt();
+		new ConnectFour();
+	}
+	
+	
+	private void gameOver(int winnerNum) {
+		JFrame endWindow = new JFrame("GameOver");
+		JPanel endPanel = new JPanel();
+		endPanel.setBackground(Color.black);
+		endPanel.setBorder(BorderFactory.createLineBorder(saddleBrown, 10));
+		endPanel.setLayout(new BoxLayout(endPanel, BoxLayout.Y_AXIS));
+		
+		JLabel didYouWin = new JLabel("You Lose!!!");
+		if (winnerNum == PLAYER_1) {
+			didYouWin = new JLabel(getPlayer(PLAYER_1).getName() + " Win!");
+		} else if (winnerNum == PLAYER_2) {
+			didYouWin = new JLabel(getPlayer(PLAYER_2).getName() + " Win!");
+		} else {
+			didYouWin = new JLabel("Draw!");
+		}
+		didYouWin.setFont(new Font("Comic Sans MS", Font.ITALIC, 25));
+		didYouWin.setForeground(Color.white);
+		didYouWin.setAlignmentX(Component.CENTER_ALIGNMENT);
+		endPanel.add(didYouWin);
+		endWindow.setSize(END_FRAME_WIDTH, END_FRAME_HEIGHT);
+		JButton newGame = new JButton("Play Again?");
+		newGame.setBackground(Color.black);
+        newGame.setForeground(Color.WHITE);
+        newGame.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+		endPanel.add(newGame);
+		endWindow.add(endPanel);
+		endWindow.setUndecorated(true);
+		endWindow.setAlwaysOnTop(true);
+		newGame.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								getGamePanel().validate();
+								getGameFrame().validate();
+								getGameFrame().dispose();
+								endWindow.dispose();
+								
+								
+								try {
+									startNewThread();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								
+							}
+						});
+		endWindow.pack();
+		endWindow.setVisible(true);
+		endWindow.setLocationRelativeTo(getGameFrame());
 	}
 	
 	/**

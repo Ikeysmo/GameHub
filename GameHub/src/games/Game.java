@@ -1,5 +1,6 @@
 package games;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -16,9 +17,16 @@ import player.Player;
 
 public abstract class Game {
 	
+	public final static Color saddleBrown = new Color(139, 69, 19);
+	
 	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double width = screenSize.getWidth();
 	double height = screenSize.getHeight();
+	
+	/* The height of the end frame */
+	public final static int END_FRAME_HEIGHT = 150;
+	/* The width of the end frame */
+	public final static int END_FRAME_WIDTH = 500;
 	
 	private int frameHeight;
 	private int frameWidth;
@@ -142,15 +150,16 @@ public abstract class Game {
 		//gamePanel.setBackground(Color.BLACK);
 		gameFrame.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		gameFrame.setTitle(gameTitle);
-		ImageIcon icon = createImageIcon(gameIcon,
+		ImageIcon icon = createImageIcon("icons/" + gameIcon,
                 "a pretty but meaningless splat");
 		gameFrame.setIconImage(icon.getImage());
-		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		gameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.gamePanel = gamePanel;
 		this.gameFrame = gameFrame;
 		
 		this.playerNum = playerNum;
+		
+		getGameFrame().setLocation((Game.getScreenSize().width / 2) - this.getGameFrame().getWidth()/2, (Game.getScreenSize().height / 2) - this.getGameFrame().getHeight()/2);
 	}
 	
 	public int getFrameHeight() {
@@ -192,6 +201,7 @@ public abstract class Game {
 	public void setGamePanel(JPanel gamePanel) {
 		this.gameFrame.add(gamePanel);
 		this.gamePanel = gamePanel;
+		//this.gameFrame.pack();
 	}
 	
 	public void setPlayer(int i, Player player) {

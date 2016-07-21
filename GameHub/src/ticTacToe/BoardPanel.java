@@ -78,7 +78,7 @@ public class BoardPanel extends JPanel {
 	 */
 	@Override 
 	public void paint(Graphics g){
-		getRootPane().setBackground(Color.white);
+		getRootPane().setBackground(Color.black);
 		drawBoard(g);
 		
 	}

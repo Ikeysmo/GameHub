@@ -8,12 +8,16 @@ package gameHub;
  * @version 1.0
  */
 
+import games.Game;
 import hangman.Hangman;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,6 +53,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import pong.Pong;
+import brickBreaker.BrickBreaker;
 import connectFour.ConnectFour;
 import snake.Snake;
 import ticTacToe.TicTacToe;
@@ -60,6 +66,8 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double width = screenSize.getWidth();
 	double height = screenSize.getHeight();
+	
+	public final int GAME_ICON_SIZE = 150;
 	
 	/* The player's Account */
 	private PlayerAccount p1;
@@ -117,6 +125,8 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	private JButton hangManButton;
 	private JButton triviaGameButton;
 	private JButton wordWhompButton;
+	private JButton brickBreakerButton;
+	private JButton pongButton;
 	private JList onlineList = new JList();
 	private JLabel errormsg = new JLabel();
 	private JPanel homePanel = new JPanel();
@@ -124,12 +134,14 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	private JScrollPane wd = new JScrollPane(chatIn);
 	private JPanel scorePanel = new JPanel();
 	private JPanel trophyPanel = new JPanel();
-	private ImageIcon tictac = new ImageIcon("ticTacToeIcon.gif", "tictactoe");
-	private ImageIcon con4 = new ImageIcon("connectFour.png", "connect 4");
-	private ImageIcon snake = new ImageIcon("snake.png", "snake");
-	private ImageIcon hangman = new ImageIcon("hangman.png", "hangman");
-	private ImageIcon triviaGame = new ImageIcon("triviaGame.png", "triviaGame");
-	private ImageIcon wordWhomp = new ImageIcon("wordWhomp.png", "wordWhomp");
+	private ImageIcon tictac = new ImageIcon("icons/ticTacToeIcon.gif", "tictactoe");
+	private ImageIcon con4 = new ImageIcon("icons/connectFour.png", "connect 4");
+	private ImageIcon snake = new ImageIcon("icons/snake.png", "snake");
+	private ImageIcon hangman = new ImageIcon("icons/hangman.png", "hangman");
+	private ImageIcon triviaGame = new ImageIcon("icons/triviaGame.png", "triviaGame");
+	private ImageIcon wordWhomp = new ImageIcon("icons/wordWhomp.png", "wordWhomp");
+	private ImageIcon brickBreaker = new ImageIcon("icons/brickBreaker.png", "brickBreaker");
+	private ImageIcon pong = new ImageIcon("icons/pong.png", "pong");
 	private JPanel onlinePanel = new JPanel();
 	private JPanel chatPanel = new JPanel(); //for the bottom
 	
@@ -152,7 +164,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	public void setUpIp_AddressWindow() {
 		ipAddressWindow.requestFocus();
 		ipAddressWindow.toFront();
-		ipAddressWindow.setBackground(Color.cyan);
+		ipAddressWindow.setBackground(Color.black);
 		ipAddressWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
 		//ipAddressWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		//ipAddressWindow.setUndecorated(true);
@@ -163,15 +175,23 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		
 		ipAddressPanel.setSize(new Dimension(600,100));
 		ipAddressPanel.setLayout(new GridLayout());
-		ipAddressPanel.setBorder(BorderFactory.createLineBorder(Color.cyan, 10));
+		ipAddressPanel.setBorder(BorderFactory.createLineBorder(Color.black, 10));
 		
 		ipAddressBox.setSize(new Dimension(200, 100));
-		ipAddressBox.setFont(new Font("default", Font.BOLD, 20));
+		ipAddressBox.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
 		
 		ipAddressMessage.setSize(new Dimension(200, 100));
 		
 		ipAddressSubmit.setSize(new Dimension(200, 100));
 		ipAddressSubmit.addActionListener(this);
+		
+		BufferedImage pop = null;
+		try {
+			pop = ImageIO.read(new File("icons/gamehub_logo.png"));
+			ipAddressWindow.setIconImage(pop);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		ipAddressPanel.add(ipAddressMessage);
 		ipAddressPanel.add(ipAddressBox);
@@ -190,47 +210,50 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		
 		mainWindow.requestFocus();
 		mainWindow.toFront();
-		mainWindow.setBackground(Color.cyan);
+		mainWindow.setBackground(Game.saddleBrown);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
 		//mainWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		//mainWindow.setUndecorated(true);
 		mainWindow.setLocation((int)width/2 - 300, (int)height/2 - 300);
 		
-		loginButton.setBackground(Color.cyan);
+		loginButton.setBackground(Game.saddleBrown);
 		loginButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-		registerButton.setBackground(Color.cyan);
+		registerButton.setBackground(Game.saddleBrown);
 		registerButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		
 		//games.setListData(listData);
-		welcomeMessage.setFont(new Font("Default", Font.BOLD, 40));
+		welcomeMessage.setFont(new Font("Comic Sans MS", Font.BOLD, 40));
 		//welcomeMessage.setForeground(Color.DARK_GRAY);
-		welcomeMessage.setBackground(Color.LIGHT_GRAY);
-		welcomeMessage.setBorder(BorderFactory.createLineBorder(Color.gray, 5));
-		instru.setBorder(BorderFactory.createLineBorder(Color.gray, 5));
+		welcomeMessage.setBackground(Game.saddleBrown);
+		welcomeMessage.setForeground(Game.saddleBrown);
+		welcomeMessage.setBorder(BorderFactory.createLineBorder(Game.saddleBrown, 5));
+		instru.setBorder(BorderFactory.createLineBorder(Game.saddleBrown, 5));
+		instru.setForeground(Game.saddleBrown);
 		mainWindow.requestFocus(); //gets focus of window so loginBox isn't empty
-		loginBox.setFont(new Font("Default", Font.BOLD, 20));
+		loginBox.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
 		loginBox.addFocusListener(this);
 		passBox.addKeyListener(this);
 		//loginBox.addKeyListener(this);
 		loginBox.setPreferredSize(new Dimension(170,30));
 		loginBox.setMinimumSize(new Dimension(170,30));
-		passBox.setFont(new Font("Default", Font.BOLD, 20));
+		passBox.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
 		passBox.setPreferredSize(new Dimension(170, 30));
 		passBox.setMinimumSize(new Dimension(170, 30));
 		passBox.addFocusListener(this);
 		//passBox.addKeyListener(this);
-		mainWindowPanel.setBackground(Color.orange);
+		mainWindowPanel.setBackground(Color.black);
 		mainWindowPanel.add(welcomeMessage);
 		BufferedImage pop = null;
 		try {
-			pop = ImageIO.read(new File("gamepad.png"));
+			pop = ImageIO.read(new File("icons/gamehub_logo.png"));
 			JLabel img_show = new JLabel(new ImageIcon(pop));
 			mainWindowPanel.add(img_show);
+			mainWindow.setIconImage(pop);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		instru.setFont(new Font("default", Font.BOLD, 20));
-		mainWindowPanel.setBorder(BorderFactory.createLineBorder(Color.red, 10));
+		instru.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+		mainWindowPanel.setBorder(BorderFactory.createLineBorder(Game.saddleBrown, 10));
 		mainWindowPanel.add(instru);
 		mainWindowPanel.add(Box.createRigidArea(new Dimension(100, 20)));
 		mainWindowPanel.add(loginBox);
@@ -272,6 +295,13 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		            }
 		    }
 		});
+		BufferedImage pop = null;
+		try {
+			pop = ImageIO.read(new File("icons/gamehub_logo.png"));
+			gameHubWindow.setIconImage(pop);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		gameHubWindow.setMinimumSize(new Dimension(1024,800));
 		gameHubWindow.setResizable(false);
 		gameHubWindow.setVisible(true);
@@ -283,47 +313,90 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		onlineList.setBackground(new Color(215,204,230));
 		//stopped
 		wd.setPreferredSize(new Dimension(1010,100));
-		homePanel.setBackground(Color.white);
-		homePanel.setLayout(new GridLayout());
+		homePanel.setBackground(Color.black);
+		homePanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		scorePanel.setBackground(new Color(240,250,240));
 		trophyPanel.setBackground(Color.green);
-		mainPanel.setForeground(Color.cyan);
+		mainPanel.setForeground(Color.black);
 		mainPanel.setBackground(Color.orange);
 		mainPanel.addTab("Home", bd);
 		scorePanel.add(new JLabel("This is where to put scores!"));
 		trophyPanel.add(new JLabel("Trophy listing!"));
 		//add code to flesh out home panel or show games
+		Image img = tictac.getImage() ;  
+		Image newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		tictac = new ImageIcon( newimg );
+		img = con4.getImage() ;  
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		con4 = new ImageIcon( newimg );
+		img = snake.getImage() ;  
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		snake = new ImageIcon( newimg );
+		img = hangman.getImage() ;  
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		hangman = new ImageIcon( newimg );
+		img = triviaGame.getImage() ;  
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		triviaGame = new ImageIcon( newimg );
+		img = wordWhomp.getImage() ;  
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		wordWhomp = new ImageIcon( newimg );
+		img = brickBreaker.getImage() ;  
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		brickBreaker = new ImageIcon( newimg );
+		img = pong.getImage() ;  
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
+		pong = new ImageIcon( newimg );
 		tictactoeButton = new JButton(tictac);
-		tictactoeButton.setSize(5, 5);
 		connectfourButton = new JButton(con4);
-		connectfourButton.setSize(5, 5);
 		snakeButton = new JButton(snake);
-		snakeButton.setSize(5, 5);
 		hangManButton = new JButton(hangman);
-		hangManButton.setSize(5, 5);
 		triviaGameButton = new JButton(triviaGame);
-		triviaGameButton.setSize(5, 5);
 		wordWhompButton = new JButton(wordWhomp);
-		wordWhompButton.setSize(5, 5);
+		brickBreakerButton = new JButton(brickBreaker);
+		pongButton = new JButton(pong);
 		tictactoeButton.setEnabled(false);
 		connectfourButton.setEnabled(false);
 		snakeButton.setEnabled(false);
 		hangManButton.setEnabled(false);
 		triviaGameButton.setEnabled(false);
 		wordWhompButton.setEnabled(false);
+		brickBreakerButton.setEnabled(false);
+		pongButton.setEnabled(false);
 		//homePanel.add(new JLabel("Do the thing here!"));
-		homePanel.add(tictactoeButton);
-		homePanel.add(connectfourButton);
-		homePanel.add(snakeButton);
-		homePanel.add(hangManButton);
-		homePanel.add(triviaGameButton);
-		homePanel.add(wordWhompButton);
+		c.gridx = 0;
+		c.gridy = 0;
+		homePanel.add(tictactoeButton, c);
+		c.gridx = 1;
+		c.gridy = 0;
+		homePanel.add(connectfourButton, c);
+		c.gridx = 2;
+		c.gridy = 0;
+		homePanel.add(snakeButton, c);
+		c.gridx = 0;
+		c.gridy = 1;
+		homePanel.add(hangManButton, c);
+		c.gridx = 1;
+		c.gridy = 1;
+		homePanel.add(triviaGameButton, c);
+		c.gridx = 2;
+		c.gridy = 1;
+		homePanel.add(wordWhompButton, c);
+		c.gridx = 0;
+		c.gridy = 2;
+		homePanel.add(brickBreakerButton, c);
+		c.gridx = 1;
+		c.gridy = 2;
+		homePanel.add(pongButton, c);
 		tictactoeButton.addActionListener(this);
 		connectfourButton.addActionListener(this);
 		snakeButton.addActionListener(this);
 		hangManButton.addActionListener(this);
 		triviaGameButton.addActionListener(this);
 		wordWhompButton.addActionListener(this);
+		brickBreakerButton.addActionListener(this);
+		pongButton.addActionListener(this);
 		mainPanel.addTab("Scores", scorePanel);
 		mainPanel.addTab("Trophies", trophyPanel);
 		chatSubmitButton.addActionListener(this);
@@ -341,10 +414,10 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		onlinePanel.add(onlineList);
 		chatPanel.setBounds(0, 600, 1024, 200);
 		//chatIn.setPreferredSize(new Dimension(1010, 100));
-		chatIn.setFont(new Font("Default", Font.BOLD, 15));
+		chatIn.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
 		chatIn.setBorder(new LineBorder(Color.black));
 		chatOut.setPreferredSize(new Dimension(920,30));
-		chatOut.setFont(new Font("default", Font.BOLD, 15));
+		chatOut.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
 		chatIn.setForeground(Color.BLUE);
 		chatIn.setBackground(new Color(185,219,217));
 		chatOut.requestFocus();
@@ -528,6 +601,19 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.hangman);
 			}
 		}
+		else if(arg0.getSource() == brickBreakerButton) {
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				new BrickBreaker();
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.brickBreaker);
+			}
+		} else if(arg0.getSource() == pongButton) {
+			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
+				new Pong();
+			} else {
+				makeInvite(p1.getUsername(), (String) onlineList.getSelectedValue(), GameInvite.pong);
+			}
+		}
 		else if(arg0.getSource() == triviaGameButton) {
 			if (p1.getUsername().equals((String) onlineList.getSelectedValue())) {
 				new Trivia();
@@ -663,6 +749,25 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 										e.printStackTrace();
 									}
 								}
+								else if(invite.game.contains(GameInvite.brickBreaker)){
+									try{
+										//TODO
+										new BrickBreaker(p1.getUsername(), invite.from, false, ip_Address, false);
+									} catch(UnknownHostException e){
+										e.printStackTrace();
+									} catch(IOException e){
+										e.printStackTrace();
+									}
+								} else if(invite.game.contains(GameInvite.pong)){
+									try{
+										//TODO
+										new Pong(p1.getUsername(), invite.from, false, ip_Address, false);
+									} catch(UnknownHostException e){
+										e.printStackTrace();
+									} catch(IOException e){
+										e.printStackTrace();
+									}
+								}
 								inviteWindow.dispose(); //destroy invite/notificaiton window as no longer needed
 							}
 						}); //make local function
@@ -701,6 +806,10 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 							new Trivia(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
 						} else if (invite.game.equals(GameInvite.wordWhomp)) {
 							new WordWhomp(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+						} else if (invite.game.equals(GameInvite.brickBreaker)) {
+							new BrickBreaker(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+						} else if (invite.game.equals(GameInvite.pong)){
+							new Pong(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
 						}
 					}
 				}
@@ -735,13 +844,17 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				!snakeButton.isEnabled() ||
 				!hangManButton.isEnabled() ||
 				!triviaGameButton.isEnabled() ||
-				!wordWhompButton.isEnabled()){
+				!wordWhompButton.isEnabled() ||
+				!brickBreakerButton.isEnabled() ||
+				!pongButton.isEnabled()){
 			tictactoeButton.setEnabled(true);
 			connectfourButton.setEnabled(true);
 			snakeButton.setEnabled(true);
 			hangManButton.setEnabled(true);
 			triviaGameButton.setEnabled(true);
 			wordWhompButton.setEnabled(true);
+			brickBreakerButton.setEnabled(true);
+			pongButton.setEnabled(true);
 		}
 	}
 

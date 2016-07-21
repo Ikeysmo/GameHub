@@ -23,6 +23,10 @@ public class GameInvite implements Serializable{
 	public static final String triviaGame = "triviaGame";
 	/* Word Whomp */
 	public static final String wordWhomp = "wordWhomp";
+	/* Brick Breaker */
+	public static final String brickBreaker = "brickBreaker";
+	/* Pong */
+	public static final String pong = "pong";
 	/* The message from the other person */
 	String from;
 	/* The message to the other person */
