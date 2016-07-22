@@ -73,6 +73,10 @@ ________________________________________________________________________________
 -  Website/App to keep track of our ideas
 
 # OFFICIAL RELEASE ADDITIONS
+Have games loaded/instantiated at RUN-TIME vs COMPILE-TIME. This feature will allow users to play new games via GameHubLogin without having to recompile GameHubLogin. 
+
+
+(Explained from messages below:)
 btw, by having the games inherit from basegame class, we can have gamehublogin work on the fly. Meaning it doesn't have to be recompiled. Any new games are loaded on runtime. It is something I did in my java class, where we load objects at runtime vs compile time 
 It is very tricky to do though, but what it would do is. Let's say Alex has gamehub isntalled on his pc. And he has 4 games. He can just get the new basketball game downlaoded to the jar, and next time he opens gamehub, it sees the game and adds the button/icon for it 
 and he can open it up and run it like normal
