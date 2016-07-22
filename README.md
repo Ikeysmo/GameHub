@@ -72,3 +72,12 @@ ________________________________________________________________________________
 - Private chat for us
 -  Website/App to keep track of our ideas
 
+# OFFICIAL RELEASE ADDITIONS
+btw, by having the games inherit from basegame class, we can have gamehublogin work on the fly. Meaning it doesn't have to be recompiled. Any new games are loaded on runtime. It is something I did in my java class, where we load objects at runtime vs compile time 
+It is very tricky to do though, but what it would do is. Let's say Alex has gamehub isntalled on his pc. And he has 4 games. He can just get the new basketball game downlaoded to the jar, and next time he opens gamehub, it sees the game and adds the button/icon for it 
+and he can open it up and run it like normal
+
+yeah. I think that's what AI uses in a way. By loading stuff at runtime vs compile time. It would be the ultimate feature, that we will add in later. Because it will be tricky to implement fully. Everything will be abstract. Like in gamehub log in, we'd have a for loop to look in the directory for the games that have that basegame class, get the file name, look for an icon in the same directory (for the button logo), and the nisntantiate the objects and call constructor on them. Actually... that doesn't seem that difficult yet. 
+
+The server programs will have to be game agnostic (don't care), and just pass the invites and etc. Ah... but The clients would have to be the ones to see if they have the game locally on their machines, and if they don't, say something 
+This would be a feature for what would be an official release. Like a google play store where one can download new games
