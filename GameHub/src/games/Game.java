@@ -15,14 +15,13 @@ import javax.swing.JPanel;
 
 import player.Player;
 
-public abstract class Game {
+public abstract class Game extends JPanel{
 	
 	public final static Color saddleBrown = new Color(139, 69, 19);
 	
 	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double width = screenSize.getWidth();
 	double height = screenSize.getHeight();
-	
 	/* The height of the end frame */
 	public final static int END_FRAME_HEIGHT = 150;
 	/* The width of the end frame */
