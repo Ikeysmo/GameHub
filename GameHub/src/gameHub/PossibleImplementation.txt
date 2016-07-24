@@ -1,0 +1,36 @@
+Introduction: So in the effort of building Gamehub to allow multiplayer (more than 2 players!) gaming, there are some inherent problems in 
+the current way that the client/server architecture is setup. Some of the problems are listed below...
+
+
+Problems: 
+1) For 2-6 player games that are played via network, need a flexible way of being able to send information to server.
+2) Need to have the robustness to deal with playing with 4 players, one disconnects... if it is that player's turn, how to recover?
+3) Who turn is it when the game first starts (if it is turn based). Can it be changed dynamically? (TicTacToe, turn set on heads/tails for example)
+4) Remove player functionality... if a player isn't responding in time, remove the player
+5) Add functionality for potential 'Spectatre Mode'
+
+
+
+Potential Solution #1: Implement a client/server protocol?
+	Detail: Provide an extensive list of commands for gamehub game server (all STRING commands)... any other object type gets sent to everyone in the match
+	------------------------------------------------------------------------------
+	(NOTE: [] are required elements, <> are optional )
+	
+	##CLIENT## <-- all of these will be handled by NETWORK.JAVA!!
+		* MATCH [Name of Game] [max number of players] <player 1> <player 2...> (keep going)
+		* ADD PLAYER [player] <other players>
+		* REMOVE MATCH [MATCH ID]
+		* REMOVE PLAYER [player]
+	  
+	##SERVER##
+		* OK (means it recieved the command and worked fine)
+		* ERROR MATCH FULL
+		* ERROR INCORRECT ARGUMENT
+		* MATCH [ID] CREATED
+		* PLAYER DISCONNECTED [player #] (allows the clients to know who disconnected
+		
+		
+Potential Solution #2: Use ObjectOriented to its fullest... add in objects to handle error messaging and players leaving
+	Detail: Add in objects like gameInvite and ErrorMessage that handles disconnects and any problems
+	
+	Note: I think this one is a bit inefficient. A string being sent and parsed may come easier than a whole bunch of objects allocated all over the place, etc. 

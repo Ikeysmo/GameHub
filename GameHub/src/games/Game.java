@@ -1,61 +1,27 @@
 package games;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
-import java.awt.Toolkit;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import player.Player;
 
+//to turn game into online capable, 1) import network class, 2)implement network handler, 3) override handle_data method
+
 public abstract class Game extends JPanel{
+	private JFrame gameFrame; //main window for the game
+	private Vector<Player> players;
 	
-	public final static Color saddleBrown = new Color(139, 69, 19);
-	
-	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	double width = screenSize.getWidth();
-	double height = screenSize.getHeight();
-	/* The height of the end frame */
-	public final static int END_FRAME_HEIGHT = 150;
-	/* The width of the end frame */
-	public final static int END_FRAME_WIDTH = 500;
-	
-	private int frameHeight;
-	private int frameWidth;
-	private int minFrameHeight;
-	private int minFrameWidth;
-	private int maxFrameHeight;
-	private int maxFrameWidth;
-	private JFrame gameFrame;
-	private JPanel gamePanel;
-	private Player players[];
-	private int playerNum;
-	
-	public Game(String gameTitle,
-			String gameIcon,
-			JFrame gameFrame,
-			JPanel gamePanel,
-			int frameHeight,
-			int frameWidth,
-			int minFrameHeight,
-			int minFrameWidth,
-			int playerNum)
+	//automatically loads default JFRAME & JPANEL, and provide generic menu interface
+	public Game(String gameTitle, String gameIcon, int frame_width, int frame_height, int playerNum)
 		{
-		this.frameHeight = frameHeight;
-		this.frameWidth = frameWidth;
-		this.minFrameHeight = minFrameHeight;
-		this.minFrameWidth = minFrameWidth;
-		this.players = new Player[2];
-		
-		MenuBar menuBar = new MenuBar();
-		
+		this.players = new Vector<Player>();
+		MenuBar menuBar = new MenuBar(); //consistent menu across all games? Or a leave it up to the game?
 		Menu menu1 = new Menu();
 		menu1.setName("Player");
 		menu1.setLabel("Player");
@@ -132,7 +98,6 @@ public abstract class Game extends JPanel{
 		menuHelp.setName("Help");
 		menuHelp.setLabel("Help");
 		
-		
 		menuBar.add(menu1);
 		menuBar.add(menu2);
 		menuBar.add(menu3);
@@ -140,94 +105,40 @@ public abstract class Game extends JPanel{
 		menuBar.setHelpMenu(menuHelp);
 		
 		gameFrame.setMenuBar(menuBar);
-		
-		Dimension minSize = new Dimension(minFrameHeight, minFrameWidth);
-		
-		gameFrame.setSize(frameHeight, frameWidth);
-		gameFrame.setMinimumSize(minSize);
-		//gamePanel.setForeground(Color.YELLOW);
-		//gamePanel.setBackground(Color.BLACK);
+		//end of that standard menu
 		gameFrame.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		gameFrame.setTitle(gameTitle);
-		ImageIcon icon = createImageIcon("icons/" + gameIcon,
-                "a pretty but meaningless splat");
+		ImageIcon icon = createImageIcon("icons/" + gameIcon, "a pretty but meaningless splat");
 		gameFrame.setIconImage(icon.getImage());
 		gameFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.gamePanel = gamePanel;
-		this.gameFrame = gameFrame;
-		
-		this.playerNum = playerNum;
-		
-		getGameFrame().setLocation((Game.getScreenSize().width / 2) - this.getGameFrame().getWidth()/2, (Game.getScreenSize().height / 2) - this.getGameFrame().getHeight()/2);
-	}
+		gameFrame.setLocationRelativeTo(null);
+		gameFrame.setSize(frame_width, frame_height);
+		gameFrame.setVisible(true);
+		}
 	
-	public int getFrameHeight() {
-		return frameHeight;
-	}
-	
-	public int getFrameWidth() {
-		return frameWidth;
-	}
-	
-	public int getMinFrameHeight() {
-		return minFrameHeight;
-	}
-	
-	public int getMinFrameWidth() {
-		return minFrameWidth;
-	}
-	
-	public int getMaxFrameHeight() {
-		return maxFrameHeight;
-	}
-	
-	public int getMaxFrameWidth() {
-		return maxFrameWidth;
-	}
-	
-	public JFrame getGameFrame() {
-		return gameFrame;
-	}
 	
 	public JPanel getGamePanel() {
-		return gamePanel;
+		return this;
 	}
 	
-	public void setGameFrame(JFrame gameFrame) {
-		this.gameFrame = gameFrame;
+	public void setGamePanel(JPanel gamePanel) { //recommended to not use!
+		this.add(gamePanel);
 	}
 	
-	public void setGamePanel(JPanel gamePanel) {
-		this.gameFrame.add(gamePanel);
-		this.gamePanel = gamePanel;
-		//this.gameFrame.pack();
-	}
-	
-	public void setPlayer(int i, Player player) {
-		this.players[i] = player;
+	public void addPlayer(Player player) {
+		this.players.add(player);
 	}
 	
 	public Player getPlayer(int i) {
-		return players[i];
+		return players.elementAt(i);
 	}
 	
-	public int getPlayerNum() {
-		return playerNum;
+	public int getNumPlayers() {
+		return players.size();
 	}
-	
-	public void setPlayerNum(int playerNum) {
-		this.playerNum = playerNum;
-	}
-	
-	public static Dimension getScreenSize() {
-		return screenSize;
-	}
-	
-	public abstract boolean updateMove(int numx, int numy, Player p1);
 	
 	/** Returns an ImageIcon, or null if the path was invalid. */
-	protected ImageIcon createImageIcon(String path,
-	                                           String description) {
+	protected ImageIcon createImageIcon(String path, String description) {
 		ImageIcon imageIcon = new ImageIcon(path, description);
 	    if (imageIcon.equals(null)) {
 	        System.err.println("Couldn't find file: " + path);
