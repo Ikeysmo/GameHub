@@ -11,6 +11,9 @@ import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import player.Player;
@@ -55,92 +58,107 @@ public abstract class Game {
 		this.minFrameWidth = minFrameWidth;
 		this.players = new Player[2];
 		
-		MenuBar menuBar = new MenuBar();
+		JMenuBar menuBar = new JMenuBar();
 		
-		Menu menu1 = new Menu();
+		JMenu menu0 = new JMenu("Games");
+		menu0.setName("Games");
+		JMenuItem menuItem01 = new JMenuItem("TicTacToe",
+                new ImageIcon("icons/ticTacToeIcon.gif"));
+		menuItem01.setName("TicTacToe");
+		menu0.add(menuItem01);
+		JMenuItem menuItem02 = new JMenuItem("ConnectFour",
+                new ImageIcon("icons/connectFour.png"));
+		menuItem02.setName("Connect4");
+		menu0.add(menuItem02);
+		JMenuItem menuItem03 = new JMenuItem("Hangman",
+                new ImageIcon("icons/hangman.png"));
+		menuItem03.setName("Hangman");
+		menu0.add(menuItem03);
+		JMenuItem menuItem04 = new JMenuItem("Pong",
+                new ImageIcon("icons/pong.png"));
+		menuItem04.setName("Pong");
+		menu0.add(menuItem04);
+		JMenuItem menuItem05 = new JMenuItem("Snake",
+                new ImageIcon("icons/snake.png"));
+		menuItem05.setName("Snake");
+		menu0.add(menuItem05);
+		JMenuItem menuItem06 = new JMenuItem("BrickBreaker",
+                new ImageIcon("icons/brickBreaker.png"));
+		menuItem06.setName("BrickBreaker");
+		menu0.add(menuItem06);
+		JMenuItem menuItem07 = new JMenuItem("TriviaGame",
+                new ImageIcon("icons/triviaGame.png"));
+		menuItem07.setName("TriviaGame");
+		menu0.add(menuItem07);
+		JMenuItem menuItem08 = new JMenuItem("WordWhomp",
+                new ImageIcon("icons/wordWhomp.png"));
+		menuItem08.setName("WordWhomp");
+		menu0.add(menuItem08);
+		
+		JMenu menu1 = new JMenu("Player");
 		menu1.setName("Player");
-		menu1.setLabel("Player");
-		MenuItem menuItem11 = new MenuItem();
+		JMenuItem menuItem11 = new JMenuItem("Name");
 		menuItem11.setName("Name");
-		menuItem11.setLabel("Name");
 		menu1.add(menuItem11);
-		MenuItem menuItem12 = new MenuItem();
+		JMenuItem menuItem12 = new JMenuItem("Awards");
 		menuItem12.setName("Awards");
-		menuItem12.setLabel("Awards");
 		menu1.add(menuItem12);
-		MenuItem menuItem13 = new MenuItem();
+		JMenuItem menuItem13 = new JMenuItem("Data");
 		menuItem13.setName("Data");
-		menuItem13.setLabel("Data");
 		menu1.add(menuItem13);
-		MenuItem menuItem14 = new MenuItem();
+		JMenuItem menuItem14 = new JMenuItem("HighScores");
 		menuItem14.setName("HighScores");
-		menuItem14.setLabel("HighScores");
 		menu1.add(menuItem14);
-		MenuItem menuItem15 = new MenuItem();
+		JMenuItem menuItem15 = new JMenuItem("Trophies");
 		menuItem15.setName("Trophies");
-		menuItem15.setLabel("Trophies");
 		menu1.add(menuItem15);
 		
-		Menu menu2 = new Menu();
+		JMenu menu2 = new JMenu("Load");
 		menu2.setName("Load");
-		menu2.setLabel("Load");
-		MenuItem menuItem21 = new MenuItem();
+		JMenuItem menuItem21 = new JMenuItem("Game1");
 		menuItem21.setName("Game1");
-		menuItem21.setLabel("Game1");
 		menu2.add(menuItem21);
-		MenuItem menuItem22 = new MenuItem();
+		JMenuItem menuItem22 = new JMenuItem("Game2");
 		menuItem22.setName("Game2");
-		menuItem22.setLabel("Game2");
 		menu2.add(menuItem22);
-		MenuItem menuItem23 = new MenuItem();
+		JMenuItem menuItem23 = new JMenuItem("Game3");
 		menuItem23.setName("Game3");
-		menuItem23.setLabel("Game3");
 		menu2.add(menuItem23);
-		MenuItem menuItem24 = new MenuItem();
+		JMenuItem menuItem24 = new JMenuItem("Game4");
 		menuItem24.setName("Game4");
-		menuItem24.setLabel("Game4");
 		menu2.add(menuItem24);
 		
-		Menu menu3 = new Menu();
+		JMenu menu3 = new JMenu("Save");
 		menu3.setName("Save");
-		menu3.setLabel("Save");
-		MenuItem menuItem31 = new MenuItem();
+		JMenuItem menuItem31 = new JMenuItem("Game1");
 		menuItem31.setName("Game1");
-		menuItem31.setLabel("Game1");
 		menu3.add(menuItem31);
-		MenuItem menuItem32 = new MenuItem();
+		JMenuItem menuItem32 = new JMenuItem("Game2");
 		menuItem32.setName("Game2");
-		menuItem32.setLabel("Game2");
 		menu3.add(menuItem32);
-		MenuItem menuItem33 = new MenuItem();
+		JMenuItem menuItem33 = new JMenuItem("Game3");
 		menuItem33.setName("Game3");
-		menuItem33.setLabel("Game3");
 		menu3.add(menuItem33);
-		MenuItem menuItem34 = new MenuItem();
+		JMenuItem menuItem34 = new JMenuItem("Game4");
 		menuItem34.setName("Game4");
-		menuItem34.setLabel("Game4");
 		menu3.add(menuItem34);
 		
-		Menu menu4 = new Menu();
+		JMenu menu4 = new JMenu("Misc");
 		menu4.setName("Misc");
-		menu4.setLabel("Misc");
-		MenuItem menuItem41 = new MenuItem();
+		JMenuItem menuItem41 = new JMenuItem("About");
 		menuItem41.setName("About");
-		menuItem41.setLabel("About");
 		menu4.add(menuItem41);
 		
-		Menu menuHelp = new Menu();
+		JMenu menuHelp = new JMenu("Help");
 		menuHelp.setName("Help");
-		menuHelp.setLabel("Help");
 		
-		
+		menuBar.add(menu0);
 		menuBar.add(menu1);
 		menuBar.add(menu2);
 		menuBar.add(menu3);
 		menuBar.add(menu4);
-		menuBar.setHelpMenu(menuHelp);
 		
-		gameFrame.setMenuBar(menuBar);
+		gameFrame.setJMenuBar(menuBar);
 		
 		Dimension minSize = new Dimension(minFrameHeight, minFrameWidth);
 		
