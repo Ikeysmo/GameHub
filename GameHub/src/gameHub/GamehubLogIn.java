@@ -758,14 +758,14 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 										e.printStackTrace();
 									}
 								} else if(invite.game.contains(GameInvite.pong)){
-									try{
+									//try{
 										//TODO
-										new Pong(p1.getUsername(), invite.from, false, ip_Address, false);
-									} catch(UnknownHostException e){
-										e.printStackTrace();
-									} catch(IOException e){
-										e.printStackTrace();
-									}
+										//new Pong(p1.getUsername(), invite.from, false, ip_Address, false);
+									//} catch(UnknownHostException e){
+									//	e.printStackTrace();
+									//} catch(IOException e){
+									//	e.printStackTrace();
+									//}
 								}
 								inviteWindow.dispose(); //destroy invite/notificaiton window as no longer needed
 							}
@@ -808,7 +808,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 						} else if (invite.game.equals(GameInvite.brickBreaker)) {
 							new BrickBreaker(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
 						} else if (invite.game.equals(GameInvite.pong)){
-							new Pong(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
+							//new Pong(p1.getUsername(), (String)onlineList.getSelectedValue(), true, ip_Address, true);
 						}
 					}
 				}
