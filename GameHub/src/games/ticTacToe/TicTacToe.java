@@ -10,8 +10,6 @@ package games.ticTacToe;
 
 
 import games.Game;
-import games.hangman.Hangman;
-import games.wordWhomp.WordWhomp;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -87,7 +85,7 @@ public class TicTacToe extends Game implements Runnable{
 		p2.assignPiece(PIECE2);
 		setPlayer(PLAYER_1, (Player)p2);
 		
-		setGamePanel(new BoardPanel(p1, p2 , getGameFrame()));
+		setGamePanel(new BoardPanel(p1, p2));
 		
 		this.getGameFrame().setVisible(true);
 		new Thread(this).start();
@@ -120,7 +118,7 @@ public class TicTacToe extends Game implements Runnable{
 			p1.assignPiece(PIECE2);
 			setPlayer(PLAYER_1, (Player)p1);
 			
-			setGamePanel(new BoardPanel((TicTacToePlayer)this.getPlayer(PLAYER_1),(TicTacToePlayer)this.getPlayer(PLAYER_2),getGameFrame()));
+			setGamePanel(new BoardPanel((TicTacToePlayer)this.getPlayer(PLAYER_1),(TicTacToePlayer)this.getPlayer(PLAYER_2)));
 			
 			this.getGameFrame().setVisible(true);
 			new Thread(this).start();
@@ -134,7 +132,7 @@ public class TicTacToe extends Game implements Runnable{
 			p2.assignPiece(PIECE1);
 			setPlayer(PLAYER_2, (Player)p2);
 			
-			setGamePanel(new BoardPanel((TicTacToePlayer)this.getPlayer(PLAYER_1), (TicTacToePlayer)this.getPlayer(PLAYER_2) ,getGameFrame()));
+			setGamePanel(new BoardPanel((TicTacToePlayer)this.getPlayer(PLAYER_1), (TicTacToePlayer)this.getPlayer(PLAYER_2)));
 			
 			this.getGameFrame().setVisible(true);
 			this.goFirst = goFirst;
@@ -275,7 +273,6 @@ public class TicTacToe extends Game implements Runnable{
 								try {
 									startNewThread();
 								} catch (IOException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 								
