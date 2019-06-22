@@ -8,7 +8,6 @@ package player;
  */
 
 import games.Game;
-import games.ticTacToe.BoardPanel;
 
 import java.awt.Point;
 import java.io.IOException;

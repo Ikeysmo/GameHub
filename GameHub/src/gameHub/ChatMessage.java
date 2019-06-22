@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ChatMessage implements Serializable{
+	private static final long serialVersionUID = 1L;
 	/* The message to be sent */
 	String message;
 	/* The date that the message is sent */

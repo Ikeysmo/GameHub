@@ -17,13 +17,11 @@ package gameHub;
  * @version 1.0
  */
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameHubGameServer implements Runnable {
@@ -35,8 +33,6 @@ public class GameHubGameServer implements Runnable {
 	private ConcurrentHashMap<String, String> matches = new ConcurrentHashMap<String,String>();
 	/*Collection of who's currently logged in/Online */
 	private ConcurrentHashMap<String, ObjectOutputStream> onlineList = new ConcurrentHashMap<String, ObjectOutputStream>();
-	/* The Server itself */
-	private GameHubServer GHS;
 
 	/**
 	 * The constructor of the GameHubGameServer
@@ -44,9 +40,8 @@ public class GameHubGameServer implements Runnable {
 	 * @param e The GameHubServer
 	 * @throws IOException
 	 */
-	public GameHubGameServer(GameHubServer e) throws IOException {
+	public GameHubGameServer() throws IOException {
 		ss = new ServerSocket(gamePortNumber);
-		GHS = e;
 		new Thread(this).start();
 	}
 	

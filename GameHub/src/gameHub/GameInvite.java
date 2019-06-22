@@ -11,6 +11,7 @@ package gameHub;
 import java.io.Serializable;
 
 public class GameInvite implements Serializable{
+	private static final long serialVersionUID = 1L;
 	/* Tic Tac Toe */
 	public static final String tictactoe = "tictactoe";
 	/* Connect Four */

@@ -126,7 +126,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 	private JButton wordWhompButton;
 	private JButton brickBreakerButton;
 	private JButton pongButton;
-	private JList onlineList = new JList();
+	private JList<String> onlineList = new JList<String>();
 	private JLabel errormsg = new JLabel();
 	private JPanel homePanel = new JPanel();
 	private JScrollPane bd = new JScrollPane(homePanel);
@@ -593,7 +593,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				try {
 					new Hangman();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
@@ -625,7 +624,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				try {
 					new WordWhomp();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
@@ -710,7 +708,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								}
 								else if(invite.game.contains(GameInvite.snake)){
 									try{
-										//TODO
 										new Snake(p1.getUsername(), invite.from, false, ip_Address, false);
 									} catch(UnknownHostException e){
 										e.printStackTrace();
@@ -720,7 +717,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								}
 								else if(invite.game.contains(GameInvite.hangman)){
 									try{
-										//TODO
 										new Hangman(p1.getUsername(), invite.from, false, ip_Address, false);
 									} catch(UnknownHostException e){
 										e.printStackTrace();
@@ -730,7 +726,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								}
 								else if(invite.game.contains(GameInvite.triviaGame)){
 									try{
-										//TODO
 										new Trivia(p1.getUsername(), invite.from, false, ip_Address, false);
 									} catch(UnknownHostException e){
 										e.printStackTrace();
@@ -740,7 +735,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								}
 								else if(invite.game.contains(GameInvite.wordWhomp)){
 									try{
-										//TODO
 										new WordWhomp(p1.getUsername(), invite.from, false, ip_Address, false);
 									} catch(UnknownHostException e){
 										e.printStackTrace();
@@ -750,7 +744,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 								}
 								else if(invite.game.contains(GameInvite.brickBreaker)){
 									try{
-										//TODO
 										new BrickBreaker(p1.getUsername(), invite.from, false, ip_Address, false);
 									} catch(UnknownHostException e){
 										e.printStackTrace();
@@ -759,7 +752,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 									}
 								} else if(invite.game.contains(GameInvite.pong)){
 									//try{
-										//TODO
 										//new Pong(p1.getUsername(), invite.from, false, ip_Address, false);
 									//} catch(UnknownHostException e){
 									//	e.printStackTrace();
