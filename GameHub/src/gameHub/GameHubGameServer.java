@@ -24,6 +24,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+
 public class GameHubGameServer implements Runnable {
 	/* The port for the server */
 	private int gamePortNumber = 2021; //for gaming
@@ -34,6 +36,11 @@ public class GameHubGameServer implements Runnable {
 	/*Collection of who's currently logged in/Online */
 	private ConcurrentHashMap<String, ObjectOutputStream> onlineList = new ConcurrentHashMap<String, ObjectOutputStream>();
 
+	public static void main(String args[] ) throws IOException {
+		GameHubGameServer ghgs = new GameHubGameServer();
+		
+	}
+	
 	/**
 	 * The constructor of the GameHubGameServer
 	 * 
@@ -41,6 +48,7 @@ public class GameHubGameServer implements Runnable {
 	 * @throws IOException
 	 */
 	public GameHubGameServer() throws IOException {
+		matches.put("BATMAN", "ROBIN");
 		ss = new ServerSocket(gamePortNumber);
 		new Thread(this).start();
 	}
@@ -117,8 +125,10 @@ public class GameHubGameServer implements Runnable {
 			System.out.println("Red bananansanananans");
 			return;
 		}
-		if(!matches.containsKey(firstMessage.toUpperCase())){ //if opponent isn't in matches, then close thread and maybe socket too!
+		if(!matches.containsKey("BATMAN")){ //if opponent isn't in matches, then close thread and maybe socket too!
 			System.out.println("(rejected) Blue bananansnssnanss from " + firstMessage);
+			System.out.println(firstMessage.toUpperCase());
+			System.out.println(matches.get("BATMAN"));
 			return;
 		}
 		onlineList.put(firstMessage.toUpperCase(), oos); //add to list!

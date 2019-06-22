@@ -493,6 +493,12 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		p1 = new PlayerAccount("Zach", "Jones");
+		
+		setUpGameHubWindow();
+		
+		/**
+		 * 
 		errormsg.setText(""); //always clear at any time something happens
 		if(arg0.getSource() == loginButton){ //if login button, begin process of getting online
 			try {
@@ -503,7 +509,8 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 
 				else if(loginBox.getText().equals("")) //if blank, ignore
 					return;
-				s = new Socket(ip_Address, 2020); //create connection to server
+				System.out.println(ip_Address);
+				s = new Socket(ip_Address, 2021); //create connection to server
 				oos = new ObjectOutputStream(s.getOutputStream());
 				oos.writeObject(loginBox.getText() + "/" + String.valueOf(passBox.getPassword())); //initial "hello" to server, sends username and password
 				ois = new ObjectInputStream(s.getInputStream()); 
@@ -538,9 +545,10 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 
 				else if(loginBox.getText().equals("") || loginBox.getText().contains("*")) //if blank, ignore
 					return;
-				s = new Socket(ip_Address, 2020); //create connection to server
+				s = new Socket(ip_Address, 2021); //create connection to server
 				oos = new ObjectOutputStream(s.getOutputStream());
 				oos.writeObject("*"+loginBox.getText() + "/" + String.valueOf(passBox.getPassword())); //initial "hello" to server, sends username and password
+				System.out.println("Hello");
 				ois = new ObjectInputStream(s.getInputStream()); 
 				String serverReply = (String) ois.readObject();
 				System.out.println("Server Reply:" + serverReply); 
@@ -548,14 +556,17 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 					errormsg.setText("Error: Incorrect Username or Password");
 					return;
 				}
-				//p1 = new PlayerAccount(loginBox.getText().toUpperCase(), String.valueOf(passBox.getPassword())); //create a new player account with typed in username/password now that we've signed in
-				//setUpGameHubWindow();
+				p1 = new PlayerAccount(loginBox.getText().toUpperCase(), String.valueOf(passBox.getPassword())); //create a new player account with typed in username/password now that we've signed in
+				setUpGameHubWindow();
 				new Thread(this).start(); //begin separate thread for listening on the created socket
 			}
 
-			catch(IOException | ClassNotFoundException e){
+			catch(IOException e){
 				errormsg.setText(e.getMessage());
 				System.out.println("Even funnier");
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}
@@ -637,6 +648,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 			setUpMainWindow();
 		}
 		
+		*/
 	}
 	
 	public void makeInvite(String username, String selectedValue, String game) {

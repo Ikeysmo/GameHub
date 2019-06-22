@@ -90,6 +90,30 @@ public class TicTacToe extends Game implements Runnable{
 		this.getGameFrame().setVisible(true);
 		new Thread(this).start();
 	}
+	
+	/**
+	 * The constructor of Tic Tac Toe
+	 * 
+	 * @param localplayer Is the local player
+	 * @param remoteplayer Is the remote player
+	 * @param goFirst Who goes first
+	 */
+	public TicTacToe(String localplayer, String remoteplayer, boolean goFirst) throws UnknownHostException, IOException {
+		super("Tic Tac Toe", "ticTacToeIcon.gif", new JFrame(), new JPanel(), 700, 700, 500, 500, 2);
+			TicTacToePlayer p2 = new TicTacToePlayer(localplayer);
+			p2.setGame(this);
+			p2.assignPiece(PIECE1);
+			setPlayer(PLAYER_2, (Player)p2);
+			TicTacToePlayer p1 = new RemotePlayer(oos, ois, this, remoteplayer, PIECE2); //This guy goes first
+			p1.setGame(this);
+			p1.assignPiece(PIECE2);
+			setPlayer(PLAYER_1, (Player)p1);
+			
+			setGamePanel(new BoardPanel((TicTacToePlayer)this.getPlayer(PLAYER_1),(TicTacToePlayer)this.getPlayer(PLAYER_2)));
+			
+			this.getGameFrame().setVisible(true);
+			new Thread(this).start();
+	}
 
 	/**
 	 * The constructor of Tic Tac Toe
