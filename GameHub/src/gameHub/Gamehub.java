@@ -11,6 +11,7 @@ package gameHub;
 /* Import for all games */
 import games.brickBreaker.BrickBreaker;
 import games.connectFour.ConnectFour;
+import games.flappyBird.FlappyBird;
 import games.hangman.Hangman;
 import games.pong.Pong;
 import games.snake.Snake;
@@ -61,7 +62,7 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 	public final int GAME_ICON_SIZE = 150;
 	
 	/* The player's Account */
-	private PlayerAccount p1 = new PlayerAccount("Zachary", "Jones");
+	private PlayerAccount p1 = new PlayerAccount("John", "Doe");
 	
 	/*
 	 * GAMEHUB WINDOW
@@ -69,7 +70,6 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 	 * Components:
 	 */
 	private JFrame gameHubWindow; //Needs values not initilized yet
-	private JTabbedPane mainPanel = new JTabbedPane();
 	private JButton tictactoeButton;
 	private JButton connectfourButton;
 	private JButton snakeButton;
@@ -78,10 +78,9 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 	private JButton wordWhompButton;
 	private JButton brickBreakerButton;
 	private JButton pongButton;
+	private JButton flappyBirdButton;
 	private JPanel homePanel = new JPanel();
 	private JScrollPane bd = new JScrollPane(homePanel);
-	private JPanel scorePanel = new JPanel();
-	private JPanel trophyPanel = new JPanel();
 	private ImageIcon tictac = new ImageIcon("icons/ticTacToeIcon.gif", "tictactoe");
 	private ImageIcon con4 = new ImageIcon("icons/connectFour.png", "connect 4");
 	private ImageIcon snake = new ImageIcon("icons/snake.png", "snake");
@@ -90,6 +89,7 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 	private ImageIcon wordWhomp = new ImageIcon("icons/wordWhomp.png", "wordWhomp");
 	private ImageIcon brickBreaker = new ImageIcon("icons/brickBreaker.png", "brickBreaker");
 	private ImageIcon pong = new ImageIcon("icons/pong.png", "pong");
+	private ImageIcon flappyBird = new ImageIcon("icons/flappyBird.png", "flappyBird");
 	
 	public static void main(String[] args) {
 		new Gamehub();
@@ -124,22 +124,14 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		gameHubWindow.setMinimumSize(new Dimension(1024,800));
+		gameHubWindow.setMinimumSize(new Dimension(600,600));
 		gameHubWindow.setResizable(false);
-		gameHubWindow.setVisible(true);
 		gameHubWindow.getContentPane().setBackground(new Color(52,36,74));
 		gameHubWindow.setLayout(null);
 		//gameHubWindow.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
 		homePanel.setBackground(Color.black);
 		homePanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		scorePanel.setBackground(new Color(240,250,240));
-		trophyPanel.setBackground(Color.green);
-		mainPanel.setForeground(Color.black);
-		mainPanel.setBackground(Color.orange);
-		mainPanel.addTab("Home", bd);
-		scorePanel.add(new JLabel("This is where to put scores!"));
-		trophyPanel.add(new JLabel("Trophy listing!"));
 		//add code to flesh out home panel or show games
 		Image img = tictac.getImage() ;  
 		Image newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
@@ -165,6 +157,9 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 		img = pong.getImage() ;  
 		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE,  java.awt.Image.SCALE_SMOOTH ) ;  
 		pong = new ImageIcon( newimg );
+		img = flappyBird.getImage();
+		newimg = img.getScaledInstance( GAME_ICON_SIZE, GAME_ICON_SIZE, java.awt.Image.SCALE_SMOOTH ) ;
+		flappyBird = new ImageIcon( newimg );
 		tictactoeButton = new JButton(tictac);
 		connectfourButton = new JButton(con4);
 		snakeButton = new JButton(snake);
@@ -173,6 +168,7 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 		wordWhompButton = new JButton(wordWhomp);
 		brickBreakerButton = new JButton(brickBreaker);
 		pongButton = new JButton(pong);
+		flappyBirdButton = new JButton(flappyBird);
 		//homePanel.add(new JLabel("Do the thing here!"));
 		c.gridx = 0;
 		c.gridy = 0;
@@ -198,6 +194,9 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 		c.gridx = 1;
 		c.gridy = 2;
 		homePanel.add(pongButton, c);
+		c.gridx = 2;
+		c.gridy = 2;
+		homePanel.add(flappyBirdButton, c);
 		tictactoeButton.addActionListener(this);
 		connectfourButton.addActionListener(this);
 		snakeButton.addActionListener(this);
@@ -206,12 +205,11 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 		wordWhompButton.addActionListener(this);
 		brickBreakerButton.addActionListener(this);
 		pongButton.addActionListener(this);
-		mainPanel.addTab("Scores", scorePanel);
-		mainPanel.addTab("Trophies", trophyPanel);
-
-		mainPanel.setBackground(new Color(52,36,74));
-		mainPanel.setBounds(0, 0, 800, 600);
-		gameHubWindow.add(mainPanel);
+		flappyBirdButton.addActionListener(this);
+		gameHubWindow.setContentPane(homePanel);
+		
+		//Lastly, set it to visible
+		gameHubWindow.setVisible(true);
 	}
 
 	@Override
@@ -251,6 +249,8 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 				System.err.println("Something went wrong with WordWhomp");
 				e.printStackTrace();
 			}
+		} else if(arg0.getSource() == flappyBirdButton) {
+			new FlappyBird();
 		}
 	}
 	@Override
@@ -262,7 +262,8 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 				!triviaGameButton.isEnabled() ||
 				!wordWhompButton.isEnabled() ||
 				!brickBreakerButton.isEnabled() ||
-				!pongButton.isEnabled()){
+				!pongButton.isEnabled() ||
+				!flappyBirdButton.isEnabled()){
 			tictactoeButton.setEnabled(true);
 			connectfourButton.setEnabled(true);
 			snakeButton.setEnabled(true);
@@ -271,6 +272,7 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, List
 			wordWhompButton.setEnabled(true);
 			brickBreakerButton.setEnabled(true);
 			pongButton.setEnabled(true);
+			flappyBirdButton.setEnabled(true);
 		}
 	}
 

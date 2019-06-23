@@ -61,6 +61,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 		addColumn(true);
 
 		timer.start();
+		flappyBird = this;
 	}
 
 	public void addColumn(boolean start)

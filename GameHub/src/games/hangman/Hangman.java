@@ -59,7 +59,7 @@ public class Hangman extends Game implements ActionListener, Runnable{
 	 */
 	public Hangman() throws IOException {
 		super("Hangman", "hangman.png", new JFrame(), new JPanel(), 800 + 10 + 20, 800 + 10 + 20, 500 + 10 + 20, 500 + 10 + 20, 2);
-		this.fr = new FileReader("dictonary_english_hangman.txt");
+		this.fr = new FileReader("src/games/hangman/dictonary_english_hangman.txt");
 		this.br = new BufferedReader(fr);
 		//load the GUI just to let person know it's there
 		

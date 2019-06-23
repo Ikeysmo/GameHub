@@ -60,7 +60,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import gameHub.ChatMessage;
 import gameHub.PlayerAccount;
 
 public class GamehubLogIn implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
@@ -688,7 +687,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				else if(message instanceof GameInvite){ //It recieved a gameInvite, proceed to create a notification window
 					GameInvite invite = (GameInvite) message; 
 					System.out.println("Got invite from " +invite.from + " to " +invite.to+ "!");
-					if(invite.to.equalsIgnoreCase(p1.username)){
+					if(invite.to.equalsIgnoreCase(p1.getUsername())){
 						
 						inviteWindow.setSize(300, 300);
 						inviteWindow.add(new JLabel("You got an invite!"));
