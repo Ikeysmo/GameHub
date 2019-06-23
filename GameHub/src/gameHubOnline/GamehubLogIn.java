@@ -499,8 +499,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 		
 		setUpGameHubWindow();
 		
-		/**
-		 * 
 		errormsg.setText(""); //always clear at any time something happens
 		if(arg0.getSource() == loginButton){ //if login button, begin process of getting online
 			try {
@@ -512,7 +510,7 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 				else if(loginBox.getText().equals("")) //if blank, ignore
 					return;
 				System.out.println(ip_Address);
-				s = new Socket(ip_Address, 2021); //create connection to server
+				s = new Socket(ip_Address, 4555); //create connection to server
 				oos = new ObjectOutputStream(s.getOutputStream());
 				oos.writeObject(loginBox.getText() + "/" + String.valueOf(passBox.getPassword())); //initial "hello" to server, sends username and password
 				ois = new ObjectInputStream(s.getInputStream()); 
@@ -649,8 +647,6 @@ public class GamehubLogIn implements FocusListener, KeyListener, ActionListener,
 			ipAddressWindow.dispose();
 			setUpMainWindow();
 		}
-		
-		*/
 	}
 	
 	public void makeInvite(String username, String selectedValue, String game) {
