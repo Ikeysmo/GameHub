@@ -8,7 +8,7 @@ package gameHub;
  * @version 1.0
  */
 
-import games.Game;
+/* Import for all games */
 import games.brickBreaker.BrickBreaker;
 import games.connectFour.ConnectFour;
 import games.hangman.Hangman;
@@ -18,12 +18,11 @@ import games.ticTacToe.TicTacToe;
 import games.triviaGame.Trivia;
 import games.wordWhomp.WordWhomp;
 
+/* AWT (GUI) components */
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -33,61 +32,44 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+
+/* Swing Components */
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class Gamehub implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
+public class Gamehub implements FocusListener, KeyListener, ActionListener, ListSelectionListener {
 	
+	//Screen size Dimensions
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	//Width of the screen
 	double width = screenSize.getWidth();
+	//Height of the screen
 	double height = screenSize.getHeight();
 	
+	//Size of the game icon
 	public final int GAME_ICON_SIZE = 150;
 	
 	/* The player's Account */
 	private PlayerAccount p1 = new PlayerAccount("Zachary", "Jones");
-	/* To Send data */
-	private ObjectOutputStream oos;
-	/* To Receive data */
-	private ObjectInputStream ois;
-	/* Is this Login connect? */
-	private boolean isConnected;
 	
 	/*
 	 * GAMEHUB WINDOW
-	 * 3rd Window seen
 	 * Purpose: Full access to all of GameHubs functionalities
 	 * Components:
 	 */
 	private JFrame gameHubWindow; //Needs values not initilized yet
 	private JTabbedPane mainPanel = new JTabbedPane();
-	private JTextField chatOut = new JTextField();
-	private JTextArea chatIn = new JTextArea();
-	private JButton chatSubmitButton = new JButton("Submit");
 	private JButton tictactoeButton;
 	private JButton connectfourButton;
 	private JButton snakeButton;
@@ -96,10 +78,8 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, Runn
 	private JButton wordWhompButton;
 	private JButton brickBreakerButton;
 	private JButton pongButton;
-	private JList<String> onlineList = new JList<String>();
 	private JPanel homePanel = new JPanel();
 	private JScrollPane bd = new JScrollPane(homePanel);
-	private JScrollPane wd = new JScrollPane(chatIn);
 	private JPanel scorePanel = new JPanel();
 	private JPanel trophyPanel = new JPanel();
 	private ImageIcon tictac = new ImageIcon("icons/ticTacToeIcon.gif", "tictactoe");
@@ -110,19 +90,14 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, Runn
 	private ImageIcon wordWhomp = new ImageIcon("icons/wordWhomp.png", "wordWhomp");
 	private ImageIcon brickBreaker = new ImageIcon("icons/brickBreaker.png", "brickBreaker");
 	private ImageIcon pong = new ImageIcon("icons/pong.png", "pong");
-	private JPanel onlinePanel = new JPanel();
-	private JPanel chatPanel = new JPanel(); //for the bottom
 	
-	/*
-	 * INVITE WINDOW
-	 * 4th Window seen
-	 * Purpose: to invite a fellow friend on the server to a game (more info needed)
-	 * Components: inviteWindow, middlePanel, acceptButton, denyButton
-	 */
-	JFrame inviteWindow = new JFrame("Invite");
-	JPanel middlePanel = new JPanel();
-	JButton acceptButton = new JButton("Accept");
-	JButton denyButton = new JButton("Deny");
+	public static void main(String[] args) {
+		new Gamehub();
+	}
+	
+	public Gamehub() {
+		setUpGameHubWindow();
+	}
 	
 	/**
 	 * Helper method to set up the GameHubWindow JFrame
@@ -130,7 +105,6 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, Runn
 	 * @author Zachary R Jones
 	 */
 	public void setUpGameHubWindow() {
-		isConnected = true;
 		gameHubWindow = new JFrame("Welcome to GameHub " +p1.getUsername() +"!" + System.lineSeparator());
 		gameHubWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameHubWindow.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -156,11 +130,6 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, Runn
 		gameHubWindow.getContentPane().setBackground(new Color(52,36,74));
 		gameHubWindow.setLayout(null);
 		//gameHubWindow.setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
-		onlineList.setFont(new Font("Arial Rounded MT Bold", Font.BOLD, 30));
-		onlineList.setPreferredSize(new Dimension(224,600));
-		onlineList.setBackground(new Color(215,204,230));
-		//stopped
-		wd.setPreferredSize(new Dimension(1010,100));
 		homePanel.setBackground(Color.black);
 		homePanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -239,45 +208,10 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, Runn
 		pongButton.addActionListener(this);
 		mainPanel.addTab("Scores", scorePanel);
 		mainPanel.addTab("Trophies", trophyPanel);
-		chatSubmitButton.addActionListener(this);
 
 		mainPanel.setBackground(new Color(52,36,74));
 		mainPanel.setBounds(0, 0, 800, 600);
-		onlinePanel.setBackground(new Color(52,36,74));
-		onlinePanel.setBounds(804, 0, 215, 600);
-		onlineList.setBorder(new LineBorder(Color.black));
-		chatPanel.setBackground(new Color(52,36,74));
-		JLabel this_online = new JLabel("Who's Online");
-		this_online.setForeground(Color.white);
-		this_online.setFont(new Font("Arial MT Bold", Font.BOLD, 15));
-		onlinePanel.add(this_online);
-		onlinePanel.add(onlineList);
-		chatPanel.setBounds(0, 600, 1024, 200);
-		//chatIn.setPreferredSize(new Dimension(1010, 100));
-		chatIn.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-		chatIn.setBorder(new LineBorder(Color.black));
-		chatOut.setPreferredSize(new Dimension(920,30));
-		chatOut.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-		chatIn.setForeground(Color.BLUE);
-		chatIn.setBackground(new Color(185,219,217));
-		chatOut.requestFocus();
-		chatOut.addKeyListener(this);
-		chatOut.setBorder(new LineBorder(Color.black));
-		chatIn.setEditable(false);
-		chatPanel.add(wd);
-		chatPanel.add(chatOut);
-		chatPanel.add(chatSubmitButton);
 		gameHubWindow.add(mainPanel);
-		gameHubWindow.add(onlinePanel);
-		gameHubWindow.add(chatPanel);
-	}
-	
-	public Gamehub() {
-		setUpGameHubWindow();
-	}
-
-	public static void main(String[] args) {
-			new Gamehub();
 	}
 
 	@Override
@@ -291,20 +225,20 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, Runn
 			new TicTacToe();
 		}
 		else if(arg0.getSource() == snakeButton) {
-			Snake snake = new Snake();
-			snake.getGameFrame().setVisible(true);
+			new Snake();
 		}
 		else if(arg0.getSource() == hangManButton) {
 			try {
 				new Hangman();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Something went wrong with Hangman");
 				e.printStackTrace();
 			}
 		}
 		else if(arg0.getSource() == brickBreakerButton) {
 			new BrickBreaker();
-		} else if(arg0.getSource() == pongButton) {
+		} 
+		else if(arg0.getSource() == pongButton) {
 			new Pong();
 		}
 		else if(arg0.getSource() == triviaGameButton) {
@@ -314,162 +248,11 @@ public class Gamehub implements FocusListener, KeyListener, ActionListener, Runn
 			try {
 				new WordWhomp();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Something went wrong with WordWhomp");
 				e.printStackTrace();
 			}
 		}
 	}
-
-	public void get_scores(){;}
-	public void add_trophy(){;}
-	
-	
-	@Override
-	public void run() {
-		//this is where I begin to run the code after login
-
-		/*
-		 * This loop listens for input and de-multiplexes it to handle it depending on what type of object it is
-		 * E.g if it is chatmessage, echo it to everyone. If it is a gameInvite, selectively forward it, etc..
-		 */
-		while(isConnected){
-			try {
-				Object message = ois.readObject();
-				System.out.println("Got something!");
-				if(message instanceof String[]){ //if it is a string array, it is list of those who are online
-					onlineList.setListData((String[]) message);
-					onlinePanel.updateUI();
-					onlineList.updateUI();
-				}
-				else if(message instanceof GameInvite){ //It recieved a gameInvite, proceed to create a notification window
-					GameInvite invite = (GameInvite) message; 
-					System.out.println("Got invite from " +invite.from + " to " +invite.to+ "!");
-					if(invite.to.equalsIgnoreCase(p1.username)){
-						
-						inviteWindow.setSize(300, 300);
-						inviteWindow.add(new JLabel("You got an invite!"));
-						acceptButton.addActionListener(new ActionListener() {
-							//finished creating notification window, add temporary actionlisteners
-							@Override
-							public void actionPerformed(ActionEvent arg0) {
-								invite.Accept(); //if acceptbutton is pressed, invite is accepted
-								try {
-									oos.writeObject(invite); //accepted invite is sent back to server who notifies sender client that it's invite was accepted
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								System.out.println("Accepted invite!");
-								if(invite.game.contains(GameInvite.tictactoe)){ //now that you created invite, load up tic tac toe.. haven't added one for connect4
-									try {
-										new TicTacToe(p1.getUsername(), invite.from, false);
-									} catch (UnknownHostException e) {
-										e.printStackTrace();
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
-								}
-								else if(invite.game.contains(GameInvite.connect4)){
-										//TODO: Fix ConnectFour constructor
-									//	new ConnectFour(p1.getUsername(), invite.from, false, ip_Address, false);
-								}
-								else if(invite.game.contains(GameInvite.snake)){
-										//TODO: Fix Snake constructor
-										//new Snake(p1.getUsername(), invite.from, false, ip_Address, false);
-								}
-								else if(invite.game.contains(GameInvite.hangman)){
-										//TODO: Fix Hangman constructor
-										//new Hangman(p1.getUsername(), invite.from, false, ip_Address, false);
-								}
-								else if(invite.game.contains(GameInvite.triviaGame)){
-										//TODO: Fix Trivia constructor
-										//new Trivia(p1.getUsername(), invite.from, false, ip_Address, false);
-								}
-								else if(invite.game.contains(GameInvite.wordWhomp)){
-										//TODO: Fix WordWhomp constructor
-										//new WordWhomp(p1.getUsername(), invite.from, false, ip_Address, false);
-								}
-								else if(invite.game.contains(GameInvite.brickBreaker)){
-										//TODO: Fix BrickBreaker constructor
-										//new BrickBreaker(p1.getUsername(), invite.from, false, ip_Address, false);
-								} else if(invite.game.contains(GameInvite.pong)){
-										//TODO: Fix Pong constructor
-										//new Pong(p1.getUsername(), invite.from, false, ip_Address, false);
-								}
-								inviteWindow.dispose(); //destroy invite/notificaiton window as no longer needed
-							}
-						}); //make local function
-						middlePanel.add(acceptButton);
-						denyButton.addActionListener(new ActionListener() {
-
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								// Opposite of accepted... it is denied
-								invite.Deny();
-								try {
-									oos.writeObject(invite);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								System.out.println("Denied invitation!");
-								inviteWindow.dispose();
-							}
-						});
-						middlePanel.add(denyButton);
-						inviteWindow.add(middlePanel);
-						inviteWindow.setTitle("Invite from " +invite.from + "!");
-						inviteWindow.setVisible(true);
-					}
-					else if(invite.from.equals(p1.getUsername()) && invite.isAccepted()){
-						System.out.println("Opponent accepted invite, opening game now");
-						if(invite.game.equals(GameInvite.tictactoe)) {
-							new TicTacToe(p1.getUsername(), (String)onlineList.getSelectedValue(), true); //attempt to pass in the sockets to tictactoe so it can connect directly to the server
-						} else if (invite.game.equals(GameInvite.connect4)) {
-							//TODO: Fix ConnectFour constructor
-							//new ConnectFour(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
-						} else if (invite.game.equals(GameInvite.snake)) {
-							//TODO: Fix Snake constructor
-							//new Snake(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
-						} else if (invite.game.equals(GameInvite.hangman)) {
-							//TODO: Fix Hangman constructor
-							//new Hangman(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
-						} else if (invite.game.equals(GameInvite.triviaGame)) {
-							//TODO: Fix Trivia constructor
-							//new Trivia(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
-						} else if (invite.game.equals(GameInvite.wordWhomp)) {
-							//TODO: Fix WordWhomp constructor
-							//new WordWhomp(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
-						} else if (invite.game.equals(GameInvite.brickBreaker)) {
-							//TODO: Fix BrickBreaker constructor
-							//new BrickBreaker(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
-						} else if (invite.game.equals(GameInvite.pong)){
-							//new Pong(p1.getUsername(), (String)onlineList.getSelectedValue(), true);
-						}
-					}
-				}
-				else if(message instanceof ChatMessage){
-					System.out.println("Abe Lincoln");
-					ChatMessage chat = (ChatMessage) message;
-					/*if(chat.from.equalsIgnoreCase(p1.getUsername()))
-						chatIn.setForeground(Color.blue);
-					else
-						chatIn.setForeground(Color.red);  */
-					chatIn.append(chat.from + ": " + chat.message); //reveal chat message to GUI window
-					chatIn.setCaretPosition(chatIn.getDocument().getLength());
-				} 
-				//this does not CATCH anything that isn't one of these! The games should catch the rest!
-				else{
-					System.out.println("Hey, received something:" + message);//this is where I look at my matches list and handle it correspondingly(forward it to whoever is also in match)
-					
-					chatIn.append(message.toString()+ "!" + System.lineSeparator());
-				}
-			}catch(java.net.SocketException s) {
-				System.out.println("For some reason these is an exception here\nCan't seem to get rid of");
-			}catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
 		if(!tictactoeButton.isEnabled() ||

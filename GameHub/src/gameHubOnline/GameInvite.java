@@ -1,4 +1,4 @@
-package gameHub;
+package gameHubOnline;
 
 /**
  * This method is to send a game invite

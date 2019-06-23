@@ -1,4 +1,4 @@
-package gameHub;
+package gameHubOnline;
 
 /**
  * The login to get into GameHub
@@ -59,6 +59,9 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import gameHub.ChatMessage;
+import gameHub.PlayerAccount;
 
 public class GamehubLogIn implements FocusListener, KeyListener, ActionListener, Runnable, ListSelectionListener {
 	

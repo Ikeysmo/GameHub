@@ -1,4 +1,4 @@
-package gameHub;
+package gameHubOnline;
 
 /**
  * The GameHub game server class
