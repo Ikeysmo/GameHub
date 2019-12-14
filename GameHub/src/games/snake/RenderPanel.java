@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 public class RenderPanel extends JPanel
 {
 
+	private static final long serialVersionUID = 1L;
 	public static final Color GREEN = new Color(1666073);
 
 	@Override

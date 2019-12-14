@@ -49,6 +49,7 @@ public class Snake extends Game implements ActionListener, KeyListener
 		setGamePanel(new RenderPanel());
 		this.getGameFrame().setVisible(true);
 		startGame();
+		snake = this;
 	}
 	
 	public Snake(String localplayer, String remoteplayer, boolean goFirst, String ipaddress, Boolean gofirst) throws UnknownHostException, IOException {

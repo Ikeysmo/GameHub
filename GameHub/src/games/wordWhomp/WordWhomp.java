@@ -24,7 +24,7 @@ public class WordWhomp extends Game implements Runnable{
 		super("Word Whomp", "wordWhomp.png", new JFrame(), new JPanel(), 500, 500, 200, 200, 2);
 		
 		
-		FileReader fr = new FileReader("dictonary_english_hangman.txt");
+		FileReader fr = new FileReader("src/games/wordWhomp/dictonary_english_wordWhomp.txt");
 		BufferedReader br = new BufferedReader(fr); //loading the words
 		getGameFrame().setVisible(true);
 	}

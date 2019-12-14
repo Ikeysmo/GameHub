@@ -58,8 +58,8 @@ public class Hangman extends Game implements ActionListener, Runnable{
 	 * @throws IOException
 	 */
 	public Hangman() throws IOException {
-		super("Hangman", "hangman.png", new JFrame(), new JPanel(), 800 + 10 + 20, 800 + 10 + 20, 500 + 10 + 20, 500 + 10 + 20, 2);
-		this.fr = new FileReader("dictonary_english_hangman.txt");
+		super("Hangman", "src/games/hangman/hangman.png", new JFrame(), new JPanel(), 800 + 10 + 20, 800 + 10 + 20, 500 + 10 + 20, 500 + 10 + 20, 2);
+		this.fr = new FileReader("src/games/hangman/dictonary_english_hangman.txt");
 		this.br = new BufferedReader(fr);
 		//load the GUI just to let person know it's there
 		
@@ -69,7 +69,7 @@ public class Hangman extends Game implements ActionListener, Runnable{
 	}
 	
 	public Hangman(String localplayer, String remoteplayer, boolean goFirst, String ipaddress, Boolean gofirst) throws UnknownHostException, IOException {
-		super("Hangman", "hangman.png", new JFrame(), new JPanel(), 800 + 10, 800 + 10, 500 + 10, 500 + 10, 2);
+		super("Hangman", "src/games/hangman/hangman.png", new JFrame(), new JPanel(), 800 + 10, 800 + 10, 500 + 10, 500 + 10, 2);
 	}
 	
 	private void populateWordList() {

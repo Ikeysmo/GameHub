@@ -10,14 +10,13 @@ package games.ticTacToe;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class BoardPanel extends JPanel {
-/* Number of squares in a row*/
+	private static final long serialVersionUID = 1L;
+	/* Number of squares in a row*/
 	public final static int ROWLENGTH = 3;
 	/* Number of squares in a column*/
 	public final static int COLUMNLENGTH = 3;
@@ -27,14 +26,8 @@ public class BoardPanel extends JPanel {
 	public final static int PLAYERVCPU = 1;
 	/* representative of Remote PLayers */
 	public final static int PLAYERREMOTE = 2;
-	/* Did game over occur */
-	private boolean gameOver = false;
-	/* The frame of the board */
-	private JFrame frame;
 	/* 2-D array for board */
 	private char[][] board = new char[ROWLENGTH][COLUMNLENGTH];
-	/* Tell whose turn it is */
-	private int turn = 0; //alternate between 0 and 1
 	/* First Piece*/
 	public final static char X = 'X';
 	/* Second Piece*/
@@ -47,27 +40,19 @@ public class BoardPanel extends JPanel {
 	 * @param p2 PLayer 2
 	 * @param currWindow the current window
 	 */
-	public BoardPanel(TicTacToePlayer p1, TicTacToePlayer p2, JFrame currWindow) {
-		// TODO Auto-generated constructor stub
+	public BoardPanel(TicTacToePlayer p1, TicTacToePlayer p2) {
 		p1.setPanel(this);
 		p2.setPanel(this);
-
-		frame = currWindow;
-		
 	}
 	
-	public BoardPanel(TicTacToePlayer p1, RemotePlayer p2, JFrame currWindow) {
-		//TODO Auto-generated constructor stub
+	public BoardPanel(TicTacToePlayer p1, RemotePlayer p2) {
 		p1.setPanel(this);
 		p2.setPanel(this);
-		frame = currWindow;
 	}
 	
-	public BoardPanel(RemotePlayer p1, RemotePlayer p2, JFrame currWindow) {
-		//TODO Auto-generated constructor stub
+	public BoardPanel(RemotePlayer p1, RemotePlayer p2) {
 		p1.setPanel(this);
 		p2.setPanel(this);
-		frame = currWindow;
 	}
 	
 	/**
@@ -98,7 +83,6 @@ public class BoardPanel extends JPanel {
 	 * @param g The current graphics
 	 */
 	private void drawBoard(Graphics g) {
-		// TODO Auto-generated method stub
 		int width = getWidth();
 		int height = getHeight();
 	

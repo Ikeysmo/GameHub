@@ -45,7 +45,7 @@ public class DrawPanel extends JPanel {
 		//setBackground(Color.white);
 		hangmanposes = new BufferedImage[NUM_OF_POSES];
 		for(int i = 0; i < NUM_OF_POSES; i++){
-			hangmanposes[i] = (ImageIO.read(new File("hangman" + (i+1) + ".png")));
+			hangmanposes[i] = (ImageIO.read(new File("src/games/hangman/hangman" + (i+1) + ".png")));
 		}
 	}
 	
@@ -57,7 +57,7 @@ public class DrawPanel extends JPanel {
 		this.setSize(dim);
 		hangmanposes = new BufferedImage[NUM_OF_POSES];
 		for(int i = 0; i < NUM_OF_POSES; i++){
-			hangmanposes[i] = (ImageIO.read(new File("hangman" + (i+1) + ".png")));
+			hangmanposes[i] = (ImageIO.read(new File("src/games/hangman/hangman" + (i+1) + ".png")));
 			hangmanposes[i] = resize(hangmanposes[i], this.getWidth(), this.getHeight());
 		}
 	}
